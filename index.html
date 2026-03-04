@@ -45,9 +45,19 @@
         .invite-pill { background: rgba(17, 21, 26, 0.95); padding: 20px 40px; border-radius: 50px; text-align: center; border: 1px solid #333; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.2s; }
         .invite-pill:hover { background: #1a2028; transform: scale(1.02); }
 
+        /* 顶部两边按钮 */
+        .top-left-btns { position: absolute; top: 20px; left: 20px; display: flex; gap: 15px; z-index: 90; }
         .top-right-btns { position: absolute; top: 20px; right: 20px; display: flex; gap: 15px; z-index: 90; }
         .top-btn { background: rgba(17, 21, 26, 0.8); border: 1px solid var(--gold); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-ledger { color: var(--gold); } .btn-ledger:hover { background: rgba(255, 215, 0, 0.2); }
+        .btn-log { color: #349feb; border-color: #349feb; } .btn-log:hover { background: rgba(52, 159, 235, 0.2); }
+
+        /* 【核心新增：抽屉式牌局记录栏】 */
+        #log-drawer { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: rgba(17, 21, 26, 0.98); border-right: 1px solid #333; z-index: 400; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
+        #log-drawer.open { left: 0; }
+        .log-header { padding: 20px; font-size: 18px; font-weight: 900; color: var(--gold); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .log-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 13px; color: #ccc; display: flex; flex-direction: column; gap: 8px; }
+        .log-item { background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; line-height: 1.4; }
 
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 300; }
         .ledger-box { background: #1a1e24; border: 2px solid var(--gold); border-radius: 15px; padding: 25px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.9); max-height: 80vh; overflow-y: auto;}
@@ -85,11 +95,8 @@
         .player-card.active { border-color: var(--active-green); box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);}
         .player-card.active .player-chips { background: var(--active-green); color: #000; }
         
-        /* 空位的基础样式 */
         .player-card.empty-seat { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); box-shadow: none; min-height: 85px; border-radius: 8px; position: relative; }
-        
-        /* 【核心新增：极其高级隐蔽的 + 号加机器人按钮】 */
-        .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.2s; font-weight: 100; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; }
+        .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.2s; font-weight: 100; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; user-select: none;}
         .add-bot-btn:hover { color: var(--gold); background: rgba(255, 215, 0, 0.1); }
 
         .dealer-btn { position: absolute; width: 22px; height: 22px; background: white; color: black; border: 2px solid #555; border-radius: 50%; font-weight: 900; font-size: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.6); z-index: 20; }
@@ -221,8 +228,18 @@
     </div>
 
     <div id="view-game" class="view-screen hidden">
-        <div class="top-left-logo" style="color:var(--gold)">POKERCHILL</div>
-        
+        <div id="log-drawer">
+            <div class="log-header">
+                <span>📝 牌局记录</span>
+                <span style="color:#aaa; cursor:pointer; font-size:24px;" onclick="toggleLogDrawer()">&times;</span>
+            </div>
+            <div class="log-content" id="log-content"></div>
+        </div>
+
+        <div class="top-left-btns" id="top-left-btns">
+            <button class="top-btn btn-log hidden" id="btn-log-top" onclick="toggleLogDrawer()">📝 记录</button>
+        </div>
+
         <div class="top-right-btns" id="top-right-btns">
             <button class="top-btn btn-ledger hidden" id="btn-ledger-top" onclick="openLedger()">📊 战绩表</button>
         </div>
@@ -279,7 +296,7 @@
             <div class="turn-badge" style="background: #e74c3c; color: white;">💳 筹码耗尽</div>
             <div style="text-align: center; color: white; margin: 15px 0 25px 0; font-size: 16px;">
                 您已进入观战状态。是否按默认标准买入进行补充？<br>
-                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">10000</span></strong>
+                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">30</span></strong>
             </div>
             <div class="main-action-row" style="height: 55px;">
                 <button class="action-btn btn-call" onclick="confirmPlayerBuyIn()" style="background: linear-gradient(145deg, #2ecc71, #219653); width: 100%;"><span class="btn-title" style="font-size:18px; color:black; font-weight:900;">确定买入</span></button>
@@ -313,6 +330,7 @@
 
 <script>
     const BACKEND_URL = "https://poker-server.zxc717209554.workers.dev";
+    // 固定的物理座位顺序映射 (0-9)
     const SEAT_ORDER = ['s-btm-c', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r', 's-btm-l'];
     const AVATAR_LIST = ['😎', '🤖', '🤡', '🤠', '👽', '👻', '🐼', '🧛', '🐻', '🦊', '🐯', '🐷'];
     const MAX_SEATS = 10;
@@ -328,9 +346,11 @@
 
     let prevBoardLength = 0;
     let prevBurnLength = 0;
+    let logCount = 0; // 用于判断日志是否更新
 
     function openLedger() { document.getElementById('ledger-modal').classList.remove('hidden'); document.getElementById('settlement-area').style.display = 'none'; }
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
+    function toggleLogDrawer() { document.getElementById('log-drawer').classList.toggle('open'); }
 
     function generateSettlement() {
         if(!latestGameState || !latestGameState.players) return;
@@ -433,18 +453,14 @@
             window.history.pushState({}, "", `?room=${currentRoomId}`);
             document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             
-            // 【核心打包：极简配置 30 / 2.5 / 0】
             const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30;
             const sb = parseFloat(document.getElementById('set-sb').value) || 2.5;
             const timer = parseInt(document.getElementById('set-timer').value) || 0;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
 
             creatorSettings = { 
-                initialChips: buyInVal, 
-                smallBlind: sb, 
-                bigBlind: sb * 2,
-                timer: timer,
-                botLevel: botLevel
+                initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
+                timer: timer, botLevel: botLevel
             };
 
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
@@ -488,15 +504,16 @@
 
     function send(obj) { if(ws && ws.readyState === 1) ws.send(JSON.stringify(obj)); else console.log("等待重连..."); }
 
-    function getSeatMap(roomId) {
-        let seed = 0; if (roomId) for(let i=0; i<roomId.length; i++) seed += roomId.charCodeAt(i);
-        if (seed === 0) seed = 123; let seats = [0,1,2,3,4,5,6,7,8,9];
-        for(let i=0; i<10; i++) { let j = (seed + i * 17) % 10; if (isNaN(j) || j < 0) j = 0; let temp = seats[i]; seats[i] = seats[j]; seats[j] = temp; }
-        return seats;
-    }
-
     function renderEngine(state) {
         if (!state || !state.game) return;
+
+        // 渲染记录侧边栏
+        if (state.game.logs && state.game.logs.length !== logCount) {
+            const contentBox = document.getElementById('log-content');
+            contentBox.innerHTML = state.game.logs.map(log => `<div class="log-item">${log}</div>`).join('');
+            contentBox.scrollTop = contentBox.scrollHeight;
+            logCount = state.game.logs.length;
+        }
 
         const elBuyin = document.getElementById('info-buyin');
         const elBlinds = document.getElementById('info-blinds');
@@ -535,7 +552,10 @@
 
         let playersArray = state.players || [];
         
-        if (playersArray.length > 0) document.getElementById('btn-ledger-top').classList.remove('hidden');
+        if (playersArray.length > 0) {
+            document.getElementById('btn-ledger-top').classList.remove('hidden');
+            document.getElementById('btn-log-top').classList.remove('hidden');
+        }
         
         let ledgerBody = "";
         playersArray.forEach(p => {
@@ -551,7 +571,6 @@
         const banner = document.getElementById("winner-banner");
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && (p.chips === 0 || p.isOut) && !p.isSpectating);
-            
             let richMsg = state.game.winMessage;
             richMsg = richMsg.replace(/(10|[2-9JQKA])[♥♦]/g, '<span class="msg-red-card">$&</span>');
             richMsg = richMsg.replace(/(10|[2-9JQKA])[♠♣]/g, '<span class="msg-black-card">$&</span>');
@@ -612,21 +631,23 @@
 
         const layer = document.getElementById("players-layer"); layer.innerHTML = "";
         let isMyTurn = false;
-        const visualMap = getSeatMap(currentRoomId);
-        let displaySeats = new Array(MAX_SEATS).fill(null);
-        
-        playersArray.forEach((p, index) => {
-            if (!p || p.isKicked) return; 
-            let visualSeatIndex = visualMap[index % 10]; 
-            while (displaySeats[visualSeatIndex] !== null) visualSeatIndex = (visualSeatIndex + 1) % 10;
-            displaySeats[visualSeatIndex] = { ...p, realIndex: index };
-        });
 
         const isInitialDeal = state.game.status === 'PRE-FLOP' && !playersArray.some(p => p.actedThisRound);
+        
+        // 【核心渲染：计算发牌动画顺时针延迟数组】
+        let playingSeatsOrder = [];
+        if (isInitialDeal) {
+            for (let i = 0; i < 10; i++) {
+                let seatNum = (state.game.dealerIndex + 1 + i) % 10;
+                let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked);
+                if (sp) playingSeatsOrder.push(seatNum);
+            }
+        }
 
+        // 【核心渲染：严格遍历 0-9 号物理座位渲染界面】
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i];
-            const p = displaySeats[i]; 
+            const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
             
             let posClass = ""; 
             if (seatClass.includes("btm")) posClass = "pos-bottom";
@@ -635,12 +656,12 @@
             if (seatClass.includes("rgt")) posClass = "pos-right";
 
             if (p) {
-                const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && p.realIndex === state.game.turnIndex);
+                const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && p.seatIndex === state.game.turnIndex);
                 if (isActive && p.name === myName) isMyTurn = true;
                 const isOut = p.isOut === true; 
                 const isOffline = p.isOnline === false; 
                 const isSpectating = p.isSpectating === true;
-                const isDealer = (p.realIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating);
+                const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating);
 
                 let displayAvatar = '😎'; let displayName = p.name;
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; }
@@ -650,7 +671,18 @@
                     cardsHtml = p.hand.map((c, idx) => {
                         const isHidden = (p.name !== myName && state.game.status !== "SHOWDOWN") || c === "??";
                         const isRed = !isHidden && (c.includes('♥') || c.includes('♦'));
-                        const animDelay = isInitialDeal ? `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${(i*0.08) + (idx*0.04)}s;` : '';
+                        
+                        // 【核心动画：双轮顺时针荷官发牌】
+                        let animDelay = "";
+                        if (isInitialDeal) {
+                            let dealIdx = playingSeatsOrder.indexOf(p.seatIndex);
+                            if (dealIdx !== -1) {
+                                let totalPlayers = playingSeatsOrder.length;
+                                let delayTime = (idx === 0) ? (dealIdx * 0.15) : ((totalPlayers + dealIdx) * 0.15);
+                                animDelay = `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${delayTime}s;`;
+                            }
+                        }
+                        
                         return `<div class="playing-card ${isHidden?'back':''} ${isRed?'red':''} card-${idx+1}" style="${animDelay}">${isHidden?'':c}</div>`;
                     }).join("");
                 }
@@ -684,8 +716,8 @@
                     </div>
                 `;
             } else { 
-                // 【核心：房主的空位上渲染巨大的 + 号召唤按钮】
-                let addBotHtml = isHost ? `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}'})">+</div>` : '';
+                // 【完美保留：房主专属的物理座位空位 + 号】
+                let addBotHtml = isHost ? `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>` : '';
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
@@ -726,7 +758,7 @@
                     document.getElementById("btn-action-raise").onclick = () => { const raiseTo = parseInt(slider.value); const extraAmount = raiseTo - currentBet; send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
                 } else {
-                    waitingTip.classList.remove("hidden"); const currentActor = playersArray[state.game.turnIndex];
+                    waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex);
                     if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; }
                     actBtns.forEach(id => document.getElementById(id).disabled = true);
                 }
