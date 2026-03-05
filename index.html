@@ -57,13 +57,11 @@
         .log-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 13px; color: #ccc; display: flex; flex-direction: column; gap: 8px; }
         .log-item { background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; line-height: 1.4; }
 
-        /* 【新增：候场区样式】 */
         .lobby-zone { position: absolute; left: 20px; bottom: 20px; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 16px; border: 1px solid #444; width: 200px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 90; }
         .lobby-title { font-size: 14px; color: var(--gold); margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 8px; }
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        /* 【新增：抽牌区域样式】 */
         .draw-deck-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 15px; z-index: 100; }
         .draw-card { width: 70px; height: 100px; background: white; border-radius: 8px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; font-weight: 900; color: black; font-size: 26px; transition: 0.3s; position: relative;}
         .draw-card.back { background: #1976d2; background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.1) 5px, rgba(255,255,255,0.1) 10px); }
@@ -159,7 +157,6 @@
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* 游戏行动控制台 */
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 20px; width: 480px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 15px; z-index: 100; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
         .raise-control-area { display: flex; flex-direction: column; gap: 12px; background: #1a2028; padding: 15px; border-radius: 12px; border: 1px solid #2a3441; }
@@ -222,6 +219,10 @@
                     <option value="1">Lv.1 (气氛组)</option>
                     <option value="2">Lv.2 (常客)</option>
                 </select>
+            </div>
+            <div class="setting-item" style="border-top: 1px dashed #444; padding-top: 15px;">
+                <span class="setting-label" style="color:var(--gold);">趣味抽牌选座 (抢庄)</span>
+                <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
         </div>
     </div>
@@ -483,10 +484,11 @@
             const sb = parseFloat(document.getElementById('set-sb').value) || 2.5;
             const timer = parseInt(document.getElementById('set-timer').value) || 0;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
+            const enableDraw = document.getElementById('set-enable-draw').checked;
 
             creatorSettings = { 
                 initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
-                timer: timer, botLevel: botLevel
+                timer: timer, botLevel: botLevel, enableDraw: enableDraw
             };
 
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
@@ -526,7 +528,6 @@
     function renderEngine(state) {
         if (!state || !state.game) return;
 
-        // 1. 渲染侧边记录抽屉
         if (state.game.logs && state.game.logs.length !== logCount) {
             const contentBox = document.getElementById('log-content');
             contentBox.innerHTML = state.game.logs.map(log => `<div class="log-item">${log}</div>`).join('');
@@ -534,18 +535,17 @@
             logCount = state.game.logs.length;
         }
 
-        // 2. 渲染基础面板数据
         const elBuyin = document.getElementById('info-buyin');
         const elBlinds = document.getElementById('info-blinds');
         if (elBuyin) elBuyin.innerText = state.game.buyIn || 30;
         if (elBlinds) elBlinds.innerText = `${state.game.smallBlind || 2.5}/${state.game.bigBlind || 5}`;
+
         document.getElementById("ui-pot").innerText = "$" + (state.game.pot || 0);
         
         if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") {
             prevBoardLength = 0; prevBurnLength = 0;
         }
 
-        // 3. 渲染桌面公牌
         let burnCardsHtml = "";
         if (state.game.burnCards && state.game.burnCards.length > 0) {
             burnCardsHtml = `<div class="burn-area">` + 
@@ -554,6 +554,7 @@
                     return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*15}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>`
                 }).join("") + `</div>`;
         }
+
         const boardCardsHtml = (state.game.board || []).map((c, i) => {
             let animDelay = "";
             if (i >= prevBoardLength) {
@@ -563,18 +564,19 @@
             }
             return `<div class="playing-card ${c.includes('♥') || c.includes('♦') ? 'red' : ''}" style="${animDelay}">${c}</div>`;
         }).join("");
+        
         document.getElementById("ui-board").innerHTML = burnCardsHtml + boardCardsHtml;
+        
         prevBoardLength = state.game.board ? state.game.board.length : 0;
         prevBurnLength = state.game.burnCards ? state.game.burnCards.length : 0;
 
-        // 4. 提取玩家数据
         let playersArray = state.players || [];
+        
         if (playersArray.length > 0) {
             document.getElementById('btn-ledger-top').classList.remove('hidden');
             document.getElementById('btn-log-top').classList.remove('hidden');
         }
         
-        // 5. 渲染账单
         let ledgerBody = "";
         playersArray.forEach(p => {
             if(p.isKicked) return; 
@@ -586,11 +588,49 @@
         });
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
 
-        // 6. 渲染候场区 (LOBBY)
+        const banner = document.getElementById("winner-banner");
+        if (state.game.status === "SHOWDOWN") {
+            const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating);
+            let richMsg = state.game.winMessage;
+            richMsg = richMsg.replace(/(10|[2-9JQKA])[♥♦]/g, '<span class="msg-red-card">$&</span>');
+            richMsg = richMsg.replace(/(10|[2-9JQKA])[♠♣]/g, '<span class="msg-black-card">$&</span>');
+
+            if (hasBankrupt) {
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+                banner.innerHTML = `
+                    <div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div>
+                    <div style="font-size: 14px; color: #ff5b4c; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px; border: 1px solid #ff5b4c;">
+                        ⚠️ 有玩家筹码耗尽，自动开局已暂停。<br>
+                        <span style="color:#aaa; font-size:12px;">没钱的玩家可点击【确定买入】补充筹码。准备好后由房主开局。</span>
+                    </div>
+                `;
+            } else {
+                if (!countdownInterval) {
+                    let timeLeft = 10;
+                    countdownInterval = setInterval(() => {
+                        timeLeft--; const cdSpan = document.getElementById("auto-start-cd"); if (cdSpan) cdSpan.innerText = timeLeft;
+                        if (timeLeft <= 0) { clearInterval(countdownInterval); countdownInterval = null; send({type: 'NEXT_HAND'}); }
+                    }, 1000);
+                }
+                banner.innerHTML = `
+                    <div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div>
+                    <div style="font-size: 14px; color: #ccc; display: flex; align-items: center; justify-content: center; gap: 15px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px;">
+                        <span>下一局: <span id="auto-start-cd" style="color:var(--gold); font-size:20px; font-weight:900;">10</span>s</span>
+                        <button onclick="send({type:'NEXT_HAND'})" style="padding: 6px 15px; background: var(--active-green); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">立刻开始</button>
+                    </div>
+                `;
+            }
+            banner.classList.remove("hidden");
+        } else {
+            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            banner.classList.add("hidden");
+        }
+
         const lobbyZone = document.getElementById('lobby-zone');
         const lobbyList = document.getElementById('lobby-list');
         const unseatedPlayers = playersArray.filter(p => p.seatIndex === -1 && !p.isKicked);
         
+        // 只有在真的有玩家被困在候场区，或者处于抽牌环节时，才显示候场区
         if (unseatedPlayers.length > 0 || state.game.status === "LOBBY" || state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             lobbyZone.classList.remove('hidden');
             lobbyList.innerHTML = unseatedPlayers.map(p => {
@@ -606,7 +646,6 @@
             lobbyZone.classList.add('hidden');
         }
 
-        // 7. 渲染抽牌阵列
         const drawZone = document.getElementById('draw-zone');
         if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             drawZone.classList.remove('hidden');
@@ -624,7 +663,6 @@
             drawZone.classList.add('hidden'); 
         }
 
-        // 8. 权限判定与按钮显示
         const isHost = (state.game.hostName === myName);
         const isWinner = (state.game.winnerName === myName);
 
@@ -648,7 +686,6 @@
             document.getElementById('btn-start-draw').classList.add('hidden');
         }
 
-        // 9. 检查当前我的身份记录
         const pureMyName = myName.split('|')[1] || myName;
         const myDataRecord = playersArray.find(p => p && (p.name.split('|')[1] || p.name) === pureMyName);
         if (myDataRecord && myDataRecord.isKicked) {
@@ -666,7 +703,6 @@
             document.getElementById('btn-confirm-sit').disabled = false; 
         }
 
-        // 10. 渲染桌面座位层
         const layer = document.getElementById("players-layer"); layer.innerHTML = "";
         let isMyTurn = false;
 
@@ -680,7 +716,6 @@
             }
         }
 
-        // 物理座位 0-9 绝对渲染
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i];
             const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
@@ -750,20 +785,17 @@
                     </div>
                 `;
             } else { 
-                // 【核心：空位交互逻辑（添加机器人 or 赢家选座）】
+                // 【核心解除限制：房主随时随地可以看见空位的 + 号进行空降】
                 let addBotHtml = '';
                 if (state.game.status === "PICK_SEAT" && isWinner) {
-                    // 头名特权：点击光圈选座
                     addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">+</div>`;
-                } else if (isHost && (state.game.status === "WAITING" || state.game.status === "LOBBY")) {
-                    // 房主特权：点击暗+号加机器人
+                } else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") {
                     addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`;
                 }
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
 
-        // 11. 游戏控制台与破产买入面板
         const actionConsole = document.getElementById("action-console"); 
         const buyinConsole = document.getElementById("buyin-console");
         const waitingTip = document.getElementById("waiting-tip"); 
