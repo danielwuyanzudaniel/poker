@@ -295,19 +295,35 @@
 
         <div id="action-console" class="action-console hidden">
             <div class="turn-badge">YOUR TURN</div>
-            <div class="raise-control-area">
-                <div class="raise-header">
-                    <span>Raise To (加注至):</span>
-                    <span class="raise-amount-display" id="display-amount">$0</span>
-                </div>
-                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="any">
-                <div class="quick-bet-row">
-                    <button class="qb-btn" onclick="quickBet('MIN')">MIN</button>
-                    <button class="qb-btn" onclick="quickBet('HALF')">1/2 POT</button>
-                    <button class="qb-btn" onclick="quickBet('POT')">POT</button>
-                    <button class="qb-btn all-in" onclick="quickBet('ALLIN')">ALL-IN</button>
-                </div>
-            </div>
+function updateSliderDisplay() {
+    let numValue = parseFloat(slider.value);
+    let displayVal = numValue.toFixed(2); 
+    
+    // 这里把拼接的 "$" 换成了 "¥"
+    displayAmount.innerText = "¥" + displayVal;
+    btnRaiseSub.innerText = "¥" + displayVal;
+    
+    const customInput = document.getElementById('custom-bet-input');
+    if (customInput && document.activeElement !== customInput) {
+        customInput.value = displayVal;
+    }
+
+    if(numValue >= parseFloat(slider.max)) {
+        displayAmount.innerText = "ALL-IN";
+        btnRaiseSub.innerText = "ALL-IN";
+    }
+}
+
+function syncInputToSlider(val) {
+    let num = parseFloat(val);
+    if (!isNaN(num)) {
+        if (num > parseFloat(slider.max)) num = parseFloat(slider.max);
+        if (num < parseFloat(slider.min)) num = parseFloat(slider.min);
+        
+        slider.value = num;
+        updateSliderDisplay();
+    }
+}
             <div class="main-action-row">
                 <button class="action-btn btn-fold" id="btn-action-fold"><span class="btn-title">FOLD</span><span class="btn-sub">弃牌</span></button>
                 <button class="action-btn btn-call" id="btn-action-call"><span class="btn-title" id="btn-call-title">CALL</span><span class="btn-sub" id="btn-call-sub">$0</span></button>
