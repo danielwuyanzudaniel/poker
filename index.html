@@ -162,7 +162,6 @@
         .raise-control-area { display: flex; flex-direction: column; gap: 12px; background: #1a2028; padding: 15px; border-radius: 12px; border: 1px solid #2a3441; }
         .raise-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #8ca0b3; font-weight: bold; }
         .raise-amount-display { font-size: 24px; color: var(--gold); font-weight: 900; letter-spacing: 1px; }
-        /* 【核心修复2：给滑动条增加 step="any" 解除抹零限制】 */
         .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333; outline: none; margin: 10px 0; }
         .custom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); cursor: pointer; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border: 3px solid #11151a; }
         .quick-bet-row { display: flex; justify-content: space-between; gap: 8px; }
@@ -221,6 +220,13 @@
                     <option value="2">Lv.2 (常客)</option>
                 </select>
             </div>
+            <div class="setting-item">
+                <span class="setting-label" style="color:var(--gold);">游戏玩法 (Game Mode)</span>
+                <select id="set-game-mode" class="setting-input" style="width: 140px; cursor: pointer; color: var(--gold); border-color: var(--gold);">
+                    <option value="standard">标准德州 (52张)</option>
+                    <option value="short_deck">短牌 6+ (36张)</option>
+                </select>
+            </div>
             <div class="setting-item" style="border-top: 1px dashed #444; padding-top: 15px;">
                 <span class="setting-label" style="color:var(--gold);">趣味抽牌选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
@@ -259,7 +265,7 @@
 
         <div id="table-container">
             <div class="poker-table">
-                <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
+                <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">¥0.00</span></div>
                 <div class="community-cards-area" id="ui-board"></div>
                 
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
@@ -286,7 +292,7 @@
 
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
-            <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
+            <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 ¥<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="triggerStartGame()" id="btn-start" class="host-btn btn-green">▶ 开始新一局</button>
             <button onclick="forceRestart()" id="btn-force-restart" class="host-btn btn-red">🛑 强制重开局</button>
         </div>
@@ -295,12 +301,22 @@
 
         <div id="action-console" class="action-console hidden">
             <div class="turn-badge">YOUR TURN</div>
+            
             <div class="raise-control-area">
                 <div class="raise-header">
                     <span>Raise To (加注至):</span>
-                    <span class="raise-amount-display" id="display-amount">$0</span>
+                    <span class="raise-amount-display" id="display-amount">¥0.00</span>
                 </div>
-                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="any">
+                
+                <div style="display: flex; gap: 10px; margin-top: 5px;">
+                    <input type="number" id="custom-bet-input" 
+                           style="flex: 1; background: #11151a; border: 1px solid #444; color: var(--gold); padding: 8px; border-radius: 6px; text-align: center; font-size: 16px; font-weight: bold; outline: none;" 
+                           placeholder="✍️ 点击手动输入"
+                           step="0.01"
+                           oninput="syncInputToSlider(this.value)">
+                </div>
+
+                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="0.01">
                 <div class="quick-bet-row">
                     <button class="qb-btn" onclick="quickBet('MIN')">MIN</button>
                     <button class="qb-btn" onclick="quickBet('HALF')">1/2 POT</button>
@@ -310,8 +326,8 @@
             </div>
             <div class="main-action-row">
                 <button class="action-btn btn-fold" id="btn-action-fold"><span class="btn-title">FOLD</span><span class="btn-sub">弃牌</span></button>
-                <button class="action-btn btn-call" id="btn-action-call"><span class="btn-title" id="btn-call-title">CALL</span><span class="btn-sub" id="btn-call-sub">$0</span></button>
-                <button class="action-btn btn-raise" id="btn-action-raise"><span class="btn-title">RAISE</span><span class="btn-sub" id="btn-raise-sub">$0</span></button>
+                <button class="action-btn btn-call" id="btn-action-call"><span class="btn-title" id="btn-call-title">CALL</span><span class="btn-sub" id="btn-call-sub">¥0.00</span></button>
+                <button class="action-btn btn-raise" id="btn-action-raise"><span class="btn-title">RAISE</span><span class="btn-sub" id="btn-raise-sub">¥0.00</span></button>
             </div>
         </div>
 
@@ -319,7 +335,7 @@
             <div class="turn-badge" style="background: #e74c3c; color: white;">💳 筹码耗尽</div>
             <div style="text-align: center; color: white; margin: 15px 0 25px 0; font-size: 16px;">
                 您已进入观战状态。是否按默认标准买入进行补充？<br>
-                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">30</span></strong>
+                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+¥<span id="ui-buyin-amount">30</span></strong>
             </div>
             <div class="main-action-row" style="height: 55px;">
                 <button class="action-btn btn-call" onclick="confirmPlayerBuyIn()" style="background: linear-gradient(145deg, #2ecc71, #219653); width: 100%;"><span class="btn-title" style="font-size:18px; color:black; font-weight:900;">确定买入</span></button>
@@ -395,7 +411,7 @@
         while(i < winners.length && j < losers.length) {
             let w = winners[i]; let l = losers[j];
             let settleAmt = Math.min(w.amount, l.amount);
-            html += `<div class="settlement-line"><span class="text-red">${l.name}</span> 应支付给 <span class="text-green">${w.name}</span> : <strong style="color:white;">$${settleAmt}</strong></div>`;
+            html += `<div class="settlement-line"><span class="text-red">${l.name}</span> 应支付给 <span class="text-green">${w.name}</span> : <strong style="color:white;">¥${settleAmt}</strong></div>`;
             w.amount -= settleAmt; l.amount -= settleAmt;
             if (w.amount === 0) i++;
             if (l.amount === 0) j++;
@@ -410,10 +426,29 @@
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
     function updateSliderDisplay() {
-        // 【核心修复2：解除 parseInt 的强转，完美保留小数】
-        displayAmount.innerText = "$" + slider.value;
-        btnRaiseSub.innerText = "$" + slider.value;
-        if(parseFloat(slider.value) >= parseFloat(slider.max)) { displayAmount.innerText = "ALL-IN"; btnRaiseSub.innerText = "ALL-IN"; }
+        let displayVal = parseFloat(slider.value).toFixed(2);
+        displayAmount.innerText = "¥" + displayVal;
+        btnRaiseSub.innerText = "¥" + displayVal;
+        
+        const customInput = document.getElementById('custom-bet-input');
+        if (customInput && document.activeElement !== customInput) {
+            customInput.value = displayVal;
+        }
+
+        if(parseFloat(slider.value) >= parseFloat(slider.max)) { 
+            displayAmount.innerText = "ALL-IN"; 
+            btnRaiseSub.innerText = "ALL-IN"; 
+        }
+    }
+
+    function syncInputToSlider(val) {
+        let num = parseFloat(val);
+        if (!isNaN(num)) {
+            if (num > parseFloat(slider.max)) num = parseFloat(slider.max);
+            if (num < parseFloat(slider.min)) num = parseFloat(slider.min);
+            slider.value = num;
+            updateSliderDisplay();
+        }
     }
 
     function quickBet(type) {
@@ -493,11 +528,16 @@
             const timer = parseInt(document.getElementById('set-timer').value) || 0;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
             const enableDraw = document.getElementById('set-enable-draw').checked;
+            
+            // ====== 修改：抓取玩家选择的短牌/标准牌设置 ======
+            const gameMode = document.getElementById('set-game-mode').value;
 
             creatorSettings = { 
                 initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
-                timer: timer, botLevel: botLevel, enableDraw: enableDraw
+                timer: timer, botLevel: botLevel, enableDraw: enableDraw,
+                gameMode: gameMode  // 发送给服务器
             };
+            // ===========================================
 
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
             openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [] }, players: [] });
@@ -548,7 +588,7 @@
         if (elBuyin) elBuyin.innerText = state.game.buyIn || 30;
         if (elBlinds) elBlinds.innerText = `${state.game.smallBlind || 2.5}/${state.game.bigBlind || 5}`;
 
-        document.getElementById("ui-pot").innerText = "$" + (state.game.pot || 0);
+        document.getElementById("ui-pot").innerText = "¥" + (state.game.pot || 0);
         
         if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") {
             prevBoardLength = 0; prevBurnLength = 0;
@@ -590,9 +630,9 @@
             if(p.isKicked) return; 
             const net = p.chips - (p.totalBuyIn || 0);
             const netClass = net > 0 ? 'text-green' : (net < 0 ? 'text-red' : '');
-            const netStr = net > 0 ? `+$${net}` : (net < 0 ? `-$${Math.abs(net)}` : `$0`);
+            const netStr = net > 0 ? `+¥${net}` : (net < 0 ? `-¥${Math.abs(net)}` : `¥0`);
             const pName = p.name.split('|')[1] || p.name;
-            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>$${p.totalBuyIn || 0}</td><td>$${p.chips}</td><td class="${netClass}" style="text-align:right;">${netStr}</td></tr>`;
+            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>¥${p.totalBuyIn || 0}</td><td>¥${p.chips}</td><td class="${netClass}" style="text-align:right;">${netStr}</td></tr>`;
         });
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
 
@@ -634,7 +674,6 @@
             banner.classList.add("hidden");
         }
 
-        // 【核心修复1：给分享框加了一把严厉的状态锁！】
         const inviteContainer = document.getElementById("invite-pill-container");
         if (state.game.status === "WAITING" || state.game.status === "LOBBY") {
             inviteContainer.classList.remove("hidden");
@@ -664,7 +703,6 @@
         const drawZone = document.getElementById('draw-zone');
         if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             drawZone.classList.remove('hidden');
-            // 此处双重保险，抽牌时一定隐藏邀请框
             inviteContainer.classList.add('hidden');
             drawZone.innerHTML = state.game.drawingCards.map(c => {
                 if (c.faceUp) {
@@ -784,7 +822,7 @@
 
                 layer.innerHTML += `
                     <div class="player-seat ${seatClass} ${posClass}">
-                        ${(p.winAmount > 0 && state.game.status === "SHOWDOWN") ? `<div class="win-fly-text">+$${p.winAmount}</div>` : ''}
+                        ${(p.winAmount > 0 && state.game.status === "SHOWDOWN") ? `<div class="win-fly-text">+¥${p.winAmount}</div>` : ''}
                         
                         <div class="hole-cards">${p.folded || isOut || isSpectating ? '' : cardsHtml}</div>
                         ${isDealer ? `<div class="dealer-btn">D</div>` : ''}
@@ -794,10 +832,10 @@
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
                             <div style="min-height:22px;">${badgeHtml}</div>
                             <div class="player-name">${displayName}</div>
-                            <div class="player-chips">$${p.chips}</div>
+                            <div class="player-chips">¥${p.chips}</div>
                         </div>
                         
-                        ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${p.betThisRound}</div>` : ''}
+                        ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ ¥${p.betThisRound}</div>` : ''}
                     </div>
                 `;
             } else { 
@@ -839,12 +877,11 @@
                     
                     const callAmount = Math.round((currentBet - myBet) * 100) / 100;
                     if (callAmount <= 0) { btnCallTitle.innerText = "CHECK"; btnCallSub.innerText = "过牌 (免费)"; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #2ecc71, #219653)"; } 
-                    else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "$" + callAmount; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
+                    else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "¥" + callAmount.toFixed(2); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
                     
                     const minRaiseTo = currentBet + minRaiseDelta; 
                     slider.min = minRaiseTo; slider.max = myChips + myBet; 
                     
-                    // 【核心修复2：解除 parseInt，全部换为 parseFloat 防抹零】
                     if (parseFloat(slider.value) < minRaiseTo || parseFloat(slider.value) > parseFloat(slider.max)) slider.value = minRaiseTo; 
                     updateSliderDisplay();
                     
