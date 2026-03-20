@@ -15,7 +15,7 @@ export default {
       try { return env.POKER_ROOM.get(env.POKER_ROOM.idFromName(roomId)).fetch(request); } 
       catch (e) { return new Response("Invalid Room ID", { status: 400 }); }
     }
-    return new Response("Poker Server V30 - Short Deck & Rabbit Hunt Complete");
+    return new Response("Poker Server V29 - Financial Blackhole Fixed");
   }
 };
 
@@ -28,7 +28,7 @@ export class PokerRoom {
         status: "WAITING", pot: 0, currentBet: 0, board: [], deck: [], burnCards: [],
         turnIndex: -1, dealerIndex: -1, smallBlind: 2.5, bigBlind: 5, buyIn: 30,
         winMessage: "", hostName: "", timer: 0, botLevel: 1, botCounter: 0,
-        enableDraw: false, isShortDeck: false, logs: [], drawingCards: [], winnerName: "", handCount: 0,
+        enableDraw: false, logs: [], drawingCards: [], winnerName: "", handCount: 0,
         lastValidRaise: 5
     };
   }
@@ -83,7 +83,6 @@ export class PokerRoom {
           this.game.timer = data.settings.timer;
           this.game.botLevel = data.settings.botLevel;
           this.game.enableDraw = data.settings.enableDraw;
-          this.game.isShortDeck = data.settings.isShortDeck === true;
           this.game.lastValidRaise = data.settings.bigBlind;
           if (this.game.enableDraw) this.game.status = "LOBBY";
       }
@@ -122,11 +121,13 @@ export class PokerRoom {
         if (activeCount < 10) {
             let isMidGame = this.game.status !== "WAITING" && this.game.status !== "LOBBY";
             let targetSeat = data.seatIndex;
+            
             if (this.game.enableDraw && this.game.status === "LOBBY") { targetSeat = -1; }
             else if (targetSeat >= 0) {
                 if (this.players.some(x => x.seatIndex === targetSeat && !x.isKicked)) return;
                 this.players = this.players.filter(x => !(x.seatIndex === targetSeat && x.isKicked));
             }
+
             this.game.botCounter++;
             let nameStr = `🤖|Bot_${this.game.botCounter}`;
             this.players.push({
@@ -208,23 +209,6 @@ export class PokerRoom {
         });
         this.addLog(`<div style="color:#e74c3c;">🛑 房主强制结束了对局</div>`);
     }
-    // 【发完余牌功能】
-    else if (data.type === "RABBIT_HUNT" && data.name === this.game.hostName) {
-        if (this.game.status === "SHOWDOWN" && this.game.board && this.game.board.length < 5) {
-            while (this.game.board.length < 5 && this.game.deck.length > 0) {
-                this.game.board.push(this.game.deck.pop());
-            }
-            this.addLog(`🐇 <span style="color:#9b59b6; font-weight:bold;">房主发出了剩余的公共牌 (Rabbit Hunt)</span>`);
-        }
-    }
-    // 【打赏发牌员功能】
-    else if (data.type === "TIP_DEALER") {
-        const p = this.players.find(player => player.name === data.name);
-        if (p && p.chips >= 1 && (this.game.status === "SHOWDOWN" || this.game.status === "WAITING")) {
-            p.chips = parseFloat((p.chips - 1).toFixed(2));
-            this.addLog(`💸 <span style="color:#e84393; font-weight:bold;">${p.name.split('|')[1] || p.name} 打赏了发牌员 $1</span>`);
-        }
-    }
     else if (data.type === "ACTION") {
       const p = this.players.find(x => x.seatIndex === this.game.turnIndex);
       if (p && p.name === data.name && !p.isBot) await this.processPlayerAction(p, data.action, data.amount);
@@ -247,6 +231,7 @@ export class PokerRoom {
             }
         } 
     }
+    
     this.broadcastState();
   }
 
@@ -279,14 +264,8 @@ export class PokerRoom {
   }
 
   createDeck() {
-    const suits = ['♠', '♥', '♣', '♦'];
-    // 【短牌模式适配：抽走 2345】
-    const values = this.game.isShortDeck 
-        ? ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-        : ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    let deck = []; 
-    suits.forEach(s => values.forEach(v => deck.push(v + s))); 
-    return deck.sort(() => Math.random() - 0.5);
+    const suits = ['♠', '♥', '♣', '♦'], values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    let deck = []; suits.forEach(s => values.forEach(v => deck.push(v + s))); return deck.sort(() => Math.random() - 0.5);
   }
   
   parseCard(str) { 
@@ -328,9 +307,11 @@ export class PokerRoom {
     const sbP = this.players.find(x => x.seatIndex === sbIndex); 
     const bbP = this.players.find(x => x.seatIndex === bbIndex);
     
+    // 【核心修复1：防黑洞安全锁，计算盲注时绝对不能扣成负数】
     let actualSb = Math.max(0, Math.min(sbP.chips, this.game.smallBlind));
     let actualBb = Math.max(0, Math.min(bbP.chips, this.game.bigBlind));
 
+    // 浮点数防精度丢失截断处理
     sbP.chips = parseFloat((sbP.chips - actualSb).toFixed(2));
     sbP.betThisRound = parseFloat(actualSb.toFixed(2));
     sbP.investedThisHand = parseFloat(actualSb.toFixed(2));
@@ -339,6 +320,7 @@ export class PokerRoom {
     bbP.betThisRound = parseFloat(actualBb.toFixed(2));
     bbP.investedThisHand = parseFloat(actualBb.toFixed(2));
 
+    // 即使 BB 的钱不够大盲，牌桌当前的 currentBet 依旧要求后面的人补齐一个完整的大盲金额
     this.game.currentBet = this.game.bigBlind;
     this.game.turnIndex = firstActorIndex;
     
@@ -366,6 +348,7 @@ export class PokerRoom {
         player.folded = true; this.addLog(`❌ <span style="color:#aaa;">${sName} 弃牌</span>`); 
     }
     else if (actionType === "CALL") {
+        // 【核心修复2：跟注时绝对熔断，杜绝扣负数导致向底池倒灌资金】
         let callAmt = Math.max(0, Math.min(player.chips, this.game.currentBet - player.betThisRound));
         
         player.chips = parseFloat((player.chips - callAmt).toFixed(2)); 
@@ -378,6 +361,7 @@ export class PokerRoom {
     } 
     else if (actionType === "RAISE") {
         let raiseTotal = this.game.currentBet + amount;
+        // 【防倒灌双重锁】
         let addAmt = Math.max(0, Math.min(player.chips, raiseTotal - player.betThisRound));
         let actualRaiseTotal = player.betThisRound + addAmt;
         let raiseDelta = actualRaiseTotal - this.game.currentBet;
@@ -474,17 +458,10 @@ export class PokerRoom {
       cards.forEach(c => suits[c.suit].push(c));
       for (let s in suits) { if (suits[s].length >= 5) { flushCards = suits[s]; break; } }
       
-      // 【短牌顺子逻辑：A6789 判定】
       const checkStraight = (arr) => {
-          let u = [...new Set(arr.map(c => c.rank))].sort((a,b) => b-a);
-          for (let i = 0; i <= u.length - 5; i++) { 
-              if (u[i] - u[i+4] === 4) return u[i]; 
-          }
-          if (this.game.isShortDeck) {
-              if (u.includes(14) && u.includes(9) && u.includes(8) && u.includes(7) && u.includes(6)) return 9;
-          } else {
-              if (u.includes(14) && u.includes(5) && u.includes(4) && u.includes(3) && u.includes(2)) return 5;
-          }
+          let u = [...new Set(arr.map(c => c.rank))];
+          if (u.includes(14)) u.push(1);
+          for (let i = 0; i <= u.length - 5; i++) { if (u[i] - u[i+4] === 4) return u[i]; }
           return 0;
       };
 
@@ -496,22 +473,11 @@ export class PokerRoom {
           let q = quads[0]; let k = cards.filter(c => c.rank !== q).map(c => c.rank);
           return { value: getScore(8, [q,q,q,q, k[0]]), name: "四条" };
       }
-
-      // 【短牌同花逻辑：同花 > 葫芦】
-      if (this.game.isShortDeck) {
-          if (flushCards.length >= 5) return { value: getScore(7, flushCards.map(c=>c.rank).slice(0,5)), name: "同花" };
-          if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
-              let t = trips[0]; let p = trips.length > 1 ? trips[1] : pairs[0];
-              return { value: getScore(6, [t,t,t,p,p]), name: "葫芦" };
-          }
-      } else {
-          if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
-              let t = trips[0]; let p = trips.length > 1 ? trips[1] : pairs[0];
-              return { value: getScore(7, [t,t,t,p,p]), name: "葫芦" };
-          }
-          if (flushCards.length >= 5) return { value: getScore(6, flushCards.map(c=>c.rank).slice(0,5)), name: "同花" };
+      if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
+          let t = trips[0]; let p = trips.length > 1 ? trips[1] : pairs[0];
+          return { value: getScore(7, [t,t,t,p,p]), name: "葫芦" };
       }
-
+      if (flushCards.length >= 5) return { value: getScore(6, flushCards.map(c=>c.rank).slice(0,5)), name: "同花" };
       if (strHigh) return { value: getScore(5, [strHigh,0,0,0,0]), name: "顺子" };
       if (trips.length > 0) {
           let t = trips[0]; let k = cards.filter(c => c.rank !== t).map(c => c.rank);
@@ -592,6 +558,7 @@ export class PokerRoom {
       setTimeout(async () => {
         if (this.game.status === "SHOWDOWN" || this.game.turnIndex !== curr.seatIndex) return;
         
+        // 【核心修复3：给Bot也装上防黑洞底线锁】
         let callAmt = Math.max(0, this.game.currentBet - curr.betThisRound);
         
         if (callAmt === 0) { await this.processPlayerAction(curr, "CALL", 0); } 
