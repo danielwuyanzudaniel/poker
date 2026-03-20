@@ -50,6 +50,7 @@
         .top-btn { background: rgba(17, 21, 26, 0.8); border: 1px solid var(--gold); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-ledger { color: var(--gold); } .btn-ledger:hover { background: rgba(255, 215, 0, 0.2); }
         .btn-log { color: #349feb; border-color: #349feb; } .btn-log:hover { background: rgba(52, 159, 235, 0.2); }
+        .btn-tip { border-color: #e84393; color: #e84393; } .btn-tip:hover { background: rgba(232, 67, 147, 0.2); }
 
         #log-drawer { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: rgba(17, 21, 26, 0.98); border-right: 1px solid #333; z-index: 400; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
         #log-drawer.open { left: 0; }
@@ -100,7 +101,6 @@
         .kick-btn:hover { background: #ff5b4c; transform: translateX(-50%) scale(1.05);}
         .player-seat:hover .kick-btn { display: block; }
 
-        /* 【究极视觉 1：鱿鱼变色引擎 (黑 vs 粉红)】 */
         .player-card { width: 110px; min-height: 85px; background: #000; border-radius: 8px; overflow: visible; border: 2px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s;}
         .player-card.active { border-color: var(--active-green); box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);}
         .player-card.active .player-chips { background: var(--active-green); color: #000; }
@@ -163,6 +163,7 @@
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
+        .btn-purple { background: #9b59b6; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 20px; width: 480px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 15px; z-index: 100; }
@@ -170,7 +171,8 @@
         .raise-control-area { display: flex; flex-direction: column; gap: 12px; background: #1a2028; padding: 15px; border-radius: 12px; border: 1px solid #2a3441; }
         .raise-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #8ca0b3; font-weight: bold; }
         
-        .raise-amount-display { font-size: 24px; color: var(--gold); font-weight: 900; letter-spacing: 1px; }
+        .raise-amount-input { background: transparent; border: none; color: var(--gold); font-size: 24px; font-weight: 900; width: 100px; outline: none; text-align: left; font-family: inherit;}
+        .raise-amount-input::-webkit-outer-spin-button, .raise-amount-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         
         .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333; outline: none; margin: 10px 0; }
         .custom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); cursor: pointer; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border: 3px solid #11151a; }
@@ -231,6 +233,10 @@
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
+                <span class="setting-label" style="color:var(--gold);">🃏 短牌模式 (Short Deck 6+)</span>
+                <input type="checkbox" id="set-short-deck" style="width:20px; height:20px; cursor:pointer;">
+            </div>
+            <div class="setting-item">
                 <span class="setting-label" style="color:#e74c3c;">🦑 鱿鱼生存模式 (Stand Up)</span>
                 <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
@@ -268,6 +274,7 @@
 
         <div class="top-right-btns" id="top-right-btns">
             <button class="top-btn btn-ledger hidden" id="btn-ledger-top" onclick="openLedger()">📊 战绩表</button>
+            <button class="top-btn btn-tip hidden" id="btn-tip-dealer" onclick="send({type:'TIP_DEALER', name: myName})">💸 打赏发牌员</button>
         </div>
 
         <div id="table-container">
@@ -310,6 +317,7 @@
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="triggerStartGame()" id="btn-start" class="host-btn btn-green">▶ 开始新一局</button>
+            <button onclick="send({type: 'RABBIT_HUNT', name: myName})" id="btn-rabbit-hunt" class="host-btn btn-purple hidden">🐇 发完余牌 (Rabbit)</button>
             <button onclick="forceRestart()" id="btn-force-restart" class="host-btn btn-red">🛑 强制重开局</button>
         </div>
 
@@ -320,7 +328,10 @@
             <div class="raise-control-area">
                 <div class="raise-header">
                     <span>Raise To (加注至):</span>
-                    <span class="raise-amount-display" id="display-amount">$0</span>
+                    <div style="display:flex; align-items:center;">
+                        <span style="color:var(--gold); font-size:24px; font-weight:900; margin-right:2px;">$</span>
+                        <input type="number" class="raise-amount-input" id="input-raise-amount" onchange="syncInputToSlider()" step="0.5">
+                    </div>
                 </div>
                 <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="0.25">
                 <div class="quick-bet-row">
@@ -396,7 +407,7 @@
     let prevBoardLength = 0;
     let prevBurnLength = 0;
     let localLogVersion = -1;
-    let localMucked = false; // Mucker's Privilege 控制
+    let localMucked = false; 
 
     function formatMoney(val) { return parseFloat(Number(val).toFixed(2)); }
     function roundToQuarter(val) { return Math.round(val * 4) / 4; }
@@ -432,15 +443,25 @@
     }
 
     const slider = document.getElementById('raise-slider');
-    const displayAmount = document.getElementById('display-amount');
+    const inputAmount = document.getElementById('input-raise-amount');
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
     function updateSliderDisplay() {
         let val = parseFloat(slider.value) || 0;
         let cleanVal = formatMoney(val);
-        displayAmount.innerText = "$" + cleanVal;
+        inputAmount.value = cleanVal;
         btnRaiseSub.innerText = "$" + cleanVal;
-        if(val >= parseFloat(slider.max)) { displayAmount.innerText = "ALL-IN"; btnRaiseSub.innerText = "ALL-IN"; }
+        if(val >= parseFloat(slider.max)) { btnRaiseSub.innerText = "ALL-IN"; }
+    }
+
+    function syncInputToSlider() {
+        let val = parseFloat(inputAmount.value) || 0;
+        let min = parseFloat(slider.min);
+        let max = parseFloat(slider.max);
+        if (val < min) val = min;
+        if (val > max) val = max;
+        slider.value = val;
+        updateSliderDisplay();
     }
 
     function quickBet(type) {
@@ -465,10 +486,10 @@
     }
 
     function triggerMuckCards() {
-        localMucked = true; // 默默盖牌
+        localMucked = true; 
         const uncontestedEl = document.getElementById('uncontested-action-container');
         if (uncontestedEl) uncontestedEl.classList.add('hidden');
-        renderEngine(latestGameState); // 触发重绘，牌面直接翻过去
+        renderEngine(latestGameState); 
     }
 
     function triggerShowCards() {
@@ -533,16 +554,17 @@
             const enableDraw = document.getElementById('set-enable-draw').checked;
             const enableStandUp = document.getElementById('set-enable-standup').checked;
             const enableTwoSeven = document.getElementById('set-enable-twoseven').checked;
+            const isShortDeck = document.getElementById('set-short-deck').checked;
 
             creatorSettings = { 
                 initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
                 botLevel: botLevel, enableDraw: enableDraw, 
-                enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven
+                enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven,
+                isShortDeck: isShortDeck
             };
 
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
             openSitModal(); 
-            // 【核心修复：彻底消灭“假死报错弹窗”，赋予初始日志生命体征】
             renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
     }
@@ -592,7 +614,10 @@
         const elBuyin = document.getElementById('info-buyin');
         const elBlinds = document.getElementById('info-blinds');
         if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 30);
-        if (elBlinds) elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}`;
+        if (elBlinds) {
+            const modeStr = state.game.isShortDeck ? " [短牌]" : "";
+            elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}${modeStr}`;
+        }
 
         document.getElementById("ui-pot").innerText = "$" + formatMoney(state.game.pot);
         
@@ -649,6 +674,7 @@
         const banner = document.getElementById("winner-banner");
         const showCardsBtn = document.getElementById("show-cards-container");
         const uncontestedBtn = document.getElementById("uncontested-action-container");
+        const tipBtn = document.getElementById("btn-tip-dealer");
 
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating);
@@ -685,20 +711,18 @@
 
             let isUncontested = !!state.game.uncontestedWinner;
             
-            // 躺赢权双选判定
             if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) {
                 if (!localMucked) uncontestedBtn.classList.remove("hidden");
             } else {
                 uncontestedBtn.classList.add("hidden");
             }
 
-            // 输家（或弃牌者）装X特权
             const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked;
-            if (canShow) {
-                showCardsBtn.classList.remove("hidden");
-            } else {
-                showCardsBtn.classList.add("hidden");
-            }
+            if (canShow) showCardsBtn.classList.remove("hidden");
+            else showCardsBtn.classList.add("hidden");
+
+            if (amISeated && myDataRecord.chips > 0) tipBtn.classList.remove("hidden");
+            else tipBtn.classList.add("hidden");
 
         } else {
             localMucked = false; 
@@ -706,6 +730,7 @@
             banner.classList.add("hidden");
             showCardsBtn.classList.add("hidden");
             uncontestedBtn.classList.add("hidden");
+            tipBtn.classList.add("hidden");
         }
 
         const inviteContainer = document.getElementById("invite-pill-container");
@@ -761,6 +786,14 @@
             } else {
                 document.getElementById('btn-start-draw').classList.add('hidden');
                 document.getElementById('host-panel').classList.remove('hidden');
+                
+                const rabbitBtn = document.getElementById('btn-rabbit-hunt');
+                if (state.game.status === "SHOWDOWN" && state.game.board && state.game.board.length < 5) {
+                    rabbitBtn.classList.remove('hidden');
+                } else {
+                    rabbitBtn.classList.add('hidden');
+                }
+
                 if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN") { 
                     document.getElementById('btn-start').classList.add('hidden'); 
                     document.getElementById('btn-force-restart').classList.remove('hidden'); 
@@ -825,12 +858,11 @@
                 let displayAvatar = '😎'; let displayName = p.name;
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; }
 
-                // 【核心特权：Mucker's Privilege 输家盖牌】
                 const isMyFoldedCards = (p.folded && p.name === myName);
                 
-                let isGlobalHidden = true; // 默认所有牌对外保密
-                if (p.name === myName && !localMucked) isGlobalHidden = false; // 自己永远可见，除非你主动点了“默默收下(Muck)”
-                if (p.hasShownCards) isGlobalHidden = false; // 服务器强判的赢家，或者你自己点击了“亮出装X”的牌，全场可见
+                let isGlobalHidden = true; 
+                if (p.name === myName && !localMucked) isGlobalHidden = false; 
+                if (p.hasShownCards) isGlobalHidden = false; 
 
                 let cardsHtml = "";
                 if (p.hand && p.hand.length > 0 && !isSpectating && (!p.folded || isMyFoldedCards || p.hasShownCards)) {
@@ -865,7 +897,6 @@
                 let kickHtml = '';
                 if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
 
-                // 【视觉重构组装区：粉黑赛博鱿鱼流】
                 let squidClass = "";
                 if (state.game.enableStandUp && !isOut && !isSpectating) {
                     squidClass = p.isStanding ? "squid-stand" : "squid-sit";
@@ -924,12 +955,16 @@
         if (amISeated) {
             if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
                 buyinConsole.classList.remove("hidden");
-                tableContainer.style.transform = "translateY(-60px) scale(0.95)";
+                // 【核心修复：桌子上移 120px，避免挡住底部玩家】
+                tableContainer.style.transform = "translateY(-120px) scale(0.95)";
                 document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
             } 
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
-                    actionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-60px) scale(0.95)";
+                    actionConsole.classList.remove("hidden"); 
+                    // 【核心修复：桌子上移 120px，避免挡住底部玩家】
+                    tableContainer.style.transform = "translateY(-120px) scale(0.95)";
+                    
                     const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; 
                     
                     const minRaiseDelta = parseFloat(state.game.lastValidRaise) || parseFloat(state.game.bigBlind) || 5; 
@@ -949,6 +984,7 @@
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'});
                     document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'});
                     document.getElementById("btn-action-raise").onclick = () => { 
+                        syncInputToSlider(); // 点击加注时强制同步一下输入框的值
                         const raiseTo = parseFloat(slider.value); 
                         const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; 
                         send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); 
