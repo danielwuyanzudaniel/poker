@@ -15,7 +15,7 @@ export default {
       try { return env.POKER_ROOM.get(env.POKER_ROOM.idFromName(roomId)).fetch(request); } 
       catch (e) { return new Response("Invalid Room ID", { status: 400 }); }
     }
-    return new Response("Poker Server V30 - Short Deck Support");
+    return new Response("Poker Server V30 - Short Deck & Rabbit Hunt Complete");
   }
 };
 
@@ -28,8 +28,8 @@ export class PokerRoom {
         status: "WAITING", pot: 0, currentBet: 0, board: [], deck: [], burnCards: [],
         turnIndex: -1, dealerIndex: -1, smallBlind: 2.5, bigBlind: 5, buyIn: 30,
         winMessage: "", hostName: "", timer: 0, botLevel: 1, botCounter: 0,
-        enableDraw: false, logs: [], drawingCards: [], winnerName: "", handCount: 0,
-        lastValidRaise: 5, gameMode: "standard" // <--- 【新增】默认为标准模式
+        enableDraw: false, isShortDeck: false, logs: [], drawingCards: [], winnerName: "", handCount: 0,
+        lastValidRaise: 5
     };
   }
 
@@ -83,11 +83,8 @@ export class PokerRoom {
           this.game.timer = data.settings.timer;
           this.game.botLevel = data.settings.botLevel;
           this.game.enableDraw = data.settings.enableDraw;
+          this.game.isShortDeck = data.settings.isShortDeck === true;
           this.game.lastValidRaise = data.settings.bigBlind;
-          
-          // 【新增】接收前端发来的游戏模式 (标准 or 短牌)
-          this.game.gameMode = data.settings.gameMode || "standard";
-          
           if (this.game.enableDraw) this.game.status = "LOBBY";
       }
       
@@ -125,13 +122,11 @@ export class PokerRoom {
         if (activeCount < 10) {
             let isMidGame = this.game.status !== "WAITING" && this.game.status !== "LOBBY";
             let targetSeat = data.seatIndex;
-            
             if (this.game.enableDraw && this.game.status === "LOBBY") { targetSeat = -1; }
             else if (targetSeat >= 0) {
                 if (this.players.some(x => x.seatIndex === targetSeat && !x.isKicked)) return;
                 this.players = this.players.filter(x => !(x.seatIndex === targetSeat && x.isKicked));
             }
-
             this.game.botCounter++;
             let nameStr = `🤖|Bot_${this.game.botCounter}`;
             this.players.push({
@@ -213,6 +208,23 @@ export class PokerRoom {
         });
         this.addLog(`<div style="color:#e74c3c;">🛑 房主强制结束了对局</div>`);
     }
+    // 【发完余牌功能】
+    else if (data.type === "RABBIT_HUNT" && data.name === this.game.hostName) {
+        if (this.game.status === "SHOWDOWN" && this.game.board && this.game.board.length < 5) {
+            while (this.game.board.length < 5 && this.game.deck.length > 0) {
+                this.game.board.push(this.game.deck.pop());
+            }
+            this.addLog(`🐇 <span style="color:#9b59b6; font-weight:bold;">房主发出了剩余的公共牌 (Rabbit Hunt)</span>`);
+        }
+    }
+    // 【打赏发牌员功能】
+    else if (data.type === "TIP_DEALER") {
+        const p = this.players.find(player => player.name === data.name);
+        if (p && p.chips >= 1 && (this.game.status === "SHOWDOWN" || this.game.status === "WAITING")) {
+            p.chips = parseFloat((p.chips - 1).toFixed(2));
+            this.addLog(`💸 <span style="color:#e84393; font-weight:bold;">${p.name.split('|')[1] || p.name} 打赏了发牌员 $1</span>`);
+        }
+    }
     else if (data.type === "ACTION") {
       const p = this.players.find(x => x.seatIndex === this.game.turnIndex);
       if (p && p.name === data.name && !p.isBot) await this.processPlayerAction(p, data.action, data.amount);
@@ -235,7 +247,6 @@ export class PokerRoom {
             }
         } 
     }
-    
     this.broadcastState();
   }
 
@@ -269,14 +280,13 @@ export class PokerRoom {
 
   createDeck() {
     const suits = ['♠', '♥', '♣', '♦'];
-    let values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    
-    // 【新增短牌逻辑：如果选了短牌，就把 2,3,4,5 扔掉】
-    if (this.game.gameMode === "short_deck") {
-        values = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    }
-    
-    let deck = []; suits.forEach(s => values.forEach(v => deck.push(v + s))); return deck.sort(() => Math.random() - 0.5);
+    // 【短牌模式适配：抽走 2345】
+    const values = this.game.isShortDeck 
+        ? ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+        : ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    let deck = []; 
+    suits.forEach(s => values.forEach(v => deck.push(v + s))); 
+    return deck.sort(() => Math.random() - 0.5);
   }
   
   parseCard(str) { 
@@ -332,9 +342,7 @@ export class PokerRoom {
     this.game.currentBet = this.game.bigBlind;
     this.game.turnIndex = firstActorIndex;
     
-    // 增加日志提示当前模式
-    let modeName = this.game.gameMode === "short_deck" ? "短牌(6+) 模式" : "标准 52张 模式";
-    this.addLog(`<div style="margin-top:15px; padding-top:10px; border-top:1px dashed #555; color:var(--gold); text-align:center; font-weight:bold;">--- 第 ${this.game.handCount} 局 (${modeName}) ---</div>`);
+    this.addLog(`<div style="margin-top:15px; padding-top:10px; border-top:1px dashed #555; color:var(--gold); text-align:center; font-weight:bold;">--- 第 ${this.game.handCount} 局 ---</div>`);
     this.addLog(`🔹 ${sbP.name.split('|')[1]} 下小盲注 $${actualSb}`);
     this.addLog(`🔸 ${bbP.name.split('|')[1]} 下大盲注 $${actualBb}`);
     this.broadcastState(); this.checkAndTriggerBot();
@@ -445,10 +453,7 @@ export class PokerRoom {
     this.game.status = "SHOWDOWN"; this.broadcastState();
   }
 
-  // ====== 核心修改：判牌算法升级 ======
   calculateHandRank(cards) {
-      const isShortDeck = this.game.gameMode === "short_deck"; // 获取当前模式
-      
       if(!cards || cards.length === 0) return { value: 0, name: "高牌" };
       cards.sort((a, b) => b.rank - a.rank);
       let counts = {}; cards.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
@@ -469,11 +474,17 @@ export class PokerRoom {
       cards.forEach(c => suits[c.suit].push(c));
       for (let s in suits) { if (suits[s].length >= 5) { flushCards = suits[s]; break; } }
       
+      // 【短牌顺子逻辑：A6789 判定】
       const checkStraight = (arr) => {
-          let u = [...new Set(arr.map(c => c.rank))];
-          // 【短牌核心规则：A 当 5 用，检测 A-6-7-8-9。标准模式 A 依然当 1 用】
-          if (u.includes(14)) u.push(isShortDeck ? 5 : 1); 
-          for (let i = 0; i <= u.length - 5; i++) { if (u[i] - u[i+4] === 4) return u[i]; }
+          let u = [...new Set(arr.map(c => c.rank))].sort((a,b) => b-a);
+          for (let i = 0; i <= u.length - 5; i++) { 
+              if (u[i] - u[i+4] === 4) return u[i]; 
+          }
+          if (this.game.isShortDeck) {
+              if (u.includes(14) && u.includes(9) && u.includes(8) && u.includes(7) && u.includes(6)) return 9;
+          } else {
+              if (u.includes(14) && u.includes(5) && u.includes(4) && u.includes(3) && u.includes(2)) return 5;
+          }
           return 0;
       };
 
@@ -485,15 +496,15 @@ export class PokerRoom {
           let q = quads[0]; let k = cards.filter(c => c.rank !== q).map(c => c.rank);
           return { value: getScore(8, [q,q,q,q, k[0]]), name: "四条" };
       }
-      
-      // 【短牌核心规则：同花 (Flush) 大于 葫芦 (Full House)】
-      if (isShortDeck) {
+
+      // 【短牌同花逻辑：同花 > 葫芦】
+      if (this.game.isShortDeck) {
           if (flushCards.length >= 5) return { value: getScore(7, flushCards.map(c=>c.rank).slice(0,5)), name: "同花" };
           if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
               let t = trips[0]; let p = trips.length > 1 ? trips[1] : pairs[0];
               return { value: getScore(6, [t,t,t,p,p]), name: "葫芦" };
           }
-      } else { // 标准模式
+      } else {
           if (trips.length > 0 && (pairs.length > 0 || trips.length > 1)) {
               let t = trips[0]; let p = trips.length > 1 ? trips[1] : pairs[0];
               return { value: getScore(7, [t,t,t,p,p]), name: "葫芦" };
