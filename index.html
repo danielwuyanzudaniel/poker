@@ -100,23 +100,28 @@
         .kick-btn:hover { background: #ff5b4c; transform: translateX(-50%) scale(1.05);}
         .player-seat:hover .kick-btn { display: block; }
 
-        .player-card { width: 110px; min-height: 85px; background: #000; border-radius: 8px; overflow: visible; border: 2px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; position: relative; display: flex; flex-direction: column; justify-content: space-between;}
+        /* 【究极视觉 1：鱿鱼变色引擎 (黑 vs 粉红)】 */
+        .player-card { width: 110px; min-height: 85px; background: #000; border-radius: 8px; overflow: visible; border: 2px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s;}
         .player-card.active { border-color: var(--active-green); box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);}
         .player-card.active .player-chips { background: var(--active-green); color: #000; }
         
+        .squid-stand { background: #111 !important; border: 1px solid #333 !important; }
+        .squid-sit { background: linear-gradient(145deg, #e83e8c, #d81b60) !important; border: 1px solid #ff80ab !important; box-shadow: 0 0 15px rgba(216, 27, 96, 0.5) !important; }
+        .squid-sit .player-chips { background: rgba(0,0,0,0.4) !important; }
+        .squid-sit .player-name { color: #fff; text-shadow: 0 1px 2px black;}
+
         .player-card.empty-seat { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); box-shadow: none; min-height: 85px; border-radius: 8px; position: relative; }
         .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.2s; font-weight: 100; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; user-select: none;}
         .add-bot-btn:hover { color: var(--gold); background: rgba(255, 215, 0, 0.1); }
         .add-bot-btn.pulse-gold { color: var(--gold); animation: pulseGold 1.5s infinite; background: rgba(255, 215, 0, 0.2); }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.7); } 70% { box-shadow: 0 0 0 15px rgba(255,215,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); } }
 
-        .dealer-btn { position: absolute; width: 22px; height: 22px; background: white; color: black; border: 2px solid #555; border-radius: 50%; font-weight: 900; font-size: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.6); z-index: 20; }
-        .pos-bottom .dealer-btn { top: -10px; right: -20px; }
-        .pos-top .dealer-btn { bottom: -10px; right: -20px; top: auto; }
-        .pos-left .dealer-btn { top: -10px; right: -25px; }
-        .pos-right .dealer-btn { top: -10px; left: -25px; }
+        .dealer-badges { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 20; align-items: center; justify-content: center; }
+        .dealer-btn { width: 22px; height: 22px; background: white; color: black; border: 2px solid #555; border-radius: 50%; font-weight: 900; font-size: 11px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.6); }
+        .badge-s { background: #9b59b6; color: white; border-color: #8e44ad;} 
+        .badge-b { background: #f39c12; color: black; border-color: #d68910;}
 
-        .player-avatar { padding-top: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2;}
+        .player-avatar { padding-top: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2;} 
         .player-avatar span { font-size: 26px; line-height: 1; }
         .player-name { font-size: 11px; color: #ddd; margin-top: auto; padding-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: center; z-index: 2;}
         .player-chips { background: #4b5d6d; text-align: center; font-size: 13px; font-weight: bold; padding: 5px 0; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; z-index: 2;}
@@ -136,13 +141,16 @@
         
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .pos-bottom .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); } 
-        .pos-bottom .bet-badge { top: -35px; right: -40px; } 
+        .pos-bottom .bet-badge { top: -85px; left: 50%; transform: translateX(-50%); } 
+        
         .pos-top .hole-cards { bottom: -45px; left: 50%; transform: translateX(-50%); }
-        .pos-top .bet-badge { bottom: -35px; right: -40px; }
+        .pos-top .bet-badge { bottom: -85px; left: 50%; transform: translateX(-50%); } 
+        
         .pos-left .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); }
-        .pos-left .bet-badge { top: 50%; left: 100%; margin-left: 15px; transform: translateY(-50%); } 
+        .pos-left .bet-badge { top: -20px; left: 80px; transform: none; } 
+        
         .pos-right .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); }
-        .pos-right .bet-badge { top: 50%; right: 100%; margin-right: 15px; transform: translateY(-50%); } 
+        .pos-right .bet-badge { top: -20px; right: 80px; transform: none; } 
 
         .s-btm-c { top: 102%; left: 50%; } .s-lft-b { top: 75%; left: 6%; } .s-lft-t { top: 25%; left: 6%; } .s-top-l { top: -2%; left: 22%; } .s-top-c { top: -2%; left: 50%; }
         .s-top-r { top: -2%; left: 78%; } .s-rgt-t { top: 25%; left: 94%; } .s-rgt-b { top: 75%; left: 94%; } .s-btm-r { top: 102%; left: 78%; } .s-btm-l { top: 102%; left: 22%; }
@@ -161,7 +169,9 @@
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
         .raise-control-area { display: flex; flex-direction: column; gap: 12px; background: #1a2028; padding: 15px; border-radius: 12px; border: 1px solid #2a3441; }
         .raise-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #8ca0b3; font-weight: bold; }
+        
         .raise-amount-display { font-size: 24px; color: var(--gold); font-weight: 900; letter-spacing: 1px; }
+        
         .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333; outline: none; margin: 10px 0; }
         .custom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); cursor: pointer; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border: 3px solid #11151a; }
         .quick-bet-row { display: flex; justify-content: space-between; gap: 8px; }
@@ -206,12 +216,8 @@
                 <input type="number" id="set-buyin" class="setting-input" value="30">
             </div>
             <div class="setting-item">
-                <span class="setting-label">小盲注 (Small Blind)</span>
-                <input type="number" id="set-sb" class="setting-input" value="2.5" step="any">
-            </div>
-            <div class="setting-item">
-                <span class="setting-label">思考限时 (秒, 0为无限制)</span>
-                <input type="number" id="set-timer" class="setting-input" value="0">
+                <span class="setting-label">小盲注 (默认 0.25)</span>
+                <input type="number" id="set-sb" class="setting-input" value="0.25" step="0.25">
             </div>
             <div class="setting-item">
                 <span class="setting-label">机器人难度</span>
@@ -220,16 +226,17 @@
                     <option value="2">Lv.2 (常客)</option>
                 </select>
             </div>
-            <div class="setting-item">
-                <span class="setting-label" style="color:var(--gold);">游戏玩法 (Game Mode)</span>
-                <select id="set-game-mode" class="setting-input" style="width: 140px; cursor: pointer; color: var(--gold); border-color: var(--gold);">
-                    <option value="standard">标准德州 (52张)</option>
-                    <option value="short_deck">短牌 6+ (36张)</option>
-                </select>
-            </div>
             <div class="setting-item" style="border-top: 1px dashed #444; padding-top: 15px;">
                 <span class="setting-label" style="color:var(--gold);">趣味抽牌选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" style="color:#e74c3c;">🦑 鱿鱼生存模式 (Stand Up)</span>
+                <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金 (The 2-7 Bounty)</span>
+                <input type="checkbox" id="set-enable-twoseven" style="width:20px; height:20px; cursor:pointer;" checked>
             </div>
         </div>
     </div>
@@ -265,7 +272,7 @@
 
         <div id="table-container">
             <div class="poker-table">
-                <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">¥0.00</span></div>
+                <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
                 <div class="community-cards-area" id="ui-board"></div>
                 
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
@@ -281,6 +288,15 @@
                 <div id="players-layer"></div>
             </div>
         </div>
+        
+        <div id="uncontested-action-container" class="hidden" style="position:absolute; bottom:120px; left:50%; transform:translateX(-50%); z-index:105; display:flex; gap:15px;">
+            <button onclick="triggerMuckCards()" style="background:#2a3441; color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:1px solid #444; cursor:pointer;">🤫 默默收下底池</button>
+            <button onclick="triggerShowCards()" style="background:linear-gradient(145deg, #ffd700, #d4b400); color:black; font-weight:900; padding:10px 25px; border-radius:20px; border:2px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.6); cursor:pointer; animation: pulseGold 2s infinite;">👀 翻开底牌装 X</button>
+        </div>
+
+        <div id="show-cards-container" class="hidden" style="position:absolute; bottom:120px; left:50%; transform:translateX(-50%); z-index:105;">
+            <button onclick="triggerShowCards()" style="background:linear-gradient(145deg, #ffd700, #d4b400); color:black; font-weight:900; padding:10px 25px; border-radius:20px; border:2px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.6); cursor:pointer; font-size:16px; animation: pulseGold 2s infinite;">👀 亮出底牌装 X</button>
+        </div>
 
         <div class="lobby-zone hidden" id="lobby-zone">
             <div class="lobby-title">🚪 候场区玩家</div>
@@ -292,7 +308,7 @@
 
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
-            <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 ¥<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
+            <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="triggerStartGame()" id="btn-start" class="host-btn btn-green">▶ 开始新一局</button>
             <button onclick="forceRestart()" id="btn-force-restart" class="host-btn btn-red">🛑 强制重开局</button>
         </div>
@@ -301,22 +317,12 @@
 
         <div id="action-console" class="action-console hidden">
             <div class="turn-badge">YOUR TURN</div>
-            
             <div class="raise-control-area">
                 <div class="raise-header">
                     <span>Raise To (加注至):</span>
-                    <span class="raise-amount-display" id="display-amount">¥0.00</span>
+                    <span class="raise-amount-display" id="display-amount">$0</span>
                 </div>
-                
-                <div style="display: flex; gap: 10px; margin-top: 5px;">
-                    <input type="number" id="custom-bet-input" 
-                           style="flex: 1; background: #11151a; border: 1px solid #444; color: var(--gold); padding: 8px; border-radius: 6px; text-align: center; font-size: 16px; font-weight: bold; outline: none;" 
-                           placeholder="✍️ 点击手动输入"
-                           step="0.01"
-                           oninput="syncInputToSlider(this.value)">
-                </div>
-
-                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="0.01">
+                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="0.25">
                 <div class="quick-bet-row">
                     <button class="qb-btn" onclick="quickBet('MIN')">MIN</button>
                     <button class="qb-btn" onclick="quickBet('HALF')">1/2 POT</button>
@@ -326,8 +332,8 @@
             </div>
             <div class="main-action-row">
                 <button class="action-btn btn-fold" id="btn-action-fold"><span class="btn-title">FOLD</span><span class="btn-sub">弃牌</span></button>
-                <button class="action-btn btn-call" id="btn-action-call"><span class="btn-title" id="btn-call-title">CALL</span><span class="btn-sub" id="btn-call-sub">¥0.00</span></button>
-                <button class="action-btn btn-raise" id="btn-action-raise"><span class="btn-title">RAISE</span><span class="btn-sub" id="btn-raise-sub">¥0.00</span></button>
+                <button class="action-btn btn-call" id="btn-action-call"><span class="btn-title" id="btn-call-title">CALL</span><span class="btn-sub" id="btn-call-sub">$0</span></button>
+                <button class="action-btn btn-raise" id="btn-action-raise"><span class="btn-title">RAISE</span><span class="btn-sub" id="btn-raise-sub">$0</span></button>
             </div>
         </div>
 
@@ -335,7 +341,7 @@
             <div class="turn-badge" style="background: #e74c3c; color: white;">💳 筹码耗尽</div>
             <div style="text-align: center; color: white; margin: 15px 0 25px 0; font-size: 16px;">
                 您已进入观战状态。是否按默认标准买入进行补充？<br>
-                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+¥<span id="ui-buyin-amount">30</span></strong>
+                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">30</span></strong>
             </div>
             <div class="main-action-row" style="height: 55px;">
                 <button class="action-btn btn-call" onclick="confirmPlayerBuyIn()" style="background: linear-gradient(145deg, #2ecc71, #219653); width: 100%;"><span class="btn-title" style="font-size:18px; color:black; font-weight:900;">确定买入</span></button>
@@ -368,9 +374,7 @@
     </div>
 
 <script>
-    // 👇 === THIS IS THE LINE THAT WAS UPDATED === 👇
-    const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
-    // 👆 ========================================== 👆
+    const BACKEND_URL = "https://poker-server.zxc717209554.workers.dev";
     
     const SEAT_ORDER = [
         's-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 
@@ -391,7 +395,11 @@
 
     let prevBoardLength = 0;
     let prevBurnLength = 0;
-    let logCount = 0;
+    let localLogVersion = -1;
+    let localMucked = false; // Mucker's Privilege 控制
+
+    function formatMoney(val) { return parseFloat(Number(val).toFixed(2)); }
+    function roundToQuarter(val) { return Math.round(val * 4) / 4; }
 
     function openLedger() { document.getElementById('ledger-modal').classList.remove('hidden'); document.getElementById('settlement-area').style.display = 'none'; }
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
@@ -413,7 +421,7 @@
         while(i < winners.length && j < losers.length) {
             let w = winners[i]; let l = losers[j];
             let settleAmt = Math.min(w.amount, l.amount);
-            html += `<div class="settlement-line"><span class="text-red">${l.name}</span> 应支付给 <span class="text-green">${w.name}</span> : <strong style="color:white;">¥${settleAmt}</strong></div>`;
+            html += `<div class="settlement-line"><span class="text-red">${l.name}</span> 应支付给 <span class="text-green">${w.name}</span> : <strong style="color:white;">$${formatMoney(settleAmt)}</strong></div>`;
             w.amount -= settleAmt; l.amount -= settleAmt;
             if (w.amount === 0) i++;
             if (l.amount === 0) j++;
@@ -428,36 +436,17 @@
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
     function updateSliderDisplay() {
-        let displayVal = parseFloat(slider.value).toFixed(2);
-        displayAmount.innerText = "¥" + displayVal;
-        btnRaiseSub.innerText = "¥" + displayVal;
-        
-        const customInput = document.getElementById('custom-bet-input');
-        if (customInput && document.activeElement !== customInput) {
-            customInput.value = displayVal;
-        }
-
-        if(parseFloat(slider.value) >= parseFloat(slider.max)) { 
-            displayAmount.innerText = "ALL-IN"; 
-            btnRaiseSub.innerText = "ALL-IN"; 
-        }
-    }
-
-    function syncInputToSlider(val) {
-        let num = parseFloat(val);
-        if (!isNaN(num)) {
-            if (num > parseFloat(slider.max)) num = parseFloat(slider.max);
-            if (num < parseFloat(slider.min)) num = parseFloat(slider.min);
-            slider.value = num;
-            updateSliderDisplay();
-        }
+        let val = parseFloat(slider.value) || 0;
+        let cleanVal = formatMoney(val);
+        displayAmount.innerText = "$" + cleanVal;
+        btnRaiseSub.innerText = "$" + cleanVal;
+        if(val >= parseFloat(slider.max)) { displayAmount.innerText = "ALL-IN"; btnRaiseSub.innerText = "ALL-IN"; }
     }
 
     function quickBet(type) {
         if(!latestGameState || !latestGameState.game) return;
         const currentBet = latestGameState.game.currentBet || 0;
         const pot = latestGameState.game.pot || 0;
-        
         const minRaiseDelta = latestGameState.game.lastValidRaise || latestGameState.game.bigBlind || 5;
         const minRaiseTo = currentBet + minRaiseDelta;
         
@@ -467,13 +456,26 @@
         if (type === 'POT') target = currentBet + pot;
         if (type === 'ALLIN') target = parseFloat(slider.max);
         
-        // 保留两位小数，防止无限浮点
-        target = Math.round(target * 100) / 100;
+        target = roundToQuarter(target);
         
         if (target < minRaiseTo) target = minRaiseTo;
         if (target > parseFloat(slider.max)) target = parseFloat(slider.max);
         
         slider.value = target; updateSliderDisplay();
+    }
+
+    function triggerMuckCards() {
+        localMucked = true; // 默默盖牌
+        const uncontestedEl = document.getElementById('uncontested-action-container');
+        if (uncontestedEl) uncontestedEl.classList.add('hidden');
+        renderEngine(latestGameState); // 触发重绘，牌面直接翻过去
+    }
+
+    function triggerShowCards() {
+        send({type:'SHOW_CARDS', name: myName});
+        document.getElementById('show-cards-container').classList.add('hidden');
+        const uncontestedEl = document.getElementById('uncontested-action-container');
+        if (uncontestedEl) uncontestedEl.classList.add('hidden');
     }
 
     function checkAutoLogin() {
@@ -526,23 +528,22 @@
             document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             
             const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30;
-            const sb = parseFloat(document.getElementById('set-sb').value) || 2.5;
-            const timer = parseInt(document.getElementById('set-timer').value) || 0;
+            const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
             const enableDraw = document.getElementById('set-enable-draw').checked;
-            
-            // ====== 修改：抓取玩家选择的短牌/标准牌设置 ======
-            const gameMode = document.getElementById('set-game-mode').value;
+            const enableStandUp = document.getElementById('set-enable-standup').checked;
+            const enableTwoSeven = document.getElementById('set-enable-twoseven').checked;
 
             creatorSettings = { 
                 initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
-                timer: timer, botLevel: botLevel, enableDraw: enableDraw,
-                gameMode: gameMode  // 发送给服务器
+                botLevel: botLevel, enableDraw: enableDraw, 
+                enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven
             };
-            // ===========================================
 
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
-            openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [] }, players: [] });
+            openSitModal(); 
+            // 【核心修复：彻底消灭“假死报错弹窗”，赋予初始日志生命体征】
+            renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
     }
 
@@ -556,7 +557,10 @@
         window.history.pushState({}, "", `?room=${currentRoomId}`);
         document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
         document.getElementById('host-panel').classList.add('hidden'); navTo('view-game'); 
-        if (!checkAutoLogin()) { openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [] }, players: [] }); }
+        if (!checkAutoLogin()) { 
+            openSitModal(); 
+            renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], logVersion: 0 }, players: [] }); 
+        }
     }
 
     function connectWebSocket() {
@@ -578,19 +582,19 @@
     function renderEngine(state) {
         if (!state || !state.game) return;
 
-        if (state.game.logs && state.game.logs.length !== logCount) {
+        if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content');
-            contentBox.innerHTML = state.game.logs.map(log => `<div class="log-item">${log}</div>`).join('');
+            contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
             contentBox.scrollTop = contentBox.scrollHeight;
-            logCount = state.game.logs.length;
+            localLogVersion = state.game.logVersion;
         }
 
         const elBuyin = document.getElementById('info-buyin');
         const elBlinds = document.getElementById('info-blinds');
-        if (elBuyin) elBuyin.innerText = state.game.buyIn || 30;
-        if (elBlinds) elBlinds.innerText = `${state.game.smallBlind || 2.5}/${state.game.bigBlind || 5}`;
+        if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 30);
+        if (elBlinds) elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}`;
 
-        document.getElementById("ui-pot").innerText = "¥" + (state.game.pot || 0);
+        document.getElementById("ui-pot").innerText = "$" + formatMoney(state.game.pot);
         
         if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") {
             prevBoardLength = 0; prevBurnLength = 0;
@@ -630,15 +634,22 @@
         let ledgerBody = "";
         playersArray.forEach(p => {
             if(p.isKicked) return; 
-            const net = p.chips - (p.totalBuyIn || 0);
-            const netClass = net > 0 ? 'text-green' : (net < 0 ? 'text-red' : '');
-            const netStr = net > 0 ? `+¥${net}` : (net < 0 ? `-¥${Math.abs(net)}` : `¥0`);
+            const netVal = p.chips - (p.totalBuyIn || 0);
+            const netClass = netVal > 0 ? 'text-green' : (netVal < 0 ? 'text-red' : '');
+            const netStr = netVal > 0 ? `+$${formatMoney(netVal)}` : (netVal < 0 ? `-$${formatMoney(Math.abs(netVal))}` : `$0`);
             const pName = p.name.split('|')[1] || p.name;
-            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>¥${p.totalBuyIn || 0}</td><td>¥${p.chips}</td><td class="${netClass}" style="text-align:right;">${netStr}</td></tr>`;
+            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>$${formatMoney(p.totalBuyIn)}</td><td>$${formatMoney(p.chips)}</td><td class="${netClass}" style="text-align:right;">${netStr}</td></tr>`;
         });
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
 
+        const pureMyName = myName.split('|')[1] || myName;
+        const myDataRecord = playersArray.find(p => p && (p.name.split('|')[1] || p.name) === pureMyName);
+        let amISeated = !!(myDataRecord && myDataRecord.seatIndex !== -1);
+
         const banner = document.getElementById("winner-banner");
+        const showCardsBtn = document.getElementById("show-cards-container");
+        const uncontestedBtn = document.getElementById("uncontested-action-container");
+
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating);
             let richMsg = state.game.winMessage;
@@ -671,9 +682,30 @@
                 `;
             }
             banner.classList.remove("hidden");
+
+            let isUncontested = !!state.game.uncontestedWinner;
+            
+            // 躺赢权双选判定
+            if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) {
+                if (!localMucked) uncontestedBtn.classList.remove("hidden");
+            } else {
+                uncontestedBtn.classList.add("hidden");
+            }
+
+            // 输家（或弃牌者）装X特权
+            const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked;
+            if (canShow) {
+                showCardsBtn.classList.remove("hidden");
+            } else {
+                showCardsBtn.classList.add("hidden");
+            }
+
         } else {
+            localMucked = false; 
             if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
             banner.classList.add("hidden");
+            showCardsBtn.classList.add("hidden");
+            uncontestedBtn.classList.add("hidden");
         }
 
         const inviteContainer = document.getElementById("invite-pill-container");
@@ -742,8 +774,6 @@
             document.getElementById('btn-start-draw').classList.add('hidden');
         }
 
-        const pureMyName = myName.split('|')[1] || myName;
-        const myDataRecord = playersArray.find(p => p && (p.name.split('|')[1] || p.name) === pureMyName);
         if (myDataRecord && myDataRecord.isKicked) {
             alert("您已被房主移出房间。");
             myName = ""; localStorage.removeItem('poker_session_' + currentRoomId);
@@ -751,7 +781,6 @@
             return;
         }
 
-        let amISeated = !!(myDataRecord && myDataRecord.seatIndex !== -1);
         if (isWaitingForServer && myDataRecord) { 
             isWaitingForServer = false; 
             document.getElementById('sit-modal').classList.add('hidden'); 
@@ -788,15 +817,25 @@
                 const isOut = p.isOut === true; 
                 const isOffline = p.isOnline === false; 
                 const isSpectating = p.isSpectating === true;
+                
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating);
+                const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating);
+                const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
 
                 let displayAvatar = '😎'; let displayName = p.name;
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; }
 
+                // 【核心特权：Mucker's Privilege 输家盖牌】
+                const isMyFoldedCards = (p.folded && p.name === myName);
+                
+                let isGlobalHidden = true; // 默认所有牌对外保密
+                if (p.name === myName && !localMucked) isGlobalHidden = false; // 自己永远可见，除非你主动点了“默默收下(Muck)”
+                if (p.hasShownCards) isGlobalHidden = false; // 服务器强判的赢家，或者你自己点击了“亮出装X”的牌，全场可见
+
                 let cardsHtml = "";
-                if (p.hand && p.hand.length > 0 && !isSpectating) {
+                if (p.hand && p.hand.length > 0 && !isSpectating && (!p.folded || isMyFoldedCards || p.hasShownCards)) {
                     cardsHtml = p.hand.map((c, idx) => {
-                        const isHidden = (p.name !== myName && state.game.status !== "SHOWDOWN") || c === "??";
+                        const isHidden = isGlobalHidden || c === "??";
                         const isRed = !isHidden && (c.includes('♥') || c.includes('♦'));
                         
                         let animDelay = "";
@@ -808,7 +847,11 @@
                                 animDelay = `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${delayTime}s;`;
                             }
                         }
-                        return `<div class="playing-card ${isHidden?'back':''} ${isRed?'red':''} card-${idx+1}" style="${animDelay}">${isHidden?'':c}</div>`;
+                        
+                        const handKeyClass = `hand-${state.game.handCount}`;
+                        const foldStyle = (isMyFoldedCards && !p.hasShownCards) ? `filter: grayscale(1) brightness(0.4); opacity: 0.6;` : ``;
+
+                        return `<div class="playing-card ${isHidden?'back':''} ${isRed?'red':''} card-${idx+1} ${handKeyClass}" style="${animDelay} ${foldStyle}">${isHidden?'':c}</div>`;
                     }).join("");
                 }
 
@@ -822,22 +865,36 @@
                 let kickHtml = '';
                 if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
 
+                // 【视觉重构组装区：粉黑赛博鱿鱼流】
+                let squidClass = "";
+                if (state.game.enableStandUp && !isOut && !isSpectating) {
+                    squidClass = p.isStanding ? "squid-stand" : "squid-sit";
+                }
+
+                let badgesHtml = `
+                    <div class="dealer-badges">
+                        ${isDealer ? `<div class="dealer-btn">D</div>` : ''}
+                        ${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}
+                        ${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}
+                    </div>
+                `;
+
                 layer.innerHTML += `
                     <div class="player-seat ${seatClass} ${posClass}">
-                        ${(p.winAmount > 0 && state.game.status === "SHOWDOWN") ? `<div class="win-fly-text">+¥${p.winAmount}</div>` : ''}
+                        ${(p.winAmount > 0 && state.game.status === "SHOWDOWN") ? `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>` : ''}
                         
-                        <div class="hole-cards">${p.folded || isOut || isSpectating ? '' : cardsHtml}</div>
-                        ${isDealer ? `<div class="dealer-btn">D</div>` : ''}
+                        <div class="hole-cards">${isOut || isSpectating ? '' : cardsHtml}</div>
 
-                        <div class="player-card ${isActive && !p.folded && !isOut && !isSpectating ? 'active' : ''} ${isOut || isSpectating ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
+                        <div class="player-card ${squidClass} ${isActive && !p.folded && !isOut && !isSpectating ? 'active' : ''} ${isOut || isSpectating ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
+                            ${badgesHtml}
                             ${kickHtml}
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
                             <div style="min-height:22px;">${badgeHtml}</div>
                             <div class="player-name">${displayName}</div>
-                            <div class="player-chips">¥${p.chips}</div>
+                            <div class="player-chips">$${formatMoney(p.chips)}</div>
                         </div>
                         
-                        ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ ¥${p.betThisRound}</div>` : ''}
+                        ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${formatMoney(p.betThisRound)}</div>` : ''}
                     </div>
                 `;
             } else { 
@@ -868,7 +925,7 @@
             if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
                 buyinConsole.classList.remove("hidden");
                 tableContainer.style.transform = "translateY(-60px) scale(0.95)";
-                document.getElementById('ui-buyin-amount').innerText = state.game.buyIn || 30;
+                document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
             } 
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
@@ -879,12 +936,14 @@
                     
                     const callAmount = Math.round((currentBet - myBet) * 100) / 100;
                     if (callAmount <= 0) { btnCallTitle.innerText = "CHECK"; btnCallSub.innerText = "过牌 (免费)"; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #2ecc71, #219653)"; } 
-                    else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "¥" + callAmount.toFixed(2); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
+                    else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "$" + formatMoney(callAmount); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
                     
                     const minRaiseTo = currentBet + minRaiseDelta; 
                     slider.min = minRaiseTo; slider.max = myChips + myBet; 
                     
-                    if (parseFloat(slider.value) < minRaiseTo || parseFloat(slider.value) > parseFloat(slider.max)) slider.value = minRaiseTo; 
+                    let targetVal = parseFloat(slider.value) || 0;
+                    if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; 
+                    slider.value = roundToQuarter(targetVal);
                     updateSliderDisplay();
                     
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'});
