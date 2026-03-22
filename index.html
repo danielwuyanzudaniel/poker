@@ -585,9 +585,11 @@
         }
     }
 
+    // 【修复】全新的防断联和带有设置挂载的 connectWebSocket 函数
     function connectWebSocket() {
         const wsUrl = BACKEND_URL.replace("https://", "wss://") + `?roomId=${currentRoomId}`;
         ws = new WebSocket(wsUrl); 
+        
         ws.onopen = () => {
             ws.send(JSON.stringify({ type: "PING" }));
             if (myName !== "") {
@@ -596,7 +598,20 @@
                 ws.send(JSON.stringify(joinMsg));
             }
         };
-        ws.onmessage = (e) => { try { latestGameState = JSON.parse(e.data); renderEngine(latestGameState); } catch (err) {} };
+        
+        ws.onerror = (err) => { console.error("WebSocket 连接错误:", err); };
+        ws.onclose = () => { isWaitingForServer = false; };
+        
+        ws.onmessage = (e) => { 
+            try { 
+                const parsedData = JSON.parse(e.data);
+                if (parsedData.type === "ERROR") { alert(parsedData.message); return; }
+                latestGameState = parsedData; 
+                renderEngine(latestGameState); 
+            } catch (err) { 
+                console.error("渲染或解析错误:", err); 
+            } 
+        };
     }
 
     function send(obj) { if(ws && ws.readyState === 1) ws.send(JSON.stringify(obj)); else console.log("等待重连..."); }
@@ -955,14 +970,12 @@
         if (amISeated) {
             if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
                 buyinConsole.classList.remove("hidden");
-                // 【核心修复：桌子上移 120px，避免挡住底部玩家】
                 tableContainer.style.transform = "translateY(-120px) scale(0.95)";
                 document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
             } 
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
                     actionConsole.classList.remove("hidden"); 
-                    // 【核心修复：桌子上移 120px，避免挡住底部玩家】
                     tableContainer.style.transform = "translateY(-120px) scale(0.95)";
                     
                     const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; 
@@ -984,7 +997,7 @@
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'});
                     document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'});
                     document.getElementById("btn-action-raise").onclick = () => { 
-                        syncInputToSlider(); // 点击加注时强制同步一下输入框的值
+                        syncInputToSlider(); 
                         const raiseTo = parseFloat(slider.value); 
                         const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; 
                         send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); 
