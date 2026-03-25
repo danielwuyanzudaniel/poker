@@ -31,18 +31,37 @@
         .setting-input option { background-color: var(--panel-bg); color: white; }
 
         #table-container { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        
+        /* 牌桌底图 */
         .poker-table { width: 80vw; height: 50vh; max-width: 1000px; max-height: 550px; background: radial-gradient(circle, #349feb 0%, var(--table-inner) 100%); border: 20px solid #1c232c; border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); position: relative; }
         
-        /* 【新增】桌布底部的版权水印 */
-        .copyright-logo { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 20px; font-weight: 900; color: rgba(255,255,255,0.15); letter-spacing: 5px; pointer-events: none; z-index: 1; user-select: none; }
+        /* 德州标准桌内圈划线 & Logo */
+        .table-inner-line {
+            position: absolute; top: 35px; bottom: 35px; left: 55px; right: 55px;
+            border: 3px solid rgba(255, 255, 255, 0.15); border-radius: 200px;
+            pointer-events: none; z-index: 1; display: flex; justify-content: center;
+        }
+        .table-logo {
+            margin-top: 30px; color: rgba(255, 255, 255, 0.15); font-size: 38px;
+            font-weight: 900; letter-spacing: 10px; font-family: 'Georgia', serif;
+        }
 
-        .pot-display-container { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 215, 0, 0.3); padding: 6px 20px; border-radius: 30px; text-align: center; z-index: 5;}
+        /* 德州标准桌 5个画线空间 */
+        .card-placeholders {
+            position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%);
+            display: flex; gap: 8px; z-index: 2; pointer-events: none;
+        }
+        .card-placeholder {
+            width: 42px; height: 60px; border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px; box-sizing: border-box; background: rgba(0, 0, 0, 0.1);
+        }
+
+        .pot-display-container { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 215, 0, 0.3); padding: 6px 20px; border-radius: 30px; text-align: center; z-index: 5;}
         .pot-label { font-size: 11px; color: #aaa; display: block; }
         .pot-value { font-size: 22px; font-weight: 900; color: var(--gold); }
         .top-left-logo { position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: 900; letter-spacing: 2px; }
-        .community-cards-area { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; z-index: 5; gap: 8px;}
-
-        .burn-area { display: flex; position: relative; margin-right: 20px; border-right: 2px dashed rgba(255,255,255,0.3); padding-right: 15px; align-items: center; height: 60px; width: 50px;}
+        
+        .burn-area { display: flex; position: relative; height: 60px; width: 50px;}
         .burn-area .playing-card { position: absolute; left: 0; box-shadow: -2px 2px 5px rgba(0,0,0,0.8); }
 
         .invite-pill { background: rgba(17, 21, 26, 0.95); padding: 20px 40px; border-radius: 50px; text-align: center; border: 1px solid #333; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.2s; }
@@ -157,8 +176,7 @@
         .bg-allin { background: rgba(255, 215, 0, 0.9); color: black; }
 
         .out-state { filter: grayscale(1) brightness(0.4); opacity: 0.8; }
-        .eliminated-x { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); font-size: 50px; color: #ff3b3b; z-index: 20; pointer-events: none; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,1); }
-
+        
         .hole-cards { position: absolute; display: flex; z-index: 5; }
         .card-1 { margin-right: -10px; z-index: 1; } .card-2 { z-index: 2; }
         
@@ -191,8 +209,6 @@
         .raise-control-area { display: flex; flex-direction: column; gap: 10px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #2a3441; }
         .raise-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #8ca0b3; font-weight: bold; }
         
-        .raise-amount-display { font-size: 22px; color: var(--gold); font-weight: 900; letter-spacing: 1px; }
-        
         .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #333; outline: none; margin: 8px 0; }
         .custom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); cursor: pointer; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); border: 3px solid #11151a; }
         .quick-bet-row { display: flex; justify-content: space-between; gap: 8px; }
@@ -213,42 +229,25 @@
         
         .waiting-tip { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; color: #aaa; font-size: 14px; font-weight: bold; border: 1px solid #333; z-index: 20;}
 
-        /* ==========================================
-           🎰 V38.2 顶级广播舱 (Jackpot Banner)
-           ========================================== */
-        #global-broadcast-pod {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 18px 40px;
-            border-radius: 50px;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
+        /* ALL IN 震撼特效 */
+        .allin-text {
+            font-size: 140px; font-weight: 900; color: #ffd700; text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000;
+            animation: slam 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        #global-broadcast-pod.show { top: 40px; opacity: 1; }
-        #global-broadcast-pod::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg); animation: sweep 3s infinite;
+        @keyframes slam {
+            0% { transform: scale(5); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
         }
-        @keyframes sweep { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-        .theme-bounty { background: rgba(17, 21, 26, 0.95); border: 2px solid #ffd700; color: white; animation: pulseGold 1.5s infinite alternate; }
-        .theme-bounty .highlight { color: #ffd700; font-size: 24px; text-shadow: 0 0 10px rgba(255,215,0,0.8); }
-        .theme-squid { background: rgba(17, 21, 26, 0.95); border: 2px solid #e74c3c; color: white; animation: pulseRed 1s infinite alternate; }
-        .theme-squid .highlight { color: #ff5b4c; font-size: 24px; text-shadow: 0 0 10px rgba(231,76,60,0.8); }
+        .allin-flash { animation: bgFlash 0.8s ease-out; }
+        @keyframes bgFlash {
+            0% { background-color: rgba(255, 0, 0, 0.5); }
+            100% { background-color: var(--bg-dark); }
+        }
     </style>
 </head>
 <body>
-
-    <div id="global-broadcast-pod"></div>
 
     <div id="disconnect-banner" class="hidden" style="position:absolute; top:0; left:0; width:100%; background:#e74c3c; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
         🔌 失去与云端的连接，正在尝试重连...
@@ -272,7 +271,7 @@
             
             <div class="setting-item">
                 <span class="setting-label">标准买入额 (Buy-in)</span>
-                <input type="number" id="set-buyin" class="setting-input" value="0.50" step="0.50">
+                <input type="number" id="set-buyin" class="setting-input" value="30">
             </div>
             <div class="setting-item">
                 <span class="setting-label">小盲注 (默认 0.25)</span>
@@ -293,16 +292,10 @@
                 <span class="setting-label" style="color:#ff9800;">🔥 短牌模式 (Short Deck 6+)</span>
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
             </div>
-            
             <div class="setting-item">
-                <span class="setting-label" style="color:#e74c3c;">🦑 鱿鱼生存模式</span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:12px; color:#aaa;">罚金 $</span>
-                    <input type="number" id="set-standup-amt" value="1" style="width:40px; background:#1a2028; border:1px solid #444; color:white; border-radius:4px; text-align:center; outline:none;" title="起立者向每人支付金额">
-                    <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
-                </div>
+                <span class="setting-label" style="color:#e74c3c;">🦑 鱿鱼生存模式 (Stand Up)</span>
+                <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
-
             <div class="setting-item" id="set-twoseven-container">
                 <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金 (The 2-7 Bounty)</span>
                 <input type="checkbox" id="set-enable-twoseven" style="width:20px; height:20px; cursor:pointer;">
@@ -322,11 +315,7 @@
             </div>
             <div class="setting-item">
                 <span class="setting-label" style="color:#e74c3c;">🦑 鱿鱼生存模式</span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:12px; color:#aaa;">罚金 $</span>
-                    <input type="number" id="update-standup-amt" value="1" style="width:40px; background:#1a2028; border:1px solid #444; color:white; border-radius:4px; text-align:center; outline:none;">
-                    <input type="checkbox" id="update-enable-standup" style="width:20px; height:20px; cursor:pointer;">
-                </div>
+                <input type="checkbox" id="update-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item" id="update-twoseven-container">
                 <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金</span>
@@ -373,10 +362,22 @@
 
         <div id="table-container">
             <div class="poker-table">
-                <div class="copyright-logo">CHEAPER BROTHERS ©</div>
+                <div class="table-inner-line">
+                    <div class="table-logo">CHEAPER BROTHERS</div>
+                </div>
+                
+                <div class="card-placeholders">
+                    <div class="card-placeholder"></div>
+                    <div class="card-placeholder"></div>
+                    <div class="card-placeholder"></div>
+                    <div class="card-placeholder"></div>
+                    <div class="card-placeholder"></div>
+                </div>
 
                 <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
-                <div class="community-cards-area" id="ui-board"></div>
+                
+                <div id="ui-burn" style="position: absolute; top: 52%; left: 30%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
+                <div id="ui-board" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; z-index: 5;"></div>
                 
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
 
@@ -401,11 +402,17 @@
             <button onclick="triggerShowCards()" style="background:linear-gradient(145deg, #ffd700, #d4b400); color:black; font-weight:900; padding:10px 25px; border-radius:20px; border:2px solid #fff; box-shadow:0 10px 20px rgba(0,0,0,0.6); cursor:pointer; font-size:16px; animation: pulseGold 2s infinite;">👀 亮出底牌装 X</button>
         </div>
 
+        <div id="dealer-action-container" class="hidden" style="position:absolute; bottom:180px; left:50%; transform:translateX(-50%); z-index:105;">
+            <button onclick="send({type: 'RABBIT_HUNT', name: myName})" style="background:linear-gradient(145deg, #9b59b6, #8e44ad); color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:2px solid #fff; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.6); animation: pulseGold 2s infinite;">🐇 亮出余牌 (Rabbit Hunt)</button>
+        </div>
+
         <div class="lobby-zone hidden" id="lobby-zone">
             <div class="lobby-title">🚪 候场区玩家</div>
             <div id="lobby-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;"></div>
             <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起抽牌选座</button>
         </div>
+
+        <button id="btn-take-seat" class="hidden" onclick="openSitModal()">🪑 入座参与 (Take a Seat)</button>
 
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
@@ -417,8 +424,7 @@
 
         <div class="host-panel hidden" id="player-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
-            <button onclick="takeSeatMidGame()" class="host-btn btn-green hidden" id="btn-take-seat-hud" style="margin-bottom:8px;">🪑 坐下空位</button>
-            <button onclick="standUpToSpectate()" class="host-btn hidden" id="btn-stand-up-hud" style="background:#2a3441; color:white;">👀 加入观看</button>
+            <button onclick="standUpToSpectate()" class="host-btn" style="background:#2a3441; color:white;">👀 加入观看</button>
             <button onclick="exitGame()" class="host-btn btn-red" style="margin-top:8px;">🏃 离开游戏</button>
         </div>
 
@@ -429,9 +435,13 @@
             <div class="raise-control-area">
                 <div class="raise-header">
                     <span>Raise To (加注至):</span>
-                    <span class="raise-amount-display" id="display-amount">$0</span>
+                    <div style="display:flex; align-items:center; background:#11151a; border: 1px solid #444; border-radius: 8px; padding: 4px 10px; cursor:text;">
+                        <span style="color:var(--gold); font-size:20px; font-weight:900; margin-right:4px;">$</span>
+                        <input type="number" class="raise-amount-input" id="input-raise-amount" oninput="syncInputToSlider()" step="0.5" style="width: 80px; background:transparent; border:none; color:white; font-size:20px; font-weight:bold; outline:none; text-align:left; padding:0;">
+                        <span style="color:#aaa; font-size:12px; margin-left:8px;">✏️修改</span>
+                    </div>
                 </div>
-                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderDisplay()" step="0.25">
+                <input type="range" class="custom-slider" id="raise-slider" oninput="updateSliderFromSlider()" step="0.25">
                 <div class="quick-bet-row">
                     <button class="qb-btn" onclick="quickBet('MIN')">MIN</button>
                     <button class="qb-btn" onclick="quickBet('HALF')">1/2 POT</button>
@@ -450,7 +460,7 @@
             <div class="turn-badge" style="background: #e74c3c; color: white;">💳 筹码耗尽</div>
             <div style="text-align: center; color: white; margin: 15px 0 25px 0; font-size: 16px;">
                 您已进入观战状态。是否按默认标准买入进行补充？<br>
-                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">0.50</span></strong>
+                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">30</span></strong>
             </div>
             <div class="main-action-row" style="height: 55px;">
                 <button class="action-btn btn-call" onclick="confirmPlayerBuyIn()" style="background: linear-gradient(145deg, #2ecc71, #219653); width: 100%;"><span class="btn-title" style="font-size:18px; color:black; font-weight:900;">确定买入</span></button>
@@ -463,14 +473,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v38.3 - 版权与超大表情包 (当前版本)</strong><br>
-                - 😎 [社交] 头像库大扩容！加入海贼王平替、Labubu风、疯狂恶搞等20+新表情。<br>
-                - 💰 [经济] 房间默认买入底金重置为 $0.50。<br>
-                - 🛡️ [版权] 桌布添加 Cheaper Brothers 专属水印。<br><br>
-                <strong style="color:var(--gold)">v38.2 - 候场双向流通与全服大屏广播</strong><br>
-                - 🎰 [视觉] 新增赌场级顶部大事件广播舱（Jackpot Banner）。<br>
-                - 🚪 [系统] 彻底打通候场区：中途加入强制排队；候场玩家可随时抢座。<br>
-                - 👑 [权限] 房主可随时剔除挂在候场区的玩家。<br>
+                <strong style="color:var(--gold)">v38.0 - 沉浸与质感 (当前版本)</strong><br>
+                - 🎰 [视觉] 牌桌重绘：新增德州标准内圈白线、专属 CHEAPER BROTHERS 奢华印花。<br>
+                - 🎴 [视觉] 公共牌占位符：中央提供 5 个发牌槽位，观感更佳。<br>
+                - ⚡️ [特效] 震撼 All-In：玩家全押时触发全屏震动与红色警告特效。<br>
+                - 🐇 [权限] 发牌员 Rabbit Hunt：拥有 D 钮的真实庄家，现在也可在局后亮出余牌。<br>
+                - ⌨️ [交互] 加注直接输入：下注区升级为带图标的深色输入框，点选直接打字即时同步。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -494,119 +502,60 @@
         </div>
     </div>
 
+    <div id="allin-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
+
 <script>
+    // ⚠️ 确保填入你的云端地址，末尾不要有斜杠
     const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
     
-    const SEAT_ORDER = [
-        's-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 
-        's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'
-    ];
-    
-    // 【新增】超大扩充的表情包（加入恶搞、海贼平替、Labubu风等）
-    const AVATAR_LIST = [
-        '😎', '🤡', '💩', '🌚', '🤪', '🤬', '🥵', '🤑', // 恶搞/搞怪
-        '🏴‍☠️', '👒', '🍖', '🐵', '⚓', // 海贼王氛围
-        '🐰', '👹', '👾', '🧸', '👽', // Labubu/怪兽氛围
-        '🐶', '🐒', '🐔', '🐟', '🐼', '🦊', '🐯', '🐷', // 动物
-        '🧛', '👻', '🤖', '🤠' // 经典
-    ];
+    const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
+    const AVATAR_LIST = ['😎', '🤖', '🤡', '🤠', '👽', '👻', '🐼', '🧛', '🐻', '🦊', '🐯', '🐷'];
     const MAX_SEATS = 10;
 
-    let ws = null;
-    let myName = ""; 
-    let currentRoomId = null;
-    let selectedAvatar = '😎';
-    let isWaitingForServer = false;
-    let latestGameState = null;
-    let countdownInterval = null; 
-    let creatorSettings = null; 
-    let heartbeatInterval = null;
+    let ws = null; let myName = ""; let currentRoomId = null; let selectedAvatar = '😎';
+    let isWaitingForServer = false; let latestGameState = null; let countdownInterval = null; 
+    let creatorSettings = null; let heartbeatInterval = null;
 
-    let prevBoardLength = 0;
-    let prevBurnLength = 0;
-    let localLogVersion = -1;
-    let localChatLength = 0;
-    let localMucked = false; 
-
-    let localHandCount = -1;
-    let initialDealPlayed = false;
-    let winTextPlayed = false;
-    let isNextHandSent = false; 
+    let prevBoardLength = 0; let prevBurnLength = 0; let localLogVersion = -1; let localChatLength = 0;
+    let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
+    let isNextHandSent = false; let chatSleepTimer = null; 
     
-    let chatSleepTimer = null;
-    let broadcastTimer = null;
+    let localAllInCount = 0; // 用于追踪本局已经有几个人 all in 过了
 
     function wakeUpChat() {
         const cl = document.getElementById('chat-list');
         if(cl) {
-            cl.classList.add('active');
-            if(chatSleepTimer) clearTimeout(chatSleepTimer);
-            chatSleepTimer = setTimeout(() => {
-                cl.classList.remove('active');
-            }, 8000);
+            cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer);
+            chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000);
         }
-    }
-
-    function playBroadcast(theme, htmlMsg) {
-        const pod = document.getElementById('global-broadcast-pod');
-        pod.classList.remove('show', 'theme-bounty', 'theme-squid');
-        if(broadcastTimer) clearTimeout(broadcastTimer);
-
-        setTimeout(() => {
-            pod.innerHTML = htmlMsg;
-            pod.classList.add('theme-' + theme);
-            pod.classList.add('show');
-            broadcastTimer = setTimeout(() => {
-                pod.classList.remove('show');
-            }, 6000);
-        }, 50);
     }
 
     function toggleTwoSeven(prefix) {
         const isShortDeck = document.getElementById(prefix + '-enable-shortdeck').checked;
         const tsBox = document.getElementById(prefix + '-enable-twoseven');
         const tsContainer = document.getElementById(prefix + '-twoseven-container');
-        if(isShortDeck) {
-            tsBox.checked = false;
-            tsBox.disabled = true;
-            tsContainer.style.opacity = '0.4';
-        } else {
-            tsBox.disabled = false;
-            tsContainer.style.opacity = '1';
-        }
+        if(isShortDeck) { tsBox.checked = false; tsBox.disabled = true; tsContainer.style.opacity = '0.4'; } 
+        else { tsBox.disabled = false; tsContainer.style.opacity = '1'; }
     }
 
-    function toggleChangelog() {
-        document.getElementById('changelog-area').classList.toggle('hidden');
-    }
-
+    function toggleChangelog() { document.getElementById('changelog-area').classList.toggle('hidden'); }
     function formatMoney(val) { return parseFloat(Number(val).toFixed(2)); }
     function roundToQuarter(val) { return Math.round(val * 4) / 4; }
-
     function openLedger() { document.getElementById('ledger-modal').classList.remove('hidden'); document.getElementById('settlement-area').style.display = 'none'; }
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
     function toggleLogDrawer() { document.getElementById('log-drawer').classList.toggle('open'); }
 
     function purgeRecord(targetName) {
-        if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n如果该玩家曾参与过输赢，强行删除将导致全桌总盈亏无法配平（出现死账）！\n仅建议删除未产生实际交易的误加玩家。")) {
-            send({type: 'PURGE_RECORD', name: myName, targetName: targetName});
-        }
+        if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n如果该玩家曾参与过输赢，强行删除将导致全桌总盈亏无法配平（出现死账）！\n仅建议删除未产生实际交易的误加玩家。")) { send({type: 'PURGE_RECORD', name: myName, targetName: targetName}); }
     }
 
     function standUpToSpectate() {
-        if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌（已下注金额不退还）。")) {
-            send({type: 'LEAVE_SEAT', name: myName});
-        }
-    }
-    
-    function takeSeatMidGame() {
-        send({type: 'TAKE_SEAT', name: myName});
+        if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌（已下注金额不退还）。")) { send({type: 'LEAVE_SEAT', name: myName}); }
     }
 
     function exitGame() {
         if(confirm("确定要离开房间吗？\n如果当前正在局中，您将自动弃牌。您的战绩会保留在账单中。")) {
-            send({type: 'EXIT_GAME', name: myName});
-            setTimeout(() => { window.location.href = window.location.pathname; }, 500);
+            send({type: 'EXIT_GAME', name: myName}); setTimeout(() => { window.location.href = window.location.pathname; }, 500);
         }
     }
 
@@ -615,73 +564,69 @@
         let winners = []; let losers = [];
         latestGameState.players.forEach(p => {
             if (p.isKicked) return;
-            let net = p.chips - (p.totalBuyIn || 0);
-            let pName = p.name.split('|')[1] || p.name;
-            if (net > 0) winners.push({name: pName, amount: net});
-            else if (net < 0) losers.push({name: pName, amount: -net}); 
+            let net = p.chips - (p.totalBuyIn || 0); let pName = p.name.split('|')[1] || p.name;
+            if (net > 0) winners.push({name: pName, amount: net}); else if (net < 0) losers.push({name: pName, amount: -net}); 
         });
-        winners.sort((a, b) => b.amount - a.amount);
-        losers.sort((a, b) => b.amount - a.amount);
+        winners.sort((a, b) => b.amount - a.amount); losers.sort((a, b) => b.amount - a.amount);
         let html = ""; let i = 0, j = 0;
         while(i < winners.length && j < losers.length) {
-            let w = winners[i]; let l = losers[j];
-            let settleAmt = Math.min(w.amount, l.amount);
+            let w = winners[i]; let l = losers[j]; let settleAmt = Math.min(w.amount, l.amount);
             html += `<div class="settlement-line"><span class="text-red">${l.name}</span> 应支付给 <span class="text-green">${w.name}</span> : <strong style="color:white;">$${formatMoney(settleAmt)}</strong></div>`;
-            w.amount -= settleAmt; l.amount -= settleAmt;
-            if (w.amount === 0) i++;
-            if (l.amount === 0) j++;
+            w.amount -= settleAmt; l.amount -= settleAmt; if (w.amount === 0) i++; if (l.amount === 0) j++;
         }
         if (html === "") html = `<div class="settlement-line" style="color:#aaa;">全员盈亏平衡，无需转账。</div>`;
-        document.getElementById('settlement-list').innerHTML = html;
-        document.getElementById('settlement-area').style.display = 'block';
+        document.getElementById('settlement-list').innerHTML = html; document.getElementById('settlement-area').style.display = 'block';
     }
 
     const slider = document.getElementById('raise-slider');
-    const displayAmount = document.getElementById('display-amount');
+    const inputAmount = document.getElementById('input-raise-amount');
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
-    function updateSliderDisplay() {
+    // 滑动条变动，同步给输入框
+    function updateSliderFromSlider() {
         let val = parseFloat(slider.value) || 0;
         let cleanVal = formatMoney(val);
-        displayAmount.innerText = "$" + cleanVal;
-        btnRaiseSub.innerText = "$" + cleanVal;
-        if(val >= parseFloat(slider.max)) { displayAmount.innerText = "ALL-IN"; btnRaiseSub.innerText = "ALL-IN"; }
+        inputAmount.value = cleanVal;
+        btnRaiseSub.innerText = (val >= parseFloat(slider.max)) ? "ALL-IN" : "$" + cleanVal;
+    }
+
+    // 输入框变动，同步给滑动条
+    function syncInputToSlider() {
+        let val = parseFloat(inputAmount.value) || 0;
+        let min = parseFloat(slider.min);
+        let max = parseFloat(slider.max);
+        if (val > max) val = max; 
+        slider.value = val;
+        btnRaiseSub.innerText = (val >= max) ? "ALL-IN" : "$" + formatMoney(val);
     }
 
     function quickBet(type) {
         if(!latestGameState || !latestGameState.game) return;
-        const currentBet = latestGameState.game.currentBet || 0;
-        const pot = latestGameState.game.pot || 0;
+        const currentBet = latestGameState.game.currentBet || 0; const pot = latestGameState.game.pot || 0;
         const minRaiseDelta = latestGameState.game.lastValidRaise || latestGameState.game.bigBlind || 5;
         const minRaiseTo = currentBet + minRaiseDelta;
-        
         let target = minRaiseTo;
-        if (type === 'MIN') target = minRaiseTo;
-        if (type === 'HALF') target = currentBet + (pot / 2);
-        if (type === 'POT') target = currentBet + pot;
-        if (type === 'ALLIN') target = parseFloat(slider.max);
-        
+        if (type === 'MIN') target = minRaiseTo; if (type === 'HALF') target = currentBet + (pot / 2);
+        if (type === 'POT') target = currentBet + pot; if (type === 'ALLIN') target = parseFloat(slider.max);
         target = roundToQuarter(target);
-        
-        if (target < minRaiseTo) target = minRaiseTo;
-        if (target > parseFloat(slider.max)) target = parseFloat(slider.max);
-        
-        slider.value = target; updateSliderDisplay();
+        if (target < minRaiseTo) target = minRaiseTo; if (target > parseFloat(slider.max)) target = parseFloat(slider.max);
+        slider.value = target; updateSliderFromSlider();
     }
 
-    function triggerMuckCards() {
-        localMucked = true; 
-        const uncontestedEl = document.getElementById('uncontested-action-container');
-        if (uncontestedEl) uncontestedEl.classList.add('hidden');
-        renderEngine(latestGameState); 
+    // 播放 All In 特效
+    function playAllInAnimation() {
+        const overlay = document.getElementById('allin-overlay');
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
+        document.body.classList.add('allin-flash');
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+            document.body.classList.remove('allin-flash');
+        }, 1000);
     }
 
-    function triggerShowCards() {
-        send({type:'SHOW_CARDS', name: myName});
-        document.getElementById('show-cards-container').classList.add('hidden');
-        const uncontestedEl = document.getElementById('uncontested-action-container');
-        if (uncontestedEl) uncontestedEl.classList.add('hidden');
-    }
+    function triggerMuckCards() { localMucked = true; const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); renderEngine(latestGameState); }
+    function triggerShowCards() { send({type:'SHOW_CARDS', name: myName}); document.getElementById('show-cards-container').classList.add('hidden'); const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); }
 
     function checkAutoLogin() {
         if (!currentRoomId) return false;
@@ -703,14 +648,7 @@
     };
 
     document.getElementById('chat-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault(); 
-            const val = this.value.trim();
-            if (val && myName) {
-                send({ type: 'CHAT', name: myName, msg: val });
-                this.value = '';
-            }
-        }
+        if (e.key === 'Enter') { e.preventDefault(); const val = this.value.trim(); if (val && myName) { send({ type: 'CHAT', name: myName, msg: val }); this.value = ''; } }
     });
     
     function navTo(targetViewId) { document.querySelectorAll('.view-screen').forEach(el => el.classList.add('hidden')); document.getElementById(targetViewId).classList.remove('hidden'); }
@@ -725,39 +663,25 @@
         myName = selectedAvatar + "|" + nameInput; isWaitingForServer = true; 
         localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar }));
         const btn = document.getElementById('btn-confirm-sit'); btn.innerText = "正在进入..."; btn.disabled = true;
-        
-        if (ws && ws.readyState === 1) { 
-            let joinMsg = { type: "JOIN", name: myName };
-            if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; }
-            ws.send(JSON.stringify(joinMsg)); 
-        } 
+        if (ws && ws.readyState === 1) { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); } 
         else { connectWebSocket(); } 
-        
         setTimeout(() => { if (isWaitingForServer) { alert("云端无响应。请换个名字重试！"); btn.innerText = "确定进入"; btn.disabled = false; isWaitingForServer = false; } }, 5000);
     }
 
     function openUpdateSettings() {
         if(latestGameState && latestGameState.game) {
             document.getElementById('update-enable-standup').checked = latestGameState.game.enableStandUp;
-            document.getElementById('update-standup-amt').value = latestGameState.game.standUpPenalty || 1;
             document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
             const shortDeckUI = document.getElementById('update-enable-shortdeck');
-            if(shortDeckUI) {
-                shortDeckUI.checked = latestGameState.game.enableShortDeck;
-                toggleTwoSeven('update'); 
-            }
+            if(shortDeckUI) { shortDeckUI.checked = latestGameState.game.isShortDeck; toggleTwoSeven('update'); }
         }
         document.getElementById('update-settings-modal').classList.remove('hidden');
     }
 
     function submitUpdateSettings() {
-        const standUp = document.getElementById('update-enable-standup').checked;
-        const standUpAmt = parseFloat(document.getElementById('update-standup-amt').value) || 1;
-        const shortDeckUI = document.getElementById('update-enable-shortdeck');
-        const shortDeck = shortDeckUI ? shortDeckUI.checked : false;
-        const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
-        
-        send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, standUpPenalty: standUpAmt, enableTwoSeven: twoSeven, enableShortDeck: shortDeck }});
+        const standUp = document.getElementById('update-enable-standup').checked; const shortDeckUI = document.getElementById('update-enable-shortdeck');
+        const shortDeck = shortDeckUI ? shortDeckUI.checked : false; const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
+        send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, enableTwoSeven: twoSeven, enableShortDeck: shortDeck }});
         document.getElementById('update-settings-modal').classList.add('hidden');
     }
 
@@ -767,29 +691,13 @@
             const data = await res.json(); currentRoomId = data.roomId; 
             window.history.pushState({}, "", `?room=${currentRoomId}`);
             document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
-            
-            // 【更新】默认买入抓取逻辑也更改为 0.50
-            const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 0.50;
-            const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
-            const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
-            const enableDraw = document.getElementById('set-enable-draw').checked;
-            const enableStandUp = document.getElementById('set-enable-standup').checked;
-            const standUpAmt = parseFloat(document.getElementById('set-standup-amt').value) || 1;
-            const shortDeckUI = document.getElementById('set-enable-shortdeck');
-            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false;
-            
-            const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
-
-            creatorSettings = { 
-                initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2,
-                botLevel: botLevel, enableDraw: enableDraw, 
-                enableStandUp: enableStandUp, standUpPenalty: standUpAmt,
-                enableTwoSeven: enableTwoSeven, enableShortDeck: enableShortDeck
-            };
-
+            const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30; const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
+            const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1; const enableDraw = document.getElementById('set-enable-draw').checked;
+            const enableStandUp = document.getElementById('set-enable-standup').checked; const shortDeckUI = document.getElementById('set-enable-shortdeck');
+            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
+            creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck };
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
-            openSitModal(); 
-            renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
+            openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
     }
 
@@ -803,16 +711,12 @@
         window.history.pushState({}, "", `?room=${currentRoomId}`);
         document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
         document.getElementById('host-panel').classList.add('hidden'); navTo('view-game'); 
-        if (!checkAutoLogin()) { 
-            openSitModal(); 
-            renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] }); 
-        }
+        if (!checkAutoLogin()) { openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] }); }
     }
 
     function connectWebSocket() {
         const wsUrl = BACKEND_URL.replace("https://", "wss://") + `?roomId=${currentRoomId}`;
         ws = new WebSocket(wsUrl); 
-        
         ws.onopen = () => {
             document.getElementById('disconnect-banner').classList.add('hidden');
             ws.send(JSON.stringify({ type: "PING" }));
@@ -821,36 +725,20 @@
                 if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; }
                 ws.send(JSON.stringify(joinMsg));
             }
-            
             if (heartbeatInterval) clearInterval(heartbeatInterval);
-            heartbeatInterval = setInterval(() => {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ type: "PING" }));
-                }
-            }, 25000);
+            heartbeatInterval = setInterval(() => { if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ type: "PING" })); } }, 25000);
         };
         
         ws.onmessage = (e) => { 
             try { 
-                const data = JSON.parse(e.data); 
-                if(data.type === "BROADCAST") {
-                    playBroadcast(data.theme, data.html);
-                    return;
-                }
-                latestGameState = data; 
-                renderEngine(latestGameState); 
+                const parsed = JSON.parse(e.data);
+                if (parsed.type === "ERROR") { alert(parsed.message); return; }
+                latestGameState = parsed; renderEngine(latestGameState); 
             } catch (err) {} 
         };
 
-        ws.onclose = () => {
-            document.getElementById('disconnect-banner').classList.remove('hidden');
-            if (heartbeatInterval) clearInterval(heartbeatInterval);
-            setTimeout(connectWebSocket, 3000); 
-        };
-
-        ws.onerror = () => {
-            document.getElementById('disconnect-banner').classList.remove('hidden');
-        };
+        ws.onclose = () => { document.getElementById('disconnect-banner').classList.remove('hidden'); if (heartbeatInterval) clearInterval(heartbeatInterval); setTimeout(connectWebSocket, 3000); };
+        ws.onerror = () => { document.getElementById('disconnect-banner').classList.remove('hidden'); };
     }
 
     function send(obj) { if(ws && ws.readyState === 1) ws.send(JSON.stringify(obj)); else console.log("等待重连..."); }
@@ -858,43 +746,35 @@
     function renderEngine(state) {
         if (!state || !state.game) return;
 
+        // 跟踪新手局以重置计数
         if (state.game.handCount !== localHandCount) {
             localHandCount = state.game.handCount;
-            initialDealPlayed = false;
-            winTextPlayed = false;
-            isNextHandSent = false; 
+            initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
+            localAllInCount = 0; // 重置本局 All in 计数
         }
 
         if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content');
             contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
-            contentBox.scrollTop = contentBox.scrollHeight;
-            localLogVersion = state.game.logVersion;
+            contentBox.scrollTop = contentBox.scrollHeight; localLogVersion = state.game.logVersion;
         }
 
         if (state.game.chatLogs && state.game.chatLogs.length !== localChatLength) {
             const chatList = document.getElementById('chat-list');
             chatList.innerHTML = state.game.chatLogs.map(c => `<div><strong style="color:#349feb">${c.sender}:</strong> ${c.msg}</div>`).join('');
-            chatList.scrollTop = chatList.scrollHeight;
-            localChatLength = state.game.chatLogs.length;
-            wakeUpChat();
+            chatList.scrollTop = chatList.scrollHeight; localChatLength = state.game.chatLogs.length; wakeUpChat();
         }
 
-        if (myName !== "") {
-            document.getElementById('chat-zone').classList.remove('hidden');
-        }
+        if (myName !== "") { document.getElementById('chat-zone').classList.remove('hidden'); }
 
-        const elBuyin = document.getElementById('info-buyin');
-        const elBlinds = document.getElementById('info-blinds');
-        if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 0.50);
+        const elBuyin = document.getElementById('info-buyin'); const elBlinds = document.getElementById('info-blinds');
+        if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 30);
         if (elBlinds) elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}`;
 
-        let potPrefix = state.game.enableShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
+        let potPrefix = state.game.isShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
         document.getElementById("ui-pot").innerHTML = potPrefix + "$" + formatMoney(state.game.pot);
         
-        if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") {
-            prevBoardLength = 0; prevBurnLength = 0;
-        }
+        if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") { prevBoardLength = 0; prevBurnLength = 0; }
 
         let burnCardsHtml = "";
         if (state.game.burnCards && state.game.burnCards.length > 0) {
@@ -908,34 +788,39 @@
         const boardCardsHtml = (state.game.board || []).map((c, i) => {
             let animDelay = "";
             if (i >= prevBoardLength) {
-                let delay = 0.3;
-                if (state.game.status === "FLOP" && i >= prevBoardLength) delay = 0.3 + (i - prevBoardLength) * 0.3;
+                let delay = 0.3; if (state.game.status === "FLOP" && i >= prevBoardLength) delay = 0.3 + (i - prevBoardLength) * 0.3;
                 animDelay = `animation: dealBoardCard 0.4s ease-out backwards; animation-delay: ${delay}s;`;
             }
             return `<div class="playing-card ${c.includes('♥') || c.includes('♦') ? 'red' : ''}" style="${animDelay}">${c}</div>`;
         }).join("");
         
-        document.getElementById("ui-board").innerHTML = burnCardsHtml + boardCardsHtml;
+        document.getElementById("ui-burn").innerHTML = burnCardsHtml;
+        document.getElementById("ui-board").innerHTML = boardCardsHtml;
         
-        prevBoardLength = state.game.board ? state.game.board.length : 0;
-        prevBurnLength = state.game.burnCards ? state.game.burnCards.length : 0;
+        prevBoardLength = state.game.board ? state.game.board.length : 0; prevBurnLength = state.game.burnCards ? state.game.burnCards.length : 0;
 
         let playersArray = state.players || [];
         const pureMyName = myName.split('|')[1] || myName;
         const myDataRecord = playersArray.find(p => p && (p.name.split('|')[1] || p.name) === pureMyName);
         let amISeated = !!(myDataRecord && myDataRecord.seatIndex !== -1);
         const isHost = (state.game.hostName === myName);
+        const amIDealer = (amISeated && myDataRecord.seatIndex === state.game.dealerIndex);
         
-        if (playersArray.length > 0) {
-            document.getElementById('btn-ledger-top').classList.remove('hidden');
-            document.getElementById('btn-log-top').classList.remove('hidden');
+        // 触发 ALL-IN 检测
+        if (state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
+            const currentAllIns = playersArray.filter(p => p.chips === 0 && !p.folded && !p.isOut && !p.isSpectating).length;
+            if (currentAllIns > localAllInCount) {
+                localAllInCount = currentAllIns;
+                playAllInAnimation();
+            }
         }
+
+        if (playersArray.length > 0) { document.getElementById('btn-ledger-top').classList.remove('hidden'); document.getElementById('btn-log-top').classList.remove('hidden'); }
         
         let ledgerBody = "";
         playersArray.forEach(p => {
             if(p.isKicked) return; 
-            const netVal = p.chips - (p.totalBuyIn || 0);
-            const netClass = netVal > 0 ? 'text-green' : (netVal < 0 ? 'text-red' : '');
+            const netVal = p.chips - (p.totalBuyIn || 0); const netClass = netVal > 0 ? 'text-green' : (netVal < 0 ? 'text-red' : '');
             const netStr = netVal > 0 ? `+$${formatMoney(netVal)}` : (netVal < 0 ? `-$${formatMoney(Math.abs(netVal))}` : `$0`);
             const pName = p.name.split('|')[1] || p.name;
             let purgeBtn = isHost ? `<button style="background:transparent; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px; padding:0 0 0 10px;" onclick="purgeRecord('${p.name}')" title="抹除此记录">✖</button>` : '';
@@ -946,6 +831,7 @@
         const banner = document.getElementById("winner-banner");
         const showCardsBtn = document.getElementById("show-cards-container");
         const uncontestedBtn = document.getElementById("uncontested-action-container");
+        const dealerActionBtn = document.getElementById("dealer-action-container");
 
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating);
@@ -967,10 +853,7 @@
                         timeLeft--; const cdSpan = document.getElementById("auto-start-cd"); if (cdSpan) cdSpan.innerText = timeLeft;
                         if (timeLeft <= 0) { 
                             clearInterval(countdownInterval); countdownInterval = null; 
-                            if (isHost && !isNextHandSent) {
-                                isNextHandSent = true;
-                                send({type: 'NEXT_HAND', name: myName}); 
-                            }
+                            if (isHost && !isNextHandSent) { isNextHandSent = true; send({type: 'NEXT_HAND', name: myName}); }
                         }
                     }, 1000);
                 }
@@ -985,158 +868,87 @@
             banner.classList.remove("hidden");
 
             let isUncontested = !!state.game.uncontestedWinner;
-            
             if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) {
                 if (!localMucked) uncontestedBtn.classList.remove("hidden");
-            } else {
-                uncontestedBtn.classList.add("hidden");
-            }
+            } else { uncontestedBtn.classList.add("hidden"); }
 
             const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked;
-            if (canShow) {
-                showCardsBtn.classList.remove("hidden");
+            if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
+
+            // Dealer 特权：发余牌按钮显示判断
+            if (state.game.board && state.game.board.length < 5 && (isHost || amIDealer)) {
+                dealerActionBtn.classList.remove("hidden");
             } else {
-                showCardsBtn.classList.add("hidden");
+                dealerActionBtn.classList.add("hidden");
             }
 
         } else {
             localMucked = false; 
             if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-            banner.classList.add("hidden");
-            showCardsBtn.classList.add("hidden");
-            uncontestedBtn.classList.add("hidden");
+            banner.classList.add("hidden"); showCardsBtn.classList.add("hidden"); uncontestedBtn.classList.add("hidden");
+            dealerActionBtn.classList.add("hidden");
         }
 
         const inviteContainer = document.getElementById("invite-pill-container");
-        if (state.game.status === "WAITING" || state.game.status === "LOBBY") {
-            inviteContainer.classList.remove("hidden");
-        } else {
-            inviteContainer.classList.add("hidden");
-        }
+        if (state.game.status === "WAITING" || state.game.status === "LOBBY") { inviteContainer.classList.remove("hidden"); } else { inviteContainer.classList.add("hidden"); }
 
-        const lobbyZone = document.getElementById('lobby-zone');
-        const lobbyList = document.getElementById('lobby-list');
+        const lobbyZone = document.getElementById('lobby-zone'); const lobbyList = document.getElementById('lobby-list');
         const unseatedPlayers = playersArray.filter(p => p.seatIndex === -1 && !p.isKicked);
-        
         if (unseatedPlayers.length > 0 || state.game.status === "LOBBY" || state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             lobbyZone.classList.remove('hidden');
             lobbyList.innerHTML = unseatedPlayers.map(p => {
-                let displayAvatar = p.name.split('|')[0] || '😎';
-                let displayName = p.name.split('|')[1] || p.name;
-                let drawStatus = "";
-                if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
-                    drawStatus = p.drawCard ? `<span style="color:var(--gold); font-size:16px;">[${p.drawCard}]</span>` : `<span style="color:#aaa; font-size:12px;">(思考中)</span>`;
-                }
-                let kickBtn = isHost ? `<button style="background:transparent; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:14px; margin-left:10px;" onclick="send({type:'KICK', name:'${myName}', targetName:'${p.name}'})" title="移出候场区">✖</button>` : '';
-                return `<div class="lobby-item"><span>${displayAvatar}</span> ${displayName} ${drawStatus} ${kickBtn}</div>`;
+                let displayAvatar = p.name.split('|')[0] || '😎'; let displayName = p.name.split('|')[1] || p.name; let drawStatus = "";
+                if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") { drawStatus = p.drawCard ? `<span style="color:var(--gold); font-size:16px;">[${p.drawCard}]</span>` : `<span style="color:#aaa; font-size:12px;">(思考中)</span>`; }
+                return `<div class="lobby-item"><span>${displayAvatar}</span> ${displayName} ${drawStatus}</div>`;
             }).join('');
-        } else {
-            lobbyZone.classList.add('hidden');
-        }
+        } else { lobbyZone.classList.add('hidden'); }
 
         const drawZone = document.getElementById('draw-zone');
         if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
-            drawZone.classList.remove('hidden');
-            inviteContainer.classList.add('hidden');
+            drawZone.classList.remove('hidden'); inviteContainer.classList.add('hidden');
             drawZone.innerHTML = state.game.drawingCards.map(c => {
                 if (c.faceUp) {
-                    const isRed = c.card.includes('♥') || c.card.includes('♦');
-                    const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : "";
+                    const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : "";
                     return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`;
-                } else {
-                    return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`;
-                }
+                } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; }
             }).join('');
-        } else { 
-            drawZone.classList.add('hidden'); 
-        }
+        } else { drawZone.classList.add('hidden'); }
 
         const isWinner = (state.game.winnerName === myName);
 
         if (isHost) {
             document.getElementById('player-panel').classList.add('hidden');
-            if (state.game.status === "LOBBY") {
-                document.getElementById('host-panel').classList.add('hidden');
-                document.getElementById('btn-start-draw').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-start-draw').classList.add('hidden');
-                document.getElementById('host-panel').classList.remove('hidden');
-                if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN") { 
-                    document.getElementById('btn-start').classList.add('hidden'); 
-                    document.getElementById('btn-pause-refund').classList.remove('hidden'); 
-                } else { 
-                    document.getElementById('btn-start').classList.remove('hidden'); 
-                    document.getElementById('btn-pause-refund').classList.add('hidden'); 
-                }
+            if (state.game.status === "LOBBY") { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.remove('hidden'); } 
+            else {
+                document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('host-panel').classList.remove('hidden');
+                if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN") { document.getElementById('btn-start').classList.add('hidden'); document.getElementById('btn-pause-refund').classList.remove('hidden'); } 
+                else { document.getElementById('btn-start').classList.remove('hidden'); document.getElementById('btn-pause-refund').classList.add('hidden'); }
             }
-        } else if (pureMyName) { 
-            document.getElementById('host-panel').classList.add('hidden'); 
-            document.getElementById('btn-start-draw').classList.add('hidden');
-            document.getElementById('player-panel').classList.remove('hidden');
-            
-            if (amISeated) {
-                document.getElementById('btn-stand-up-hud').classList.remove('hidden');
-                document.getElementById('btn-take-seat-hud').classList.add('hidden');
-            } else {
-                document.getElementById('btn-stand-up-hud').classList.add('hidden');
-                document.getElementById('btn-take-seat-hud').classList.remove('hidden');
-            }
-        } else {
-            document.getElementById('host-panel').classList.add('hidden'); 
-            document.getElementById('btn-start-draw').classList.add('hidden');
-            document.getElementById('player-panel').classList.add('hidden');
-        }
+        } else if (amISeated) { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.remove('hidden'); } 
+        else { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.add('hidden'); }
 
-        if (myDataRecord && myDataRecord.isKicked) {
-            alert("您已被房主移出房间。");
-            myName = ""; localStorage.removeItem('poker_session_' + currentRoomId);
-            window.location.href = window.location.pathname; 
-            return;
-        }
+        if (myDataRecord && myDataRecord.isKicked) { alert("您已被房主移出房间。"); myName = ""; localStorage.removeItem('poker_session_' + currentRoomId); window.location.href = window.location.pathname; return; }
+        if (isWaitingForServer && myDataRecord) { isWaitingForServer = false; document.getElementById('sit-modal').classList.add('hidden'); document.getElementById('btn-confirm-sit').innerText = "确定进入"; document.getElementById('btn-confirm-sit').disabled = false; }
 
-        if (isWaitingForServer && myDataRecord) { 
-            isWaitingForServer = false; 
-            document.getElementById('sit-modal').classList.add('hidden'); 
-            document.getElementById('btn-confirm-sit').innerText = "确定进入"; 
-            document.getElementById('btn-confirm-sit').disabled = false; 
-        }
-
-        const layer = document.getElementById("players-layer"); layer.innerHTML = "";
-        let isMyTurn = false;
-
+        const layer = document.getElementById("players-layer"); layer.innerHTML = ""; let isMyTurn = false;
         const isInitialDeal = state.game.status === 'PRE-FLOP' && !playersArray.some(p => p.actedThisRound) && !initialDealPlayed;
-        
         let playingSeatsOrder = [];
         if (isInitialDeal) {
-            for (let i = 0; i < 10; i++) {
-                let seatNum = (state.game.dealerIndex + 1 + i) % 10;
-                let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked);
-                if (sp) playingSeatsOrder.push(seatNum);
-            }
+            for (let i = 0; i < 10; i++) { let seatNum = (state.game.dealerIndex + 1 + i) % 10; let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked); if (sp) playingSeatsOrder.push(seatNum); }
         }
 
         for (let i = 0; i < MAX_SEATS; i++) {
-            const seatClass = SEAT_ORDER[i];
-            const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
-            
+            const seatClass = SEAT_ORDER[i]; const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
             let posClass = ""; 
-            if (seatClass.includes("btm")) posClass = "pos-bottom";
-            if (seatClass.includes("top")) posClass = "pos-top";
-            
-            if (seatClass === "s-lft-t") posClass = "s-lft-t";
-            if (seatClass === "s-lft-b") posClass = "s-lft-b";
-            if (seatClass === "s-rgt-t") posClass = "s-rgt-t";
-            if (seatClass === "s-rgt-b") posClass = "s-rgt-b";
+            if (seatClass.includes("btm")) posClass = "pos-bottom"; if (seatClass.includes("top")) posClass = "pos-top";
+            if (seatClass === "s-lft-t") posClass = "s-lft-t"; if (seatClass === "s-lft-b") posClass = "s-lft-b";
+            if (seatClass === "s-rgt-t") posClass = "s-rgt-t"; if (seatClass === "s-rgt-b") posClass = "s-rgt-b";
 
             if (p) {
                 const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && p.seatIndex === state.game.turnIndex);
                 if (isActive && p.name === myName) isMyTurn = true;
-                const isOut = p.isOut === true; 
-                const isOffline = p.isOnline === false; 
-                const isSpectating = p.isSpectating === true;
-                
+                const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true;
                 const isMySeat = (p.name === myName);
-                
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating);
                 const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating);
                 const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
@@ -1145,30 +957,22 @@
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; }
 
                 const isMyFoldedCards = (p.folded && p.name === myName);
-                
                 let isGlobalHidden = true; 
-                if (p.name === myName && !localMucked) isGlobalHidden = false; 
-                if (p.hasShownCards) isGlobalHidden = false; 
+                if (p.name === myName && !localMucked) isGlobalHidden = false; if (p.hasShownCards) isGlobalHidden = false; 
 
                 let cardsHtml = "";
                 if (p.hand && p.hand.length > 0 && !isSpectating && (!p.folded || isMyFoldedCards || p.hasShownCards)) {
                     cardsHtml = p.hand.map((c, idx) => {
-                        const isHidden = isGlobalHidden || c === "??";
-                        const isRed = !isHidden && (c.includes('♥') || c.includes('♦'));
-                        
+                        const isHidden = isGlobalHidden || c === "??"; const isRed = !isHidden && (c.includes('♥') || c.includes('♦'));
                         let animDelay = "";
                         if (isInitialDeal) {
                             let dealIdx = playingSeatsOrder.indexOf(p.seatIndex);
                             if (dealIdx !== -1) {
-                                let totalPlayers = playingSeatsOrder.length;
-                                let delayTime = (idx === 0) ? (dealIdx * 0.15) : ((totalPlayers + dealIdx) * 0.15);
+                                let totalPlayers = playingSeatsOrder.length; let delayTime = (idx === 0) ? (dealIdx * 0.15) : ((totalPlayers + dealIdx) * 0.15);
                                 animDelay = `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${delayTime}s;`;
                             }
                         }
-                        
-                        const handKeyClass = `hand-${state.game.handCount}`;
-                        const foldStyle = (isMyFoldedCards && !p.hasShownCards) ? `filter: grayscale(1) brightness(0.4); opacity: 0.6;` : ``;
-
+                        const handKeyClass = `hand-${state.game.handCount}`; const foldStyle = (isMyFoldedCards && !p.hasShownCards) ? `filter: grayscale(1) brightness(0.4); opacity: 0.6;` : ``;
                         return `<div class="playing-card ${isHidden?'back':''} ${isRed?'red':''} card-${idx+1} ${handKeyClass}" style="${animDelay} ${foldStyle}">${isHidden?'':c}</div>`;
                     }).join("");
                 }
@@ -1180,90 +984,52 @@
                 else if (p.chips === 0 && !isOut && !p.folded && state.game.status !== "WAITING") badgeHtml = `<div class="status-badge-inner bg-allin">ALL-IN</div>`;
                 else if (isActive && !p.folded && !isOut) badgeHtml = `<div class="status-badge-inner bg-think">思考中...</div>`;
 
-                let kickHtml = '';
-                if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
-
-                let squidClass = "";
-                if (state.game.enableStandUp && !isOut && !isSpectating) {
-                    squidClass = p.isStanding ? "squid-stand" : "squid-sit";
-                }
-
-                let badgesHtml = `
-                    <div class="dealer-badges">
-                        ${isDealer ? `<div class="dealer-btn">D</div>` : ''}
-                        ${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}
-                        ${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}
-                    </div>
-                `;
-
-                let winFlyTextHtml = '';
-                if (p.winAmount > 0 && state.game.status === "SHOWDOWN" && !winTextPlayed) {
-                    winFlyTextHtml = `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>`;
-                }
+                let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
+                let squidClass = ""; if (state.game.enableStandUp && !isOut && !isSpectating) { squidClass = p.isStanding ? "squid-stand" : "squid-sit"; }
+                let badgesHtml = `<div class="dealer-badges">${isDealer ? `<div class="dealer-btn">D</div>` : ''}${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}</div>`;
+                let winFlyTextHtml = ''; if (p.winAmount > 0 && state.game.status === "SHOWDOWN" && !winTextPlayed) { winFlyTextHtml = `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>`; }
 
                 layer.innerHTML += `
                     <div class="player-seat ${seatClass} ${posClass}">
                         ${winFlyTextHtml}
-                        
                         <div class="hole-cards">${isOut || isSpectating ? '' : cardsHtml}</div>
-
                         <div class="player-card ${squidClass} ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating ? 'active' : ''} ${isOut || isSpectating ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
-                            ${badgesHtml}
-                            ${kickHtml}
+                            ${badgesHtml} ${kickHtml}
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
                             <div style="min-height:22px;">${badgeHtml}</div>
                             <div class="player-name">${displayName}</div>
                             <div class="player-chips">$${formatMoney(p.chips)}</div>
                         </div>
-                        
                         ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${formatMoney(p.betThisRound)}</div>` : ''}
                     </div>
                 `;
             } else { 
                 let addBotHtml = '';
-                if (state.game.status === "PICK_SEAT" && isWinner) {
-                    addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">+</div>`;
-                } else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") {
-                    addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`;
-                }
+                if (state.game.status === "PICK_SEAT" && isWinner) { addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">+</div>`; } 
+                else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`; }
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
 
-        if (isInitialDeal) initialDealPlayed = true;
-        if (state.game.status === "SHOWDOWN") winTextPlayed = true;
+        if (isInitialDeal) initialDealPlayed = true; if (state.game.status === "SHOWDOWN") winTextPlayed = true;
 
-        const actionConsole = document.getElementById("action-console"); 
-        const buyinConsole = document.getElementById("buyin-console");
-        const waitingTip = document.getElementById("waiting-tip"); 
-        const tableContainer = document.getElementById("table-container"); 
-        const btnCallTitle = document.getElementById("btn-call-title"); 
-        const btnCallSub = document.getElementById("btn-call-sub"); 
+        const actionConsole = document.getElementById("action-console"); const buyinConsole = document.getElementById("buyin-console");
+        const waitingTip = document.getElementById("waiting-tip"); const tableContainer = document.getElementById("table-container"); 
+        const btnCallTitle = document.getElementById("btn-call-title"); const btnCallSub = document.getElementById("btn-call-sub"); 
         const actBtns = ["btn-action-fold", "btn-action-call", "btn-action-raise"];
         
-        actionConsole.classList.add("hidden"); 
-        buyinConsole.classList.add("hidden");
-        waitingTip.classList.add("hidden"); 
+        actionConsole.classList.add("hidden"); buyinConsole.classList.add("hidden"); waitingTip.classList.add("hidden"); 
         tableContainer.style.transform = "translateY(0) scale(1)";
-        tableContainer.style.transformOrigin = "center center"; 
 
         if (amISeated) {
             if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
-                buyinConsole.classList.remove("hidden");
-                tableContainer.style.transformOrigin = "top center";
-                tableContainer.style.transform = "translateY(-140px) scale(0.82)";
-                
-                // 【更新】破产补充筹码UI也跟随默认为 0.50
-                document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 0.50);
+                buyinConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)"; document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
             } 
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
-                    actionConsole.classList.remove("hidden"); 
-                    tableContainer.style.transformOrigin = "top center";
-                    tableContainer.style.transform = "translateY(-140px) scale(0.82)";
+                    actionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
                     
                     const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; 
-                    
                     const minRaiseDelta = parseFloat(state.game.lastValidRaise) || parseFloat(state.game.bigBlind) || 5; 
                     
                     const callAmount = Math.round((currentBet - myBet) * 100) / 100;
@@ -1276,14 +1042,16 @@
                     let targetVal = parseFloat(slider.value) || 0;
                     if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; 
                     slider.value = roundToQuarter(targetVal);
-                    updateSliderDisplay();
+                    
+                    // 【只有没有手动正在输入时，才用 slider 去更新输入框的值，避免打字被打断】
+                    if (document.activeElement !== inputAmount) {
+                        updateSliderFromSlider();
+                    }
                     
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'});
                     document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'});
                     document.getElementById("btn-action-raise").onclick = () => { 
-                        syncInputToSlider(); 
-                        const raiseTo = parseFloat(slider.value); 
-                        const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; 
+                        syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; 
                         send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); 
                     };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
