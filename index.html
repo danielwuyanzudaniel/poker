@@ -6,7 +6,9 @@
     <title>CB POKER - 职业赛场</title>
     <style>
         :root { 
-            --bg-dark: #242b35; --table-inner: #248ceb; --panel-bg: #11151a; 
+            --bg-dark: #242b35; 
+            --table-inner: #0d5c2e; /* 更新：高级赌场绿 */
+            --panel-bg: #11151a; 
             --gold: #ffd700; --active-green: #2ecc71; 
         }
         body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center;}
@@ -32,10 +34,9 @@
 
         #table-container { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
         
-        /* 牌桌底图 */
-        .poker-table { width: 80vw; height: 50vh; max-width: 1000px; max-height: 550px; background: radial-gradient(circle, #349feb 0%, var(--table-inner) 100%); border: 20px solid #1c232c; border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); position: relative; }
+        /* 牌桌底图：更新为高级赌场绿 */
+        .poker-table { width: 80vw; height: 50vh; max-width: 1000px; max-height: 550px; background: radial-gradient(circle, #1a8044 0%, var(--table-inner) 100%); border: 20px solid #1c232c; border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); position: relative; }
         
-        /* 德州标准桌内圈划线 & Logo */
         .table-inner-line {
             position: absolute; top: 35px; bottom: 35px; left: 55px; right: 55px;
             border: 3px solid rgba(255, 255, 255, 0.15); border-radius: 200px;
@@ -46,22 +47,21 @@
             font-weight: 900; letter-spacing: 10px; font-family: 'Georgia', serif;
         }
 
-        /* 德州标准桌 5个画线空间 */
+        /* 德州标准桌 5个画线空间：加大尺寸完美契合扑克牌 */
         .card-placeholders {
             position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%);
             display: flex; gap: 8px; z-index: 2; pointer-events: none;
         }
         .card-placeholder {
-            width: 42px; height: 60px; border: 2px solid rgba(255, 255, 255, 0.2);
+            width: 50px; height: 72px; border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 5px; box-sizing: border-box; background: rgba(0, 0, 0, 0.1);
         }
 
         .pot-display-container { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 215, 0, 0.3); padding: 6px 20px; border-radius: 30px; text-align: center; z-index: 5;}
         .pot-label { font-size: 11px; color: #aaa; display: block; }
         .pot-value { font-size: 22px; font-weight: 900; color: var(--gold); }
-        .top-left-logo { position: absolute; top: 20px; left: 20px; font-size: 24px; font-weight: 900; letter-spacing: 2px; }
         
-        .burn-area { display: flex; position: relative; height: 60px; width: 50px;}
+        .burn-area { display: flex; position: relative; height: 72px; width: 60px;}
         .burn-area .playing-card { position: absolute; left: 0; box-shadow: -2px 2px 5px rgba(0,0,0,0.8); }
 
         .invite-pill { background: rgba(17, 21, 26, 0.95); padding: 20px 40px; border-radius: 50px; text-align: center; border: 1px solid #333; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.2s; }
@@ -84,12 +84,48 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        #chat-zone { position:absolute; bottom:20px; left:20px; width:280px; display:flex; flex-direction:column; z-index:95; }
+        /* 聊天区更新：加入工具栏 */
+        #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:95; }
         #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         #chat-zone:hover #chat-list, #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; }
         #chat-list div { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 8px; word-wrap: break-word;}
+        
+        /* 聊天快捷工具栏 */
+        .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 8px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
+        #chat-zone:hover .chat-tools, #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
+        .chat-emojis { display: flex; gap: 8px; font-size: 20px; overflow-x: auto; padding-bottom: 4px; border-bottom: 1px solid #333;}
+        .chat-emojis::-webkit-scrollbar { height: 4px; } .chat-emojis::-webkit-scrollbar-thumb { background: #555; border-radius: 2px; }
+        .chat-emojis span { cursor: pointer; transition: 0.2s; user-select: none; } .chat-emojis span:hover { transform: scale(1.3); }
+        .chat-shortcuts { display: flex; gap: 6px; overflow-x: auto; padding-top: 4px; padding-bottom: 4px;}
+        .chat-shortcuts::-webkit-scrollbar { height: 4px; } .chat-shortcuts::-webkit-scrollbar-thumb { background: #555; border-radius: 2px; }
+        .chat-shortcuts button { white-space: nowrap; background: #2a3441; border: 1px solid #444; color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
+        .chat-shortcuts button:hover { background: var(--gold); color: black; border-color: var(--gold); }
+
         #chat-input { background:rgba(0,0,0,0.6); border:1px solid #444; color:white; padding:12px; font-size:13px; outline:none; border-radius:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: 0.3s;}
         #chat-input:focus { border-color: var(--gold); background:rgba(17, 21, 26, 0.95); }
+
+        /* 弹幕系统 */
+        #danmaku-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .danmaku-item { position: absolute; white-space: nowrap; font-size: 26px; font-weight: 900; color: #fff; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; animation: danmakuSlide 8s linear forwards; left: 100%; }
+        @keyframes danmakuSlide { to { left: -100%; } }
+
+        /* 全屏骚话特效 */
+        .chat-fx-container { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; text-align: center; white-space: nowrap;}
+        .effect-hero-fold { font-size: 70px; font-weight: 900; color: #bdc3c7; text-shadow: 0 0 30px #fff; animation: popZoom 2.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .effect-bluff { font-size: 90px; font-weight: 900; color: #e74c3c; -webkit-text-stroke: 2px white; animation: slideLeftRight 2s ease-in-out forwards; }
+        .effect-catch { font-size: 80px; font-weight: 900; color: #349feb; text-shadow: 0 10px 20px rgba(0,0,0,0.8); animation: slamFX 1s forwards; }
+        .effect-guerilla { font-size: 60px; font-weight: 900; color: #2ecc71; text-shadow: 0 5px 10px rgba(0,0,0,1); animation: runAway 2.5s linear forwards; }
+        .effect-big { font-size: 70px; font-weight: 900; color: #f1c40f; animation: pulseBig 2.5s infinite; text-shadow: 0px 10px 25px rgba(0,0,0,1); }
+        .effect-nice { font-size: 80px; font-weight: 900; background: linear-gradient(45deg, #ff00cc, #3333ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(255,0,204,0.6)); animation: popZoom 2s forwards; }
+        .effect-hero-call { font-size: 100px; color: #e67e22; font-weight: 900; animation: shake 0.5s infinite; text-shadow: 0 0 40px #e67e22, 0 0 80px red; }
+
+        @keyframes popZoom { 0% { transform: scale(0); opacity: 0; } 20% { transform: scale(1.3); opacity: 1; } 30% { transform: scale(1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        @keyframes slideLeftRight { 0% { transform: translateX(-50vw) scale(0.5); opacity:0;} 20% { transform: translateX(-20vw) scale(1); opacity:1;} 80% { transform: translateX(20vw) scale(1); opacity:1;} 100% { transform: translateX(50vw) scale(0.5); opacity:0;} }
+        @keyframes slamFX { 0% { transform: scale(5); opacity: 0; } 50% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+        @keyframes runAway { 0% { transform: translateX(0) scale(1); opacity:1;} 10% { transform: translateX(-20px) scale(1); opacity:1;} 100% { transform: translateX(100vw) scale(0.5); opacity: 0;} }
+        @keyframes pulseBig { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+        @keyframes shake { 0% { transform: translate(3px, 2px) rotate(0deg); } 10% { transform: translate(-2px, -3px) rotate(-2deg); } 20% { transform: translate(-4px, 0px) rotate(2deg); } 30% { transform: translate(0px, 3px) rotate(0deg); } 40% { transform: translate(2px, -2px) rotate(2deg); } 50% { transform: translate(-2px, 3px) rotate(-2deg); } 60% { transform: translate(-4px, 2px) rotate(0deg); } 70% { transform: translate(4px, 2px) rotate(-2deg); } 80% { transform: translate(-2px, -2px) rotate(2deg); } 90% { transform: translate(2px, 3px) rotate(0deg); } 100% { transform: translate(2px, -3px) rotate(-2deg); } }
+
 
         .draw-deck-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 15px; z-index: 100; }
         .draw-card { width: 70px; height: 100px; background: white; border-radius: 8px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; font-weight: 900; color: black; font-size: 26px; transition: 0.3s; position: relative;}
@@ -114,7 +150,8 @@
         .win-fly-text { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #2ecc71; font-size: 28px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,1); animation: floatUp 4s ease-out forwards; z-index: 50; pointer-events: none; white-space: nowrap; }
         @keyframes floatUp { 0% { top: 20px; opacity: 0; transform: translateX(-50%) scale(0.5); } 10% { top: -20px; opacity: 1; transform: translateX(-50%) scale(1.3); } 20% { top: -30px; opacity: 1; transform: translateX(-50%) scale(1); } 80% { top: -60px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -80px; opacity: 0; transform: translateX(-50%) scale(1); } }
 
-        .playing-card { background: white; color: black; width: 42px; height: 60px; border-radius: 5px; font-weight: bold; font-size: 18px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
+        /* 更新：将扑克牌变大，适应牌桌 */
+        .playing-card { background: white; color: black; width: 50px; height: 72px; border-radius: 5px; font-weight: bold; font-size: 24px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
         .playing-card.red { color: #d32f2f; }
         .playing-card.back { background: #1976d2; background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,.1) 5px, rgba(255,255,255,.1) 10px); color: transparent;}
         
@@ -182,12 +219,12 @@
         
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         
-        .pos-bottom .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); } 
-        .pos-bottom .bet-badge { top: -110px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
-        .pos-top .hole-cards { bottom: -45px; left: 50%; transform: translateX(-50%); }
-        .pos-top .bet-badge { bottom: -110px !important; top: auto !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
+        .pos-bottom .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); } 
+        .pos-bottom .bet-badge { top: -120px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
+        .pos-top .hole-cards { bottom: -55px; left: 50%; transform: translateX(-50%); }
+        .pos-top .bet-badge { bottom: -120px !important; top: auto !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
         
-        .s-lft-t .hole-cards, .s-lft-b .hole-cards, .s-rgt-t .hole-cards, .s-rgt-b .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); }
+        .s-lft-t .hole-cards, .s-lft-b .hole-cards, .s-rgt-t .hole-cards, .s-rgt-b .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); }
         .s-lft-b .bet-badge, .s-lft-t .bet-badge { top: 20px !important; left: 130px !important; transform: none !important; right: auto !important; }
         .s-rgt-b .bet-badge, .s-rgt-t .bet-badge { top: 20px !important; right: 130px !important; transform: none !important; left: auto !important; }
 
@@ -248,6 +285,8 @@
     </style>
 </head>
 <body>
+
+    <div id="danmaku-container"></div>
 
     <div id="disconnect-banner" class="hidden" style="position:absolute; top:0; left:0; width:100%; background:#e74c3c; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
         🔌 失去与云端的连接，正在尝试重连...
@@ -327,7 +366,7 @@
     </div>
 
     <div id="sit-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 200;">
-        <div class="menu-card" style="width: 320px;">
+        <div class="menu-card" style="width: 380px;">
             <h2 style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像</div>
             <div id="avatar-grid" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom: 25px; background: #1a2028; padding: 15px; border-radius: 12px; border: 1px solid #333;"></div>
@@ -357,6 +396,31 @@
 
         <div id="chat-zone" class="hidden">
             <div id="chat-list"></div>
+            <div class="chat-tools">
+                <div class="chat-emojis">
+                    <span onclick="appendEmoji('🍆')">🍆</span>
+                    <span onclick="appendEmoji('🍑')">🍑</span>
+                    <span onclick="appendEmoji('💦')">💦</span>
+                    <span onclick="appendEmoji('👅')">👅</span>
+                    <span onclick="appendEmoji('🍌')">🍌</span>
+                    <span onclick="appendEmoji('🤡')">🤡</span>
+                    <span onclick="appendEmoji('💩')">💩</span>
+                    <span onclick="appendEmoji('🥵')">🥵</span>
+                    <span onclick="appendEmoji('🥴')">🥴</span>
+                    <span onclick="appendEmoji('😎')">😎</span>
+                    <span onclick="appendEmoji('😂')">😂</span>
+                    <span onclick="appendEmoji('🤬')">🤬</span>
+                </div>
+                <div class="chat-shortcuts">
+                    <button onclick="sendQuickChat('HERO FOLD')">🛡️ HERO FOLD</button>
+                    <button onclick="sendQuickChat('偷鸡')">🐔 偷鸡</button>
+                    <button onclick="sendQuickChat('抓鸡')">🦅 抓鸡</button>
+                    <button onclick="sendQuickChat('游击队')">🏃 游击队</button>
+                    <button onclick="sendQuickChat('我的很大，你忍一下')">🍆 我的很大</button>
+                    <button onclick="sendQuickChat('Nice Hand')">👏 Nice Hand</button>
+                    <button onclick="sendQuickChat('HERO CALL')">🦸‍♂️ HERO CALL</button>
+                </div>
+            </div>
             <input type="text" id="chat-input" placeholder="输入闲聊信息 (Enter发送)..." autocomplete="off">
         </div>
 
@@ -376,7 +440,7 @@
 
                 <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
                 
-                <div id="ui-burn" style="position: absolute; top: 52%; left: 30%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
+                <div id="ui-burn" style="position: absolute; top: 52%; left: 28%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
                 <div id="ui-board" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; z-index: 5;"></div>
                 
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
@@ -473,12 +537,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v38.0 - 沉浸与质感 (当前版本)</strong><br>
-                - 🎰 [视觉] 牌桌重绘：新增德州标准内圈白线、专属 CHEAPER BROTHERS 奢华印花。<br>
-                - 🎴 [视觉] 公共牌占位符：中央提供 5 个发牌槽位，观感更佳。<br>
-                - ⚡️ [特效] 震撼 All-In：玩家全押时触发全屏震动与红色警告特效。<br>
-                - 🐇 [权限] 发牌员 Rabbit Hunt：拥有 D 钮的真实庄家，现在也可在局后亮出余牌。<br>
-                - ⌨️ [交互] 加注直接输入：下注区升级为带图标的深色输入框，点选直接打字即时同步。
+                <strong style="color:var(--gold)">v39.0 - 趣味升级版 (当前版本)</strong><br>
+                - 🍆 [头像] 大量搞色色和搞怪新头像加入 Take a Seat。<br>
+                - 🎰 [视觉] 牌桌重绘：更改为高级赌场绿，同时扑克牌比例放大，完美贴合占位白框。<br>
+                - 💬 [社交] 全屏弹幕：所有聊天均带全屏大字弹幕滑过，妈妈再也不用担心我没看见垃圾话了。<br>
+                - 🦸‍♂️ [社交] 骚话特效：聊天内发送指定快捷指令（如 HERO FOLD、偷鸡等）附带霸气全屏动画。<br>
+                - 😀 [社交] 快捷工具：聊天框上方添加 Emoji 面板和快捷发送按钮。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -509,7 +573,8 @@
     const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
-    const AVATAR_LIST = ['😎', '🤖', '🤡', '🤠', '👽', '👻', '🐼', '🧛', '🐻', '🦊', '🐯', '🐷'];
+    // 更新：加入搞怪和擦边表情
+    const AVATAR_LIST = ['😎','🤡','👽','👻','💩','🍆','🍑','💦','🍌','👅','🐍','🐔','🥵','🥴','🌚','🙈','🐷','🐶'];
     const MAX_SEATS = 10;
 
     let ws = null; let myName = ""; let currentRoomId = null; let selectedAvatar = '😎';
@@ -520,7 +585,55 @@
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
-    let localAllInCount = 0; // 用于追踪本局已经有几个人 all in 过了
+    let localAllInCount = 0; 
+
+    // 更新：输入框表情与快捷骚话插入
+    function appendEmoji(emoji) {
+        const input = document.getElementById('chat-input');
+        input.value += emoji;
+        input.focus();
+    }
+
+    function sendQuickChat(msg) {
+        if (myName) {
+            send({ type: 'CHAT', name: myName, msg: msg });
+            document.getElementById('chat-input').value = '';
+        } else {
+            alert("请先入座！");
+        }
+    }
+
+    // 更新：弹幕系统
+    function shootDanmaku(sender, msg) {
+        const container = document.getElementById('danmaku-container');
+        const el = document.createElement('div');
+        el.className = 'danmaku-item';
+        el.innerText = `${sender}: ${msg}`;
+        // 随机高度 10% 到 60%
+        el.style.top = Math.floor(Math.random() * 50 + 10) + '%'; 
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 8000); // 清理
+    }
+
+    // 更新：骚话全屏特效
+    function playChatEffect(msg) {
+        let effectHtml = '';
+        if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>';
+        else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>';
+        else if (msg === '抓鸡') effectHtml = '<div class="effect-catch">🦅 抓鸡！</div>';
+        else if (msg === '游击队') effectHtml = '<div class="effect-guerilla">🏃‍♂️ 敌进我退 游击队！</div>';
+        else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>';
+        else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>';
+        else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
+        
+        if(effectHtml) {
+             const fx = document.createElement('div');
+             fx.innerHTML = effectHtml;
+             fx.className = 'chat-fx-container';
+             document.body.appendChild(fx);
+             setTimeout(() => fx.remove(), 3000);
+        }
+    }
 
     function wakeUpChat() {
         const cl = document.getElementById('chat-list');
@@ -582,7 +695,6 @@
     const inputAmount = document.getElementById('input-raise-amount');
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
-    // 滑动条变动，同步给输入框
     function updateSliderFromSlider() {
         let val = parseFloat(slider.value) || 0;
         let cleanVal = formatMoney(val);
@@ -590,7 +702,6 @@
         btnRaiseSub.innerText = (val >= parseFloat(slider.max)) ? "ALL-IN" : "$" + cleanVal;
     }
 
-    // 输入框变动，同步给滑动条
     function syncInputToSlider() {
         let val = parseFloat(inputAmount.value) || 0;
         let min = parseFloat(slider.min);
@@ -613,7 +724,6 @@
         slider.value = target; updateSliderFromSlider();
     }
 
-    // 播放 All In 特效
     function playAllInAnimation() {
         const overlay = document.getElementById('allin-overlay');
         overlay.classList.remove('hidden');
@@ -746,11 +856,10 @@
     function renderEngine(state) {
         if (!state || !state.game) return;
 
-        // 跟踪新手局以重置计数
         if (state.game.handCount !== localHandCount) {
             localHandCount = state.game.handCount;
             initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
-            localAllInCount = 0; // 重置本局 All in 计数
+            localAllInCount = 0; 
         }
 
         if (state.game.logVersion !== localLogVersion) {
@@ -759,8 +868,17 @@
             contentBox.scrollTop = contentBox.scrollHeight; localLogVersion = state.game.logVersion;
         }
 
+        // 更新：检测新增的聊天记录，并触发弹幕和特效
         if (state.game.chatLogs && state.game.chatLogs.length !== localChatLength) {
             const chatList = document.getElementById('chat-list');
+            
+            // 找出增量聊天记录
+            const newLogs = state.game.chatLogs.slice(localChatLength);
+            newLogs.forEach(c => {
+                shootDanmaku(c.sender, c.msg); // 发射全屏弹幕
+                playChatEffect(c.msg);        // 检查是否触发大招特效
+            });
+
             chatList.innerHTML = state.game.chatLogs.map(c => `<div><strong style="color:#349feb">${c.sender}:</strong> ${c.msg}</div>`).join('');
             chatList.scrollTop = chatList.scrollHeight; localChatLength = state.game.chatLogs.length; wakeUpChat();
         }
@@ -781,7 +899,7 @@
             burnCardsHtml = `<div class="burn-area">` + 
                 state.game.burnCards.map((c, i) => {
                     const animDelay = (i >= prevBurnLength) ? `animation: dealBoardCard 0.3s ease-out backwards;` : ``;
-                    return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*15}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>`
+                    return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*10}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>`
                 }).join("") + `</div>`;
         }
 
@@ -806,7 +924,6 @@
         const isHost = (state.game.hostName === myName);
         const amIDealer = (amISeated && myDataRecord.seatIndex === state.game.dealerIndex);
         
-        // 触发 ALL-IN 检测
         if (state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             const currentAllIns = playersArray.filter(p => p.chips === 0 && !p.folded && !p.isOut && !p.isSpectating).length;
             if (currentAllIns > localAllInCount) {
@@ -875,7 +992,6 @@
             const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked;
             if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
 
-            // Dealer 特权：发余牌按钮显示判断
             if (state.game.board && state.game.board.length < 5 && (isHost || amIDealer)) {
                 dealerActionBtn.classList.remove("hidden");
             } else {
@@ -1043,7 +1159,6 @@
                     if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; 
                     slider.value = roundToQuarter(targetVal);
                     
-                    // 【只有没有手动正在输入时，才用 slider 去更新输入框的值，避免打字被打断】
                     if (document.activeElement !== inputAmount) {
                         updateSliderFromSlider();
                     }
