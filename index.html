@@ -33,6 +33,9 @@
         #table-container { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
         .poker-table { width: 80vw; height: 50vh; max-width: 1000px; max-height: 550px; background: radial-gradient(circle, #349feb 0%, var(--table-inner) 100%); border: 20px solid #1c232c; border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); position: relative; }
         
+        /* 【新增】桌布底部的版权水印 */
+        .copyright-logo { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 20px; font-weight: 900; color: rgba(255,255,255,0.15); letter-spacing: 5px; pointer-events: none; z-index: 1; user-select: none; }
+
         .pot-display-container { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 215, 0, 0.3); padding: 6px 20px; border-radius: 30px; text-align: center; z-index: 5;}
         .pot-label { font-size: 11px; color: #aaa; display: block; }
         .pot-value { font-size: 22px; font-weight: 900; color: var(--gold); }
@@ -161,7 +164,6 @@
         
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         
-        /* 【V37.5 史诗排版：所有下注筹码死死推向蓝桌布，绝不遮挡卡片本金】 */
         .pos-bottom .hole-cards { top: -45px; left: 50%; transform: translateX(-50%); } 
         .pos-bottom .bet-badge { top: -110px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
         .pos-top .hole-cards { bottom: -45px; left: 50%; transform: translateX(-50%); }
@@ -184,7 +186,6 @@
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* 【V37.5 史诗排版：操作台极致瘦身，腾出底层视野】 */
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
         .raise-control-area { display: flex; flex-direction: column; gap: 10px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #2a3441; }
@@ -271,7 +272,7 @@
             
             <div class="setting-item">
                 <span class="setting-label">标准买入额 (Buy-in)</span>
-                <input type="number" id="set-buyin" class="setting-input" value="30">
+                <input type="number" id="set-buyin" class="setting-input" value="0.50" step="0.50">
             </div>
             <div class="setting-item">
                 <span class="setting-label">小盲注 (默认 0.25)</span>
@@ -372,6 +373,8 @@
 
         <div id="table-container">
             <div class="poker-table">
+                <div class="copyright-logo">CHEAPER BROTHERS ©</div>
+
                 <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
                 <div class="community-cards-area" id="ui-board"></div>
                 
@@ -447,7 +450,7 @@
             <div class="turn-badge" style="background: #e74c3c; color: white;">💳 筹码耗尽</div>
             <div style="text-align: center; color: white; margin: 15px 0 25px 0; font-size: 16px;">
                 您已进入观战状态。是否按默认标准买入进行补充？<br>
-                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">30</span></strong>
+                <strong style="color: var(--active-green); font-size: 32px; line-height: 2;">+$<span id="ui-buyin-amount">0.50</span></strong>
             </div>
             <div class="main-action-row" style="height: 55px;">
                 <button class="action-btn btn-call" onclick="confirmPlayerBuyIn()" style="background: linear-gradient(145deg, #2ecc71, #219653); width: 100%;"><span class="btn-title" style="font-size:18px; color:black; font-weight:900;">确定买入</span></button>
@@ -460,19 +463,14 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v38.2 - 候场双向流通与全服大屏广播 (当前版本)</strong><br>
-                - 🎰 [视觉] 新增赌场级顶部大事件广播舱（Jackpot Banner），2-7与水鬼专属特效通报。<br>
-                - 🚪 [系统] 彻底打通候场区：中途加入强制排队；候场玩家可随时抢座（带免死金牌，下局生效）。<br>
+                <strong style="color:var(--gold)">v38.3 - 版权与超大表情包 (当前版本)</strong><br>
+                - 😎 [社交] 头像库大扩容！加入海贼王平替、Labubu风、疯狂恶搞等20+新表情。<br>
+                - 💰 [经济] 房间默认买入底金重置为 $0.50。<br>
+                - 🛡️ [版权] 桌布添加 Cheaper Brothers 专属水印。<br><br>
+                <strong style="color:var(--gold)">v38.2 - 候场双向流通与全服大屏广播</strong><br>
+                - 🎰 [视觉] 新增赌场级顶部大事件广播舱（Jackpot Banner）。<br>
+                - 🚪 [系统] 彻底打通候场区：中途加入强制排队；候场玩家可随时抢座。<br>
                 - 👑 [权限] 房主可随时剔除挂在候场区的玩家。<br>
-                - 🧾 [结算] 水鬼结算时增加极详细的破产平分资金流水记录。<br><br>
-                <strong style="color:var(--gold)">v38.1 - 平分破产与终极校准</strong><br>
-                - 📏 [排版] 极致防遮挡：重定位所有侧边筹码，操作台再次退让 140px。<br>
-                - 🦑 [模式] 修复中途加入者被误判水鬼Bug；水鬼破产启动Robin Hood平分机制。<br><br>
-                <strong style="color:var(--gold)">v38.0 - 自定义罚金</strong><br>
-                - 🦑 [模式] 鱿鱼生存模式新增自定义罚金输入框。<br><br>
-                <strong style="color:var(--gold)">v37.5 - 净网与自治</strong><br>
-                - 👑 [房主] 战绩表新增“抹除记录”权限。<br>
-                - 🏃 [玩家] 右下角新增专属控制台：可中途“加入观看”或“离开”。<br>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -497,7 +495,6 @@
     </div>
 
 <script>
-    // 【✅ 核心修改：这里已经换成了你的 Cloudflare 专属地址】
     const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
     
     const SEAT_ORDER = [
@@ -505,7 +502,14 @@
         's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'
     ];
     
-    const AVATAR_LIST = ['😎', '🤖', '🤡', '🤠', '👽', '👻', '🐼', '🧛', '🐻', '🦊', '🐯', '🐷'];
+    // 【新增】超大扩充的表情包（加入恶搞、海贼平替、Labubu风等）
+    const AVATAR_LIST = [
+        '😎', '🤡', '💩', '🌚', '🤪', '🤬', '🥵', '🤑', // 恶搞/搞怪
+        '🏴‍☠️', '👒', '🍖', '🐵', '⚓', // 海贼王氛围
+        '🐰', '👹', '👾', '🧸', '👽', // Labubu/怪兽氛围
+        '🐶', '🐒', '🐔', '🐟', '🐼', '🦊', '🐯', '🐷', // 动物
+        '🧛', '👻', '🤖', '🤠' // 经典
+    ];
     const MAX_SEATS = 10;
 
     let ws = null;
@@ -764,7 +768,8 @@
             window.history.pushState({}, "", `?room=${currentRoomId}`);
             document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             
-            const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30;
+            // 【更新】默认买入抓取逻辑也更改为 0.50
+            const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 0.50;
             const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1;
             const enableDraw = document.getElementById('set-enable-draw').checked;
@@ -881,7 +886,7 @@
 
         const elBuyin = document.getElementById('info-buyin');
         const elBlinds = document.getElementById('info-blinds');
-        if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 30);
+        if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 0.50);
         if (elBlinds) elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}`;
 
         let potPrefix = state.game.enableShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
@@ -1247,7 +1252,9 @@
                 buyinConsole.classList.remove("hidden");
                 tableContainer.style.transformOrigin = "top center";
                 tableContainer.style.transform = "translateY(-140px) scale(0.82)";
-                document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
+                
+                // 【更新】破产补充筹码UI也跟随默认为 0.50
+                document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 0.50);
             } 
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
