@@ -140,7 +140,7 @@
 
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
-        /* 🔥 修复点 5: 强势加注者特效追踪 */
+        /* 🔥 加注者红框跟踪特效 */
         .aggressor-highlight { border-color: #ff4757 !important; box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 15px rgba(255, 71, 87, 0.5) !important; animation: aggressorPulse 1s infinite alternate; }
         @keyframes aggressorPulse { 0% { box-shadow: 0 0 20px rgba(255,71,87,0.6); } 100% { box-shadow: 0 0 45px rgba(255,71,87,1); } }
 
@@ -176,17 +176,15 @@
 
         .out-state { filter: grayscale(1) brightness(0.4); opacity: 0.8; }
         
-        /* 🔥 修复点 6: 下注筹码向内圈靠拢，防遮挡 */
         .hole-cards { position: absolute; display: flex; z-index: 5; }
         .card-1 { margin-right: -10px; z-index: 1; } .card-2 { z-index: 2; }
         
+        /* 筹码向内圈缩进防遮挡 */
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
-        
         .pos-bottom .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); } 
         .pos-bottom .bet-badge { top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
         .pos-top .hole-cards { bottom: -55px; left: 50%; transform: translateX(-50%); }
         .pos-top .bet-badge { bottom: -45px !important; top: auto !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
-        
         .s-lft-t .hole-cards, .s-lft-b .hole-cards, .s-rgt-t .hole-cards, .s-rgt-b .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); }
         .s-lft-b .bet-badge, .s-lft-t .bet-badge { top: 20px !important; left: 110px !important; transform: none !important; right: auto !important; }
         .s-rgt-b .bet-badge, .s-rgt-t .bet-badge { top: 20px !important; right: 110px !important; transform: none !important; left: auto !important; }
@@ -204,14 +202,19 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 90; width: 180px; box-sizing: border-box; border: 1px solid #333;}
+        /* 🔥 控制台侧滑抽屉样式 */
+        .host-panel { position: absolute; bottom: 20px; right: -180px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; border-right: none; transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        .host-panel.open { right: 0px; }
+        .panel-toggle-tab { position: absolute; left: -34px; top: 15px; background: #11151a; border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 16px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto;}
+        
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* 🔥 修复点 4: 沉浸式手牌样式 */
-        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(1.4); display: flex; gap: 8px; z-index: 105; transition: 0.3s; pointer-events: none;}
+        /* 🔥 沉浸式手牌样式 (带防遮挡避让机制) */
+        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(1.4); display: flex; gap: 8px; z-index: 105; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none;}
+        #my-immersive-cards.shifted { left: 55%; }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
@@ -259,10 +262,12 @@
             #chat-zone:focus-within, #chat-zone:hover { pointer-events: auto; }
             #chat-list { height: 100px; font-size: 12px; }
             .chat-tools { display: flex; } 
-            .host-panel { width: 140px; padding: 10px; right: 10px; bottom: 10px; z-index: 110;}
+            .host-panel { right: -140px; width: 140px; }
+            .host-panel.open { right: 0px; }
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
-            #my-immersive-cards { bottom: 90px; transform: translateX(-50%) scale(1.1); }
+            #my-immersive-cards { bottom: 90px; left: 50%; transform: translateX(-50%) scale(1.1); }
+            #my-immersive-cards.shifted { left: 40%; }
         }
     </style>
 </head>
@@ -473,8 +478,8 @@
             <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起排队选座</button>
         </div>
 
-
         <div class="host-panel hidden" id="host-panel">
+            <div class="panel-toggle-tab" onclick="toggleHostPanel()">⚙️</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="document.getElementById('player-mgmt-modal').classList.remove('hidden')" class="host-btn" style="background:#8e44ad; color:white; margin-bottom:10px;">🛠️ 玩家管理</button>
@@ -484,6 +489,7 @@
         </div>
 
         <div class="host-panel hidden" id="player-panel">
+            <div class="panel-toggle-tab" onclick="toggleHostPanel()">👤</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
             <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black;">✏️ 修改资料</button>
             <button onclick="toggleSitOut()" id="btn-sit-out" class="host-btn btn-dark" style="margin-top:8px;">⏸️ 暂时离座</button>
@@ -551,13 +557,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v55.0 - 职业赛场视觉全升级</strong><br>
-                - 🎯 [高亮追踪] 新增加注者全场红框暴闪特效，谁在发力一目了然！<br>
-                - 🃏 [第一人称] 史诗级改动！玩家自己的底牌将放大1.5倍悬浮在操作台上，第一人称沉浸感拉满。<br>
-                - 🛠️ [控制台收纳] 房主踢人、禁言按钮统一收纳到专属“玩家管理”弹窗，彻底告别误触与挡牌。<br>
-                - 🪑 [防遮挡优化] 重新校准全场下注筹码位置，不再与 Total Pot 和玩家名字打架。<br>
-                - 🔥 [过三张升级] 修正过三张展现位置及文案，动画仅触发一次不乱飞。<br>
-                - 🩸 [规则严防] 修复 Stand Up 逻辑：分池、边池均不算赢，唯有赢下主池方可安全。
+                <strong style="color:var(--gold)">v56.0 - 终极满血修复版</strong><br>
+                - 🗄️ [全系收纳] 房主面板与玩家面板升级为“侧边抽屉式”，随点随收，彻底不遮挡牌桌。<br>
+                - 🎴 [智能避让] 第一人称放大手牌移至操作台与右侧之间的黄金位置，展开控制台时手牌将自动向左平移躲避。<br>
+                - 🔄 [操作优化] 修复了玩家回合结束时筹码拉杆不重置的问题，现已自动归零至 MIN。<br>
+                - 🗑️ [体验优化] 彻底删除了“随时入座”按钮，坚守排队抽签纪律，预防插队卡房。<br>
+                - 🛠️ [Bug修复] 解决了 JS 代码合并引起的语法崩溃，所有按钮与界面功能满血复活。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -633,11 +638,21 @@
         if (container.classList.contains('hidden')) { container.classList.remove('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ▼'; } 
         else { container.classList.add('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ◀'; }
     }
+    
+    // 🔥 面板联动逻辑
+    function toggleHostPanel() {
+        const hp = document.getElementById('host-panel');
+        const pp = document.getElementById('player-panel');
+        if (!hp.classList.contains('hidden')) hp.classList.toggle('open');
+        if (!pp.classList.contains('hidden')) pp.classList.toggle('open');
+        const cards = document.getElementById('my-immersive-cards');
+        if (cards) cards.classList.toggle('shifted');
+    }
 
     function toggleTwoSeven(prefix) {
         const shortDeckBox = document.getElementById(prefix + '-enable-shortdeck'); const tsBox = document.getElementById(prefix + '-enable-twoseven'); const tsContainer = document.getElementById(prefix + '-twoseven-container');
-        if (shortDeckBox && shortDeckBox.checked) { tsBox.checked = false; tsBox.disabled = true; if (tsContainer) tsContainer.style.opacity = '0.4'; } 
-        else { tsBox.disabled = false; if (tsContainer) tsContainer.style.opacity = '1'; }
+        if (shortDeckBox && shortDeckBox.checked) { if(tsBox) {tsBox.checked = false; tsBox.disabled = true;} if (tsContainer) tsContainer.style.opacity = '0.4'; } 
+        else { if(tsBox) tsBox.disabled = false; if (tsContainer) tsContainer.style.opacity = '1'; }
     }
 
     function shootDanmaku(sender, msg) {
@@ -657,7 +672,6 @@
 
     function playGameStartAnimation() { const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => fx.remove(), 2000); }
 
-    // 🔥 修复点 3: 过三张动画
     function playBurnThreeAnimation() { const fx = document.createElement('div'); fx.innerHTML = '🔥🔥🔥<br>过三张'; fx.style = "position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); font-size:50px; font-weight:900; color:#e74c3c; text-shadow:0 0 20px #000; animation: popZoom 1.5s forwards; z-index:999; text-align:center; pointer-events: none;"; document.getElementById('table-container').appendChild(fx); setTimeout(() => fx.remove(), 1500); }
 
     function playPainEffect() { document.body.classList.add('pain-shake'); const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500); }
@@ -834,15 +848,11 @@
 
         if (state.game.status === 'PRE-FLOP' && state.game.handCount !== localHandCount) { playGameStartAnimation(); }
 
-        // 🔥 修复点 3: 确保每次新牌局/等待时，清理动画标记，防止发牌乱跳
-        if (state.game.status === "WAITING" || state.game.status === "LOBBY") {
-            prevBoardLength = 0; prevBurnLength = 0;
-        }
+        if (state.game.status === "WAITING" || state.game.status === "LOBBY") { prevBoardLength = 0; prevBurnLength = 0; }
 
         if (state.game.handCount !== localHandCount) {
             localHandCount = state.game.handCount; initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
-            currentPreAction = null; renderPreUI();
-            prevBoardLength = 0; prevBurnLength = 0;
+            currentPreAction = null; renderPreUI(); prevBoardLength = 0; prevBurnLength = 0;
         }
 
         if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { let wasZero = (localStandUpEffect === 0); localStandUpEffect = state.game.standUpEffect; if(!wasZero) playPainEffect(); }
@@ -904,7 +914,6 @@
             const pName = p.name.split('|')[1] || p.name;
             ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>$${formatMoney(p.totalBuyIn)}</td><td>$${formatMoney(p.chips)}</td><td class="${netClass}" style="text-align:right; white-space:nowrap;">${netStr}</td></tr>`;
 
-            // 🔥 修复点 1: 渲染弹窗里的玩家管理列表，不再放牌桌上
             if (isHost && p.name !== myName && !p.isOut && p.seatIndex !== -1 && !p.isKicked) {
                 let isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY" && p.seatIndex === state.game.turnIndex);
                 mgmtListHtml += `
@@ -1004,7 +1013,7 @@
             }, 200);
         }
 
-        let myImmersiveCardsHtml = ""; // 🔥 记录我的沉浸式手牌
+        let myImmersiveCardsHtml = "";
 
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i]; const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
@@ -1020,7 +1029,6 @@
                 const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true; const isMySeat = (p.name === myName);
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating); const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating); const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
 
-                // 🔥 修复点 5: 强势加注者高亮特效
                 let isAggressor = (state.game.aggressorName && p.name === state.game.aggressorName && !isOut && !isSpectating);
                 let aggressorClass = isAggressor ? "aggressor-highlight" : "";
 
@@ -1040,11 +1048,7 @@
                     }).join("");
                 }
 
-                // 🔥 修复点 4: 如果是我自己的牌，不放桌上，存在变量里，一会儿放在底部的第一人称面板里
-                if (isMySeat) {
-                    myImmersiveCardsHtml = cardsHtml;
-                    cardsHtml = ""; // 掏空桌面渲染
-                }
+                if (isMySeat) { myImmersiveCardsHtml = cardsHtml; cardsHtml = ""; }
 
                 let badgeHtml = "";
                 if (isOffline && !p.isBot) badgeHtml = `<div class="status-badge-inner bg-offline">已离线</div>`;
@@ -1087,7 +1091,6 @@
             }
         }
         
-        // 渲染沉浸式第一人称手牌
         document.getElementById('my-immersive-cards').innerHTML = myImmersiveCardsHtml;
 
         if (isInitialDeal) initialDealPlayed = true; if (state.game.status === "SHOWDOWN") winTextPlayed = true;
@@ -1114,10 +1117,13 @@
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'}); document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'}); document.getElementById("btn-action-raise").onclick = () => { syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
                 } else {
-                    slider.value = 0; // 🔥让拉杆在回合结束后自动归零，下回合自动顶到 MIN
+                    slider.value = 0;
                     preActionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
                     waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex); if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; } actBtns.forEach(id => document.getElementById(id).disabled = true);
                 }
+            }
+        }
+    }
 </script>
 </body>
 </html>
