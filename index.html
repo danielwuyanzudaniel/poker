@@ -977,9 +977,6 @@
             drawZone.innerHTML = state.game.drawingCards.map(c => { if (c.faceUp) { const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : ""; return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`; } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; } }).join('');
         } else { drawZone.classList.add('hidden'); }
 
-        const btnTakeSeat = document.getElementById('btn-take-seat');
-        if (myName && !amISeated && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { btnTakeSeat.classList.remove('hidden'); } else { btnTakeSeat.classList.add('hidden'); }
-
         if (isHost) {
             document.getElementById('player-panel').classList.add('hidden');
             if (state.game.status === "LOBBY") { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.remove('hidden'); } 
