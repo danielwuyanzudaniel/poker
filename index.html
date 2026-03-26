@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CB POKER - 职业赛场</title>
     <style>
-        :root { 
-            --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; 
-            --gold: #ffd700; --active-green: #2ecc71; 
-        }
+        :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; }
         body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center;}
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; } 
@@ -25,24 +22,20 @@
 
         .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; color: #aaa; font-size: 14px; font-weight: bold; cursor: pointer; }
         .settings-header span:hover { color: var(--gold); }
-        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; text-align: left; transition: opacity 0.3s;}
+        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; text-align: left; transition: opacity 0.3s;}
         .setting-label { font-size: 14px; color: #ccc; flex: 1; }
         .setting-input { width: 100px; padding: 8px 12px; border-radius: 6px; background: #1a2028; border: 1px solid #444; color: white; font-size: 14px; font-weight: bold; outline: none; text-align: right; transition: border-color 0.2s; }
         .setting-input option { background-color: var(--panel-bg); color: white; }
 
         #table-container { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
         .poker-table { width: 80vw; height: 50vh; max-width: 1000px; max-height: 550px; background: radial-gradient(circle, #1a8044 0%, var(--table-inner) 100%); border: 20px solid #1c232c; border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); position: relative; }
-        
         .table-inner-line { position: absolute; top: 35px; bottom: 35px; left: 55px; right: 55px; border: 3px solid rgba(255, 255, 255, 0.15); border-radius: 200px; pointer-events: none; z-index: 1; display: flex; justify-content: center; }
         .table-logo { margin-top: 30px; color: rgba(255, 255, 255, 0.15); font-size: 38px; font-weight: 900; letter-spacing: 10px; font-family: 'Georgia', serif; }
-
         .card-placeholders { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; z-index: 2; pointer-events: none; }
         .card-placeholder { width: 50px; height: 72px; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 5px; box-sizing: border-box; background: rgba(0, 0, 0, 0.1); }
-
         .pot-display-container { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 215, 0, 0.3); padding: 6px 20px; border-radius: 30px; text-align: center; z-index: 5;}
         .pot-label { font-size: 11px; color: #aaa; display: block; }
         .pot-value { font-size: 22px; font-weight: 900; color: var(--gold); }
-        
         .burn-area { display: flex; position: relative; height: 72px; width: 60px;}
         .burn-area .playing-card { position: absolute; left: 0; box-shadow: -2px 2px 5px rgba(0,0,0,0.8); }
 
@@ -51,7 +44,6 @@
 
         .top-left-btns { position: absolute; top: 20px; left: 20px; display: flex; gap: 15px; z-index: 90; }
         .top-right-btns { position: absolute; top: 20px; right: 20px; display: flex; gap: 15px; z-index: 90; }
-        
         .rules-box { background: rgba(17, 21, 26, 0.85); border: 1px solid #444; padding: 10px 15px; border-radius: 12px; font-size: 12px; color: white; display: flex; gap: 15px; z-index: 90; box-shadow: 0 4px 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px);}
         .rule-label { color: #8ca0b3; font-weight: bold; margin-right: 4px; }
         .status-on { color: var(--active-green); font-weight: 900; }
@@ -153,10 +145,8 @@
         .player-seat:hover .kick-btn { display: block; }
 
         .player-card { width: 110px; min-height: 85px; background: #000; border-radius: 8px; overflow: visible; border: 3px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
-        .player-card.active { border-color: #2ecc71 !important; animation: neonPulse 1.5s infinite alternate; }
+        .player-card.active { border-color: #2ecc71 !important; box-shadow: 0 0 25px rgba(46, 204, 113, 0.8), inset 0 0 10px rgba(46, 204, 113, 0.5); }
         .player-card.active .player-chips { background: #2ecc71 !important; color: #000 !important; }
-        
-        @keyframes neonPulse { 0% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.4), inset 0 0 2px rgba(46, 204, 113, 0.2); } 100% { box-shadow: 0 0 25px rgba(46, 204, 113, 1), inset 0 0 10px rgba(46, 204, 113, 0.5); } }
 
         .player-card.my-seat { border-color: #ffd700 !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2) !important; }
         .player-card.my-seat .player-chips { background: linear-gradient(145deg, #ffd700, #d4b400) !important; color: #000 !important; border-top: 1px solid rgba(255,255,255,0.3); }
@@ -244,22 +234,21 @@
         
         .waiting-tip { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; color: #aaa; font-size: 14px; font-weight: bold; border: 1px solid #333; z-index: 20;}
 
-        .allin-text {
-            font-size: 140px; font-weight: 900; color: #ffd700; text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000;
-            animation: slam 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        .allin-text { font-size: 140px; font-weight: 900; color: #ffd700; text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000; animation: slam 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes slam { 0% { transform: scale(5); opacity: 0; } 50% { transform: scale(1); opacity: 1; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
         .allin-flash { animation: bgFlash 0.8s ease-out; }
         @keyframes bgFlash { 0% { background-color: rgba(255, 0, 0, 0.5); } 100% { background-color: var(--bg-dark); } }
+
+        .pain-shake { animation: earthquake 0.5s cubic-bezier(.36,.07,.19,.97) both; box-shadow: inset 0 0 150px rgba(255,0,0,0.9); }
+        @keyframes earthquake { 0% {transform: translate(10px, 10px)} 20% {transform: translate(-10px, -10px)} 40% {transform: translate(10px, -10px)} 60% {transform: translate(-10px, 10px)} 80% {transform: translate(5px, 5px)} 100% {transform: translate(0, 0)} }
+        
+        .turn-timer-bar { position: absolute; bottom: 0; left: 0; height: 6px; background: #ff4757; border-radius: 3px; z-index: 20; box-shadow: 0 0 10px red; }
     </style>
 </head>
 <body>
 
     <div id="danmaku-container"></div>
-
-    <div id="disconnect-banner" class="hidden" style="position:absolute; top:0; left:0; width:100%; background:#e74c3c; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-        🔌 失去与云端的连接，正在尝试重连...
-    </div>
+    <div id="disconnect-banner" class="hidden" style="position:absolute; top:0; left:0; width:100%; background:#e74c3c; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size: 14px;">🔌 失去与云端的连接，正在尝试重连...</div>
 
     <div id="view-home" class="view-screen">
         <div class="menu-card">
@@ -284,6 +273,10 @@
             <div class="setting-item">
                 <span class="setting-label">小盲注 (默认 0.25)</span>
                 <input type="number" id="set-sb" class="setting-input" value="0.25" step="0.25">
+            </div>
+            <div class="setting-item">
+                <span class="setting-label">行动倒计时 (0为无限)</span>
+                <input type="number" id="set-timer" class="setting-input" value="0" placeholder="秒">
             </div>
             <div class="setting-item">
                 <span class="setting-label">机器人难度</span>
@@ -317,7 +310,11 @@
                 <h2 style="color:var(--gold); margin:0;">实时修改规则</h2>
                 <span style="font-size:24px; cursor:pointer; color:#8ca0b3;" onclick="document.getElementById('update-settings-modal').classList.add('hidden')">&times;</span>
             </div>
-            <div class="setting-item" style="margin-top:20px;">
+            <div class="setting-item">
+                <span class="setting-label" style="color:#fff;">⏱️ 行动倒计时 (秒)</span>
+                <input type="number" id="update-timer" class="setting-input" value="0">
+            </div>
+            <div class="setting-item" style="margin-top:20px; border-top: 1px solid #333; padding-top: 15px;">
                 <span class="setting-label" style="color:#ff9800;">🔥 短牌模式 (6+)</span>
                 <input type="checkbox" id="update-enable-shortdeck" onchange="toggleTwoSeven('update')" style="width:20px; height:20px; cursor:pointer;">
             </div>
@@ -329,7 +326,7 @@
                 <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金</span>
                 <input type="checkbox" id="update-enable-twoseven" style="width:20px; height:20px; cursor:pointer;">
             </div>
-            <div style="font-size:12px; color:#aaa; margin-bottom:20px; text-align:left;">* 提示：规则修改将在【下一局】正式生效。短牌模式下将禁止触发2-7炸鱼。</div>
+            <div style="font-size:12px; color:#aaa; margin-bottom:20px; text-align:left;">* 提示：规则修改将在【下一局】正式生效。倒计时为 0 即为无限制。</div>
             <button class="btn-main btn-gold" onclick="submitUpdateSettings()">保存并广播</button>
         </div>
     </div>
@@ -352,16 +349,11 @@
 
     <div id="view-game" class="view-screen hidden">
         <div id="log-drawer">
-            <div class="log-header">
-                <span>📝 牌局操作记录</span>
-                <span style="color:#aaa; cursor:pointer; font-size:24px;" onclick="toggleLogDrawer()">&times;</span>
-            </div>
+            <div class="log-header"><span>📝 牌局操作记录</span><span style="color:#aaa; cursor:pointer; font-size:24px;" onclick="toggleLogDrawer()">&times;</span></div>
             <div class="log-content" id="log-content"></div>
         </div>
 
-        <div class="top-left-btns" id="top-left-btns">
-            <button class="top-btn btn-log hidden" id="btn-log-top" onclick="toggleLogDrawer()">📝 记录</button>
-        </div>
+        <div class="top-left-btns" id="top-left-btns"><button class="top-btn btn-log hidden" id="btn-log-top" onclick="toggleLogDrawer()">📝 记录</button></div>
 
         <div class="top-right-btns" id="top-right-btns" style="flex-direction: column; align-items: flex-end; gap: 10px;">
             <div id="game-rules-box" class="rules-box hidden" style="flex-direction: column; align-items: flex-end; gap: 8px;">
@@ -401,36 +393,22 @@
 
         <div id="table-container">
             <div class="poker-table">
-                <div class="table-inner-line">
-                    <div class="table-logo">CHEAPER BROTHERS</div>
-                </div>
-                
+                <div class="table-inner-line"><div class="table-logo">CHEAPER BROTHERS</div></div>
                 <div class="card-placeholders">
-                    <div class="card-placeholder"></div>
-                    <div class="card-placeholder"></div>
-                    <div class="card-placeholder"></div>
-                    <div class="card-placeholder"></div>
-                    <div class="card-placeholder"></div>
+                    <div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div>
                 </div>
-
                 <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
-                
                 <div id="ui-burn" style="position: absolute; top: 52%; left: 28%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
                 <div id="ui-board" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; z-index: 5;"></div>
-                
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
-
                 <div id="invite-pill-container" style="position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:100; display: flex; flex-direction: column; align-items: center;">
                     <div class="invite-pill" onclick="copyInviteLink()">
                         <div style="color: white; font-weight: bold; font-size: 15px; margin-bottom: 5px; opacity: 0.9;">分享给朋友 (点击复制链接):</div>
                         <div id="display-room-url" style="color: #8ca0b3; font-size: 16px; letter-spacing: 2px; font-weight: bold;">ROOM: ------</div>
                     </div>
                 </div>
-                
                 <div id="pick-seat-banner" class="winner-banner hidden" style="top: 8%;"></div>
-                
                 <div id="winner-banner" class="winner-banner hidden"></div>
-                
                 <div id="players-layer"></div>
             </div>
         </div>
@@ -454,12 +432,13 @@
             <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起排队选座</button>
         </div>
 
-        <button id="btn-take-seat" class="hidden" onclick="openSitModal()">🪑 入座参与 (Take a Seat)</button>
+        <button id="btn-take-seat" class="hidden" onclick="openSitModal()" style="position: absolute; bottom: 20px; left: 20px; z-index: 120; background: linear-gradient(145deg, #ffd700, #d4b400); color: black; font-weight: 900; padding: 12px 25px; border-radius: 25px; border: 2px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.6); cursor: pointer; font-size: 16px; animation: pulseGold 2s infinite;">🪑 随时入座 (Take a Seat)</button>
 
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
-            <button onclick="openUpdateSettings()" class="host-btn" style="background:#f39c12; color:black; margin-bottom:10px;">⚙️ 实时修改规则</button>
+            <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black; margin-bottom:10px;">✏️ 修改资料</button>
+            <button onclick="openUpdateSettings()" class="host-btn" style="background:#349feb; color:white; margin-bottom:10px;">⚙️ 修改规则 / 倒计时</button>
             <button onclick="triggerStartGame()" id="btn-start" class="host-btn btn-green" style="margin-top:0;">▶ 开始新一局</button>
             <button onclick="pauseAndRefund()" id="btn-pause-refund" class="host-btn btn-red" style="margin-top:0px;">⏸️ 中止并退款</button>
         </div>
@@ -518,16 +497,23 @@
             </div>
         </div>
 
+        <div id="standup-pay-console" class="action-console hidden" style="z-index: 110; bottom: 30%; background: rgba(231, 76, 60, 0.95); border: 2px solid red; box-shadow: 0 0 50px rgba(255,0,0,0.6);">
+            <div style="font-size: 28px; font-weight: 900; color: white; text-align: center; margin-bottom: 10px; text-shadow: 0 2px 10px black;">🩸 愿赌服输 🩸</div>
+            <div style="color: #fff; text-align: center; margin-bottom: 20px; font-size: 15px;">您是本轮 Stand Up 的最后一名。<br>请亲手按下按钮向全场发放罚金！</div>
+            <button onclick="send({type:'PAY_STANDUP', name: myName})" style="background: black; color: #ff4757; font-size: 22px; font-weight: 900; padding: 15px; border-radius: 12px; border: 2px solid #ff4757; cursor: pointer; transition: 0.2s;">💸 接受打击并付款</button>
+        </div>
+
     </div>
 
     <div id="ledger-modal" class="ledger-modal hidden">
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v45.0 - 史诗视觉补丁 (当前版本)</strong><br>
-                - 🎴 [视觉优化] 还原经典：扑克牌背面修改为最经典的红色方格网纹样式，在绿色桌面上对比度拉满。<br>
-                - 🧍‍♂️ [文案调整] Stand Up 更名：全面移除了不合时宜的鱿鱼大逃杀图标，统一替换为经典的起立（🧍‍♂️）图标。<br>
-                - 🐔 [海量头像] 新增了上百种全新的动物（涵盖全部形态的鸡、老虎、熊、蛋等），让入座更具个性。
+                <strong style="color:var(--gold)">v50.0 - 终极机制增强版</strong><br>
+                - ⏱️ [倒计时] 新增行动死亡倒计时功能，房主随时配置。<br>
+                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！<br>
+                - 🪑 [随时加入] 观战玩家可随时点击入座按钮，游戏将自动分配座位并在下一手发牌，告别抢10秒间隔。<br>
+                - 🎉 [视觉优化] 取消开局误报的ALL-IN特效，新增专属 GAME START 黄金过场。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -554,7 +540,6 @@
     <div id="allin-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
 
 <script>
-    // 🔥 你的专属 Cloudflare 免费云端大厅！
     const BACKEND_URL = "https://cb-poker-server.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
@@ -595,6 +580,7 @@
     let rebuyTimers = {};
     let currentPreAction = null; 
     let isEditingProfile = false;
+    let localStandUpEffect = 0;
 
     function appendEmoji(emoji) {
         const input = document.getElementById('chat-input');
@@ -603,17 +589,11 @@
     }
 
     function sendQuickChat(msg) {
-        if (myName) {
-            send({ type: 'CHAT', name: myName, msg: msg });
-            document.getElementById('chat-input').value = '';
-        } else {
-            alert("请先入座！");
-        }
+        if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); }
     }
 
     function togglePre(type) {
-        if (currentPreAction === type) currentPreAction = null; 
-        else currentPreAction = type;
+        if (currentPreAction === type) currentPreAction = null; else currentPreAction = type;
         renderPreUI();
     }
 
@@ -624,27 +604,15 @@
 
     function shootDanmaku(sender, msg) {
         let senderColor = '#ffffff';
-        if (latestGameState && latestGameState.players) {
-            let p = latestGameState.players.find(x => (x.name.split('|')[1] || x.name) === sender);
-            if(p && p.name.split('|')[2]) senderColor = p.name.split('|')[2];
-        }
-
-        const container = document.getElementById('danmaku-container');
-        const el = document.createElement('div');
-        el.className = 'danmaku-item';
+        if (latestGameState && latestGameState.players) { let p = latestGameState.players.find(x => (x.name.split('|')[1] || x.name) === sender); if(p && p.name.split('|')[2]) senderColor = p.name.split('|')[2]; }
+        const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item';
         el.innerHTML = `<span style="color:${senderColor}; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${sender}:</span> <span style="color:#ffffff; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${msg}</span>`;
-        el.style.top = Math.floor(Math.random() * 50 + 10) + '%'; 
-        container.appendChild(el);
-        setTimeout(() => el.remove(), 16000); 
+        el.style.top = Math.floor(Math.random() * 50 + 10) + '%'; container.appendChild(el); setTimeout(() => el.remove(), 16000); 
     }
 
     function shootSystemWarning(msg) {
-        const container = document.getElementById('danmaku-container');
-        const el = document.createElement('div');
-        el.className = 'danmaku-item system-warning';
-        el.innerText = `🚨 ${msg}`;
-        container.appendChild(el);
-        setTimeout(() => el.remove(), 26000); 
+        const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item system-warning';
+        el.innerText = `🚨 ${msg}`; container.appendChild(el); setTimeout(() => el.remove(), 26000); 
     }
 
     function playChatEffect(msg) {
@@ -656,30 +624,35 @@
         else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>';
         else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>';
         else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
-        
-        if(effectHtml) {
-             const fx = document.createElement('div');
-             fx.innerHTML = effectHtml;
-             fx.className = 'chat-fx-container';
-             document.body.appendChild(fx);
-             setTimeout(() => fx.remove(), 3000);
-        }
+        if(effectHtml) { const fx = document.createElement('div'); fx.innerHTML = effectHtml; fx.className = 'chat-fx-container'; document.body.appendChild(fx); setTimeout(() => fx.remove(), 3000); }
+    }
+
+    function playGameStartAnimation() {
+        const fx = document.createElement('div');
+        fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>';
+        fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards;";
+        document.body.appendChild(fx);
+        setTimeout(() => fx.remove(), 2000);
+    }
+
+    function playPainEffect() {
+        document.body.classList.add('pain-shake');
+        const fx = document.createElement('div');
+        fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>';
+        fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards;";
+        document.body.appendChild(fx);
+        setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500);
     }
 
     function wakeUpChat() {
         const cl = document.getElementById('chat-list');
-        if(cl) {
-            cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer);
-            chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000);
-        }
+        if(cl) { cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer); chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000); }
     }
 
     function toggleTwoSeven(prefix) {
         const isShortDeck = document.getElementById(prefix + '-enable-shortdeck').checked;
-        const tsBox = document.getElementById(prefix + '-enable-twoseven');
-        const tsContainer = document.getElementById(prefix + '-twoseven-container');
-        if(isShortDeck) { tsBox.checked = false; tsBox.disabled = true; tsContainer.style.opacity = '0.4'; } 
-        else { tsBox.disabled = false; tsContainer.style.opacity = '1'; }
+        const tsBox = document.getElementById(prefix + '-enable-twoseven'); const tsContainer = document.getElementById(prefix + '-twoseven-container');
+        if(isShortDeck) { tsBox.checked = false; tsBox.disabled = true; tsContainer.style.opacity = '0.4'; } else { tsBox.disabled = false; tsContainer.style.opacity = '1'; }
     }
 
     function toggleChangelog() { document.getElementById('changelog-area').classList.toggle('hidden'); }
@@ -689,46 +662,21 @@
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
     
     function toggleLogDrawer() { 
-        const drawer = document.getElementById('log-drawer');
-        const chatZone = document.getElementById('chat-zone');
+        const drawer = document.getElementById('log-drawer'); const chatZone = document.getElementById('chat-zone');
         drawer.classList.toggle('open'); 
-        if(drawer.classList.contains('open')) {
-            chatZone.style.left = '340px';
-        } else {
-            chatZone.style.left = '20px';
-        }
+        if(drawer.classList.contains('open')) { chatZone.style.left = '340px'; } else { chatZone.style.left = '20px'; }
     }
 
-    function purgeRecord(targetName) {
-        if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n如果该玩家曾参与过输赢，强行删除将导致全桌总盈亏无法配平（出现死账）！\n仅建议删除未产生实际交易的误加玩家。")) { send({type: 'PURGE_RECORD', name: myName, targetName: targetName}); }
-    }
-
-    function standUpToSpectate() {
-        if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌（已下注金额不退还）。")) { send({type: 'LEAVE_SEAT', name: myName}); }
-    }
-    
-    function toggleSitOut() {
-        if(latestGameState && latestGameState.players) {
-            let p = latestGameState.players.find(x => x.name === myName);
-            if (p) {
-                let newState = !p.isSittingOut;
-                send({type: 'TOGGLE_SIT_OUT', name: myName, isSittingOut: newState});
-            }
-        }
-    }
-
-    function exitGame() {
-        if(confirm("确定要离开房间吗？\n如果当前正在局中，您将自动弃牌。您的战绩会保留在账单中。")) {
-            send({type: 'EXIT_GAME', name: myName}); setTimeout(() => { window.location.href = window.location.pathname; }, 500);
-        }
-    }
+    function purgeRecord(targetName) { if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n仅建议删除未产生实际交易的误加玩家。")) { send({type: 'PURGE_RECORD', name: myName, targetName: targetName}); } }
+    function standUpToSpectate() { if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌。")) { send({type: 'LEAVE_SEAT', name: myName}); } }
+    function toggleSitOut() { if(latestGameState && latestGameState.players) { let p = latestGameState.players.find(x => x.name === myName); if (p) { let newState = !p.isSittingOut; send({type: 'TOGGLE_SIT_OUT', name: myName, isSittingOut: newState}); } } }
+    function exitGame() { if(confirm("确定要离开房间吗？\n您的战绩会保留在账单中。")) { send({type: 'EXIT_GAME', name: myName}); setTimeout(() => { window.location.href = window.location.pathname; }, 500); } }
 
     function generateSettlement() {
         if(!latestGameState || !latestGameState.players) return;
         let winners = []; let losers = [];
         latestGameState.players.forEach(p => {
-            if (p.isKicked) return;
-            let net = p.chips - (p.totalBuyIn || 0); let pName = p.name.split('|')[1] || p.name;
+            if (p.isKicked) return; let net = p.chips - (p.totalBuyIn || 0); let pName = p.name.split('|')[1] || p.name;
             if (net > 0) winners.push({name: pName, amount: net}); else if (net < 0) losers.push({name: pName, amount: -net}); 
         });
         winners.sort((a, b) => b.amount - a.amount); losers.sort((a, b) => b.amount - a.amount);
@@ -746,92 +694,49 @@
     const inputAmount = document.getElementById('input-raise-amount');
     const btnRaiseSub = document.getElementById('btn-raise-sub');
 
-    function updateSliderFromSlider() {
-        let val = parseFloat(slider.value) || 0;
-        let cleanVal = formatMoney(val);
-        inputAmount.value = cleanVal;
-        btnRaiseSub.innerText = (val >= parseFloat(slider.max)) ? "ALL-IN" : "$" + cleanVal;
-    }
-
-    function syncInputToSlider() {
-        let val = parseFloat(inputAmount.value) || 0;
-        let min = parseFloat(slider.min);
-        let max = parseFloat(slider.max);
-        if (val > max) val = max; 
-        slider.value = val;
-        btnRaiseSub.innerText = (val >= max) ? "ALL-IN" : "$" + formatMoney(val);
-    }
+    function updateSliderFromSlider() { let val = parseFloat(slider.value) || 0; let cleanVal = formatMoney(val); inputAmount.value = cleanVal; btnRaiseSub.innerText = (val >= parseFloat(slider.max)) ? "ALL-IN" : "$" + cleanVal; }
+    function syncInputToSlider() { let val = parseFloat(inputAmount.value) || 0; let min = parseFloat(slider.min); let max = parseFloat(slider.max); if (val > max) val = max; slider.value = val; btnRaiseSub.innerText = (val >= max) ? "ALL-IN" : "$" + formatMoney(val); }
 
     function quickBet(type) {
         if(!latestGameState || !latestGameState.game) return;
-        const currentBet = latestGameState.game.currentBet || 0; const pot = latestGameState.game.pot || 0;
-        const minRaiseDelta = latestGameState.game.lastValidRaise || latestGameState.game.bigBlind || 5;
-        const minRaiseTo = currentBet + minRaiseDelta;
-        let target = minRaiseTo;
-        if (type === 'MIN') target = minRaiseTo; if (type === 'HALF') target = currentBet + (pot / 2);
-        if (type === 'POT') target = currentBet + pot; if (type === 'ALLIN') target = parseFloat(slider.max);
-        target = roundToQuarter(target);
-        if (target < minRaiseTo) target = minRaiseTo; if (target > parseFloat(slider.max)) target = parseFloat(slider.max);
+        const currentBet = latestGameState.game.currentBet || 0; const pot = latestGameState.game.pot || 0; const minRaiseDelta = latestGameState.game.lastValidRaise || latestGameState.game.bigBlind || 5; const minRaiseTo = currentBet + minRaiseDelta;
+        let target = minRaiseTo; if (type === 'MIN') target = minRaiseTo; if (type === 'HALF') target = currentBet + (pot / 2); if (type === 'POT') target = currentBet + pot; if (type === 'ALLIN') target = parseFloat(slider.max);
+        target = roundToQuarter(target); if (target < minRaiseTo) target = minRaiseTo; if (target > parseFloat(slider.max)) target = parseFloat(slider.max);
         slider.value = target; updateSliderFromSlider();
     }
 
     function playAllInAnimation() {
-        const overlay = document.getElementById('allin-overlay');
-        overlay.classList.remove('hidden');
-        overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
-        document.body.classList.add('allin-flash');
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-            document.body.classList.remove('allin-flash');
-        }, 1000);
+        const overlay = document.getElementById('allin-overlay'); overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
+        document.body.classList.add('allin-flash'); setTimeout(() => { overlay.classList.add('hidden'); document.body.classList.remove('allin-flash'); }, 1000);
     }
 
     function triggerMuckCards() { localMucked = true; const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); renderEngine(latestGameState); }
     function triggerShowCards() { send({type:'SHOW_CARDS', name: myName}); document.getElementById('show-cards-container').classList.add('hidden'); const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); }
 
     function checkAutoLogin() {
-        if (!currentRoomId) return false;
-        const saved = localStorage.getItem('poker_session_' + currentRoomId);
-        if (saved) {
-            const data = JSON.parse(saved); myName = data.name; selectedAvatar = data.avatar || '😎'; selectedColor = data.color || '#ffffff';
-            isWaitingForServer = true; connectWebSocket(); return true;
-        }
-        return false;
+        if (!currentRoomId) return false; const saved = localStorage.getItem('poker_session_' + currentRoomId);
+        if (saved) { const data = JSON.parse(saved); myName = data.name; selectedAvatar = data.avatar || '😎'; selectedColor = data.color || '#ffffff'; isWaitingForServer = true; connectWebSocket(); return true; } return false;
     }
 
     window.onload = () => { 
         const roomCode = new URLSearchParams(window.location.search).get('room'); 
-        if (roomCode) {
-            currentRoomId = roomCode.toUpperCase(); document.getElementById('join-code').value = currentRoomId; 
-            document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`; navTo('view-game');
-            if (!checkAutoLogin()) openSitModal();
-        }
+        if (roomCode) { currentRoomId = roomCode.toUpperCase(); document.getElementById('join-code').value = currentRoomId; document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`; navTo('view-game'); if (!checkAutoLogin()) openSitModal(); }
     };
 
-    document.getElementById('chat-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); const val = this.value.trim(); if (val && myName) { send({ type: 'CHAT', name: myName, msg: val }); this.value = ''; } }
-    });
+    document.getElementById('chat-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); const val = this.value.trim(); if (val && myName) { send({ type: 'CHAT', name: myName, msg: val }); this.value = ''; } } });
     
     function navTo(targetViewId) { document.querySelectorAll('.view-screen').forEach(el => el.classList.add('hidden')); document.getElementById(targetViewId).classList.remove('hidden'); }
     function copyInviteLink() { navigator.clipboard.writeText(window.location.href).then(() => { const el = document.getElementById('display-room-url'); const originalText = el.innerText; el.innerText = "✓ 链接已复制!"; el.style.color = "var(--active-green)"; setTimeout(() => { el.innerText = originalText; el.style.color = "#8ca0b3"; }, 2000); }); }
     
     function openSitModal() { 
-        isEditingProfile = false;
-        document.getElementById('sit-modal-title').innerText = "Take a Seat";
-        document.getElementById('btn-confirm-sit').innerText = "确定进入";
-        document.getElementById('sit-modal').classList.remove('hidden'); 
-        renderAvatarGrid(); renderColorGrid(); 
+        isEditingProfile = false; document.getElementById('sit-modal-title').innerText = "Take a Seat"; document.getElementById('btn-confirm-sit').innerText = "确定进入";
+        document.getElementById('sit-modal').classList.remove('hidden'); renderAvatarGrid(); renderColorGrid(); 
     }
 
     function openEditProfile() {
-        isEditingProfile = true;
-        document.getElementById('sit-modal-title').innerText = "修改个人资料";
-        document.getElementById('btn-confirm-sit').innerText = "保存修改";
-        document.getElementById('sit-name').value = myName.split('|')[1] || '';
-        selectedAvatar = myName.split('|')[0] || '😎';
-        selectedColor = myName.split('|')[2] || '#ffffff';
-        document.getElementById('sit-modal').classList.remove('hidden');
-        renderAvatarGrid(); renderColorGrid();
+        isEditingProfile = true; document.getElementById('sit-modal-title').innerText = "修改个人资料"; document.getElementById('btn-confirm-sit').innerText = "保存修改";
+        document.getElementById('sit-name').value = myName.split('|')[1] || ''; selectedAvatar = myName.split('|')[0] || '😎'; selectedColor = myName.split('|')[2] || '#ffffff';
+        document.getElementById('sit-modal').classList.remove('hidden'); renderAvatarGrid(); renderColorGrid();
     }
 
     function renderAvatarGrid() { document.getElementById('avatar-grid').innerHTML = AVATAR_LIST.map(a => `<div class="avatar-opt ${a===selectedAvatar?'selected':''}" onclick="selectAvatar('${a}')">${a}</div>`).join(""); }
@@ -841,33 +746,18 @@
     function selectColor(c) { selectedColor = c; renderColorGrid(); }
 
     function confirmSit() {
-        let nameInput = document.getElementById('sit-name').value.trim();
-        if(!nameInput) return alert("请输入昵称！");
-        nameInput = nameInput.replace(/\|/g, ""); 
+        let nameInput = document.getElementById('sit-name').value.trim(); if(!nameInput) return alert("请输入昵称！"); nameInput = nameInput.replace(/\|/g, ""); 
         let newName = selectedAvatar + "|" + nameInput + "|" + selectedColor; 
-        
-        if (isEditingProfile) {
-            send({ type: 'UPDATE_PROFILE', oldName: myName, newName: newName });
-            myName = newName;
-            localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
-            document.getElementById('sit-modal').classList.add('hidden');
-        } else {
-            myName = newName;
-            isWaitingForServer = true; 
-            localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
-            const btn = document.getElementById('btn-confirm-sit'); btn.innerText = "正在进入..."; btn.disabled = true;
-            if (ws && ws.readyState === 1) { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); } 
-            else { connectWebSocket(); } 
-            setTimeout(() => { if (isWaitingForServer) { alert("云端无响应。请重试！"); btn.innerText = "确定进入"; btn.disabled = false; isWaitingForServer = false; } }, 5000);
-        }
+        if (isEditingProfile) { send({ type: 'UPDATE_PROFILE', oldName: myName, newName: newName }); myName = newName; localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor })); document.getElementById('sit-modal').classList.add('hidden'); } 
+        else { myName = newName; isWaitingForServer = true; localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor })); const btn = document.getElementById('btn-confirm-sit'); btn.innerText = "正在进入..."; btn.disabled = true; if (ws && ws.readyState === 1) { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); } else { connectWebSocket(); } setTimeout(() => { if (isWaitingForServer) { alert("云端无响应。请重试！"); btn.innerText = "确定进入"; btn.disabled = false; isWaitingForServer = false; } }, 5000); }
     }
 
     function openUpdateSettings() {
         if(latestGameState && latestGameState.game) {
             document.getElementById('update-enable-standup').checked = latestGameState.game.enableStandUp;
             document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
-            const shortDeckUI = document.getElementById('update-enable-shortdeck');
-            if(shortDeckUI) { shortDeckUI.checked = latestGameState.game.isShortDeck; toggleTwoSeven('update'); }
+            const shortDeckUI = document.getElementById('update-enable-shortdeck'); if(shortDeckUI) { shortDeckUI.checked = latestGameState.game.isShortDeck; toggleTwoSeven('update'); }
+            document.getElementById('update-timer').value = latestGameState.game.nextActionTimerLimit || latestGameState.game.actionTimerLimit || 0;
         }
         document.getElementById('update-settings-modal').classList.remove('hidden');
     }
@@ -875,23 +765,22 @@
     function submitUpdateSettings() {
         const standUp = document.getElementById('update-enable-standup').checked; const shortDeckUI = document.getElementById('update-enable-shortdeck');
         const shortDeck = shortDeckUI ? shortDeckUI.checked : false; const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
-        send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, enableTwoSeven: twoSeven, enableShortDeck: shortDeck }});
+        const actionTimerLimit = document.getElementById('update-timer').value;
+        send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, enableTwoSeven: twoSeven, enableShortDeck: shortDeck, actionTimerLimit: actionTimerLimit }});
         document.getElementById('update-settings-modal').classList.add('hidden');
     }
 
     async function createRoomFlow() {
         try {
-            const res = await fetch(`${BACKEND_URL}/create-room`, { method: "POST" });
-            const data = await res.json(); currentRoomId = data.roomId; 
-            window.history.pushState({}, "", `?room=${currentRoomId}`);
-            document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
+            const res = await fetch(`${BACKEND_URL}/create-room`, { method: "POST" }); const data = await res.json(); currentRoomId = data.roomId; 
+            window.history.pushState({}, "", `?room=${currentRoomId}`); document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30; const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1; const enableDraw = document.getElementById('set-enable-draw').checked;
             const enableStandUp = document.getElementById('set-enable-standup').checked; const shortDeckUI = document.getElementById('set-enable-shortdeck');
             const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
-            creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck };
-            navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
-            openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
+            const actionTimerLimit = document.getElementById('set-timer').value || 0;
+            creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck, actionTimerLimit: actionTimerLimit };
+            navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden'); openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
     }
 
@@ -900,38 +789,19 @@
     function confirmPlayerBuyIn() { send({ type: 'BUY_IN', name: myName }); document.getElementById('buyin-console').classList.add('hidden'); }
 
     function joinByCode() {
-        currentRoomId = document.getElementById('join-code').value.trim().toUpperCase();
-        if (!currentRoomId) return alert("请输入 5 位房间码");
-        window.history.pushState({}, "", `?room=${currentRoomId}`);
-        document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
-        document.getElementById('host-panel').classList.add('hidden'); navTo('view-game'); 
-        if (!checkAutoLogin()) { openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] }); }
+        currentRoomId = document.getElementById('join-code').value.trim().toUpperCase(); if (!currentRoomId) return alert("请输入 5 位房间码");
+        window.history.pushState({}, "", `?room=${currentRoomId}`); document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
+        document.getElementById('host-panel').classList.add('hidden'); navTo('view-game'); if (!checkAutoLogin()) { openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] }); }
     }
 
     function connectWebSocket() {
-        // 🔥 此处完美对接你的 Cloudflare 专属服务器
-        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`;
-        ws = new WebSocket(wsUrl); 
+        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`; ws = new WebSocket(wsUrl); 
         ws.onopen = () => {
-            document.getElementById('disconnect-banner').classList.add('hidden');
-            ws.send(JSON.stringify({ type: "PING" }));
-            if (myName !== "") {
-                let joinMsg = { type: "JOIN", name: myName };
-                if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; }
-                ws.send(JSON.stringify(joinMsg));
-            }
-            if (heartbeatInterval) clearInterval(heartbeatInterval);
-            heartbeatInterval = setInterval(() => { if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ type: "PING" })); } }, 25000);
+            document.getElementById('disconnect-banner').classList.add('hidden'); ws.send(JSON.stringify({ type: "PING" }));
+            if (myName !== "") { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); }
+            if (heartbeatInterval) clearInterval(heartbeatInterval); heartbeatInterval = setInterval(() => { if (ws && ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ type: "PING" })); } }, 25000);
         };
-        
-        ws.onmessage = (e) => { 
-            try { 
-                const parsed = JSON.parse(e.data);
-                if (parsed.type === "ERROR") { alert(parsed.message); return; }
-                latestGameState = parsed; renderEngine(latestGameState); 
-            } catch (err) {} 
-        };
-
+        ws.onmessage = (e) => { try { const parsed = JSON.parse(e.data); if (parsed.type === "ERROR") { alert(parsed.message); return; } latestGameState = parsed; renderEngine(latestGameState); } catch (err) {} };
         ws.onclose = () => { document.getElementById('disconnect-banner').classList.remove('hidden'); if (heartbeatInterval) clearInterval(heartbeatInterval); setTimeout(connectWebSocket, 3000); };
         ws.onerror = () => { document.getElementById('disconnect-banner').classList.remove('hidden'); };
     }
@@ -949,61 +819,36 @@
             document.getElementById("rule-mode").innerText = state.game.isShortDeck ? "短牌(6+)" : "普通";
             document.getElementById("rule-mode").style.color = state.game.isShortDeck ? "#ff9800" : "#fff";
             
-            const suNode = document.getElementById("rule-standup");
-            suNode.innerText = state.game.enableStandUp ? "Active" : "Inactive";
-            suNode.className = state.game.enableStandUp ? "status-on" : "status-off";
-            
-            const tsNode = document.getElementById("rule-27");
-            tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive";
-            tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
+            const suNode = document.getElementById("rule-standup"); suNode.innerText = state.game.enableStandUp ? "Active" : "Inactive"; suNode.className = state.game.enableStandUp ? "status-on" : "status-off";
+            const tsNode = document.getElementById("rule-27"); tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive"; tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
 
             if (state.game.enableStandUp) {
-                standupPanel.classList.remove("hidden");
-                let seatedPs = (state.players || []).filter(p => p.seatIndex !== -1 && !p.isSpectating && !p.isKicked);
-                let listHtml = "";
-                seatedPs.forEach(p => {
-                    let pName = p.name.split('|')[1] || p.name;
-                    if (p.isStanding) {
-                        listHtml += `<span style="background:#e74c3c; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold; border:1px solid #c0392b;">${pName}</span>`;
-                    } else {
-                        listHtml += `<span style="background:#333; color:#aaa; padding:2px 6px; border-radius:4px; font-size:11px; text-decoration:line-through; border:1px solid #555;">${pName}</span>`;
-                    }
-                });
+                standupPanel.classList.remove("hidden"); let seatedPs = (state.players || []).filter(p => p.seatIndex !== -1 && !p.isSpectating && !p.isKicked); let listHtml = "";
+                seatedPs.forEach(p => { let pName = p.name.split('|')[1] || p.name; if (p.isStanding) { listHtml += `<span style="background:#e74c3c; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold; border:1px solid #c0392b;">${pName}</span>`; } else { listHtml += `<span style="background:#333; color:#aaa; padding:2px 6px; border-radius:4px; font-size:11px; text-decoration:line-through; border:1px solid #555;">${pName}</span>`; } });
                 document.getElementById('standup-list').innerHTML = listHtml;
-            } else {
-                standupPanel.classList.add("hidden");
-            }
-        } else {
-            rulesBox.classList.add("hidden");
-        }
+            } else { standupPanel.classList.add("hidden"); }
+        } else { rulesBox.classList.add("hidden"); }
+
+        // Game Start Animation Hook
+        if (state.game.status === 'PRE-FLOP' && state.game.handCount !== localHandCount) { playGameStartAnimation(); }
 
         if (state.game.handCount !== localHandCount) {
-            localHandCount = state.game.handCount;
-            initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
-            localAllInCount = 0; 
-            warningPlayedThisHand = false; 
-            currentPreAction = null; 
-            renderPreUI();
+            localHandCount = state.game.handCount; initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
+            localAllInCount = 0; warningPlayedThisHand = false; currentPreAction = null; renderPreUI();
         }
 
+        // Stand Up Pain Effect Hook
+        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { localStandUpEffect = state.game.standUpEffect; playPainEffect(); }
+
         if (state.game.logVersion !== localLogVersion) {
-            const contentBox = document.getElementById('log-content');
-            contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
+            const contentBox = document.getElementById('log-content'); contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
             contentBox.scrollTop = contentBox.scrollHeight; localLogVersion = state.game.logVersion;
         }
 
         if (state.game.chatLogs && state.game.chatLogs.length !== localChatLength) {
-            const chatList = document.getElementById('chat-list');
-            const newLogs = state.game.chatLogs.slice(localChatLength);
-            newLogs.forEach(c => {
-                shootDanmaku(c.sender, c.msg); 
-                playChatEffect(c.msg);        
-            });
-            chatList.innerHTML = state.game.chatLogs.map(c => {
-                let p = state.players.find(x => (x.name.split('|')[1] || x.name) === c.sender);
-                let col = (p && p.name.split('|')[2]) ? p.name.split('|')[2] : '#349feb';
-                return `<div><strong style="color:${col}">${c.sender}:</strong> ${c.msg}</div>`
-            }).join('');
+            const chatList = document.getElementById('chat-list'); const newLogs = state.game.chatLogs.slice(localChatLength);
+            newLogs.forEach(c => { shootDanmaku(c.sender, c.msg); playChatEffect(c.msg); });
+            chatList.innerHTML = state.game.chatLogs.map(c => { let p = state.players.find(x => (x.name.split('|')[1] || x.name) === c.sender); let col = (p && p.name.split('|')[2]) ? p.name.split('|')[2] : '#349feb'; return `<div><strong style="color:${col}">${c.sender}:</strong> ${c.msg}</div>` }).join('');
             chatList.scrollTop = chatList.scrollHeight; localChatLength = state.game.chatLogs.length; wakeUpChat();
         }
 
@@ -1020,25 +865,16 @@
 
         let burnCardsHtml = "";
         if (state.game.burnCards && state.game.burnCards.length > 0) {
-            burnCardsHtml = `<div class="burn-area">` + 
-                state.game.burnCards.map((c, i) => {
-                    const animDelay = (i >= prevBurnLength) ? `animation: dealBoardCard 0.3s ease-out backwards;` : ``;
-                    return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*10}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>`
-                }).join("") + `</div>`;
+            burnCardsHtml = `<div class="burn-area">` + state.game.burnCards.map((c, i) => { const animDelay = (i >= prevBurnLength) ? `animation: dealBoardCard 0.3s ease-out backwards;` : ``; return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*10}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>` }).join("") + `</div>`;
         }
 
         const boardCardsHtml = (state.game.board || []).map((c, i) => {
             let animDelay = "";
-            if (i >= prevBoardLength) {
-                let delay = 0.3; if (state.game.status === "FLOP" && i >= prevBoardLength) delay = 0.3 + (i - prevBoardLength) * 0.3;
-                animDelay = `animation: dealBoardCard 0.4s ease-out backwards; animation-delay: ${delay}s;`;
-            }
+            if (i >= prevBoardLength) { let delay = 0.3; if (state.game.status === "FLOP" && i >= prevBoardLength) delay = 0.3 + (i - prevBoardLength) * 0.3; animDelay = `animation: dealBoardCard 0.4s ease-out backwards; animation-delay: ${delay}s;`; }
             return `<div class="playing-card ${c.includes('♥') || c.includes('♦') ? 'red' : ''}" style="${animDelay}">${c}</div>`;
         }).join("");
         
-        document.getElementById("ui-burn").innerHTML = burnCardsHtml;
-        document.getElementById("ui-board").innerHTML = boardCardsHtml;
-        
+        document.getElementById("ui-burn").innerHTML = burnCardsHtml; document.getElementById("ui-board").innerHTML = boardCardsHtml;
         prevBoardLength = state.game.board ? state.game.board.length : 0; prevBurnLength = state.game.burnCards ? state.game.burnCards.length : 0;
 
         let playersArray = state.players || [];
@@ -1050,17 +886,16 @@
         
         if (!warningPlayedThisHand && state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             let poorPlayer = playersArray.find(p => p.seatIndex !== -1 && !p.isSpectating && !p.isOut && p.chips >= 0 && p.chips < 5);
-            if (poorPlayer) {
-                shootSystemWarning("系统警告：聚众赌博会导致家庭破碎、负债累累，不仅伤身，更可能导致为了筹集赌资而走上盗窃、抢劫的违法道路！");
-                warningPlayedThisHand = true;
-            }
+            if (poorPlayer) { shootSystemWarning("系统警告：聚众赌博会导致家庭破碎、负债累累，不仅伤身，更可能导致为了筹集赌资而走上盗窃、抢劫的违法道路！"); warningPlayedThisHand = true; }
         }
 
         if (state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             const currentAllIns = playersArray.filter(p => p.chips === 0 && !p.folded && !p.isOut && !p.isSpectating).length;
             if (currentAllIns > localAllInCount) {
                 localAllInCount = currentAllIns;
-                playAllInAnimation();
+                if (initialDealPlayed) { playAllInAnimation(); } // 只有在首轮发牌完毕后才触发 ALL IN 动画
+            } else if (currentAllIns < localAllInCount) {
+                localAllInCount = currentAllIns;
             }
         }
 
@@ -1077,23 +912,19 @@
         });
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
 
-        const banner = document.getElementById("winner-banner");
-        const psBanner = document.getElementById("pick-seat-banner");
-        const showCardsBtn = document.getElementById("show-cards-container");
-        const uncontestedBtn = document.getElementById("uncontested-action-container");
-        const dealerActionBtn = document.getElementById("dealer-action-container");
+        const banner = document.getElementById("winner-banner"); const psBanner = document.getElementById("pick-seat-banner");
+        const showCardsBtn = document.getElementById("show-cards-container"); const uncontestedBtn = document.getElementById("uncontested-action-container");
+        const dealerActionBtn = document.getElementById("dealer-action-container"); const standUpPayConsole = document.getElementById("standup-pay-console");
 
         if (state.game.status === "PICK_SEAT") {
             let pName = state.game.currentPicker ? state.game.currentPicker.split('|')[1] : '';
-            if (state.game.currentPicker === myName) {
-                psBanner.innerHTML = `<div style="font-size:18px; color:var(--gold); font-weight:900;">👑 轮到您选座了！请点击桌上空位</div>`;
-            } else {
-                psBanner.innerHTML = `<div style="font-size:16px; color:#ccc;">等待 [ <span style="color:white;font-weight:bold;">${pName}</span> ] 选择座位...</div>`;
-            }
+            if (state.game.currentPicker === myName) { psBanner.innerHTML = `<div style="font-size:18px; color:var(--gold); font-weight:900;">👑 轮到您选座了！请点击桌上空位</div>`; } else { psBanner.innerHTML = `<div style="font-size:16px; color:#ccc;">等待 [ <span style="color:white;font-weight:bold;">${pName}</span> ] 选择座位...</div>`; }
             psBanner.classList.remove("hidden");
-        } else {
-            psBanner.classList.add("hidden");
-        }
+        } else { psBanner.classList.add("hidden"); }
+
+        if (state.game.status === "STANDUP_PAY") {
+            if (state.game.standUpLoser === myName) { standUpPayConsole.classList.remove("hidden"); } else { standUpPayConsole.classList.add("hidden"); }
+        } else { standUpPayConsole.classList.add("hidden"); }
 
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating && !p.isSittingOut);
@@ -1101,53 +932,20 @@
 
             if (hasBankrupt) {
                 if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-                banner.innerHTML = `
-                    <div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div>
-                    <div style="font-size: 14px; color: #ff5b4c; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px; border: 1px solid #ff5b4c;">
-                        ⚠️ 有玩家筹码耗尽，自动开局已暂停。<br>
-                        <span style="color:#aaa; font-size:12px;">没钱的玩家可点击【确定买入】补充筹码。准备好后由房主开局。</span>
-                    </div>
-                `;
+                banner.innerHTML = `<div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div><div style="font-size: 14px; color: #ff5b4c; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px; border: 1px solid #ff5b4c;">⚠️ 有玩家筹码耗尽，自动开局已暂停。<br><span style="color:#aaa; font-size:12px;">没钱的玩家可点击【确定买入】补充筹码。准备好后由房主开局。</span></div>`;
             } else {
                 if (!countdownInterval && !isNextHandSent) {
                     let timeLeft = 10;
-                    countdownInterval = setInterval(() => {
-                        timeLeft--; const cdSpan = document.getElementById("auto-start-cd"); if (cdSpan) cdSpan.innerText = timeLeft;
-                        if (timeLeft <= 0) { 
-                            clearInterval(countdownInterval); countdownInterval = null; 
-                            if (isHost && !isNextHandSent) { isNextHandSent = true; send({type: 'NEXT_HAND', name: myName}); }
-                        }
-                    }, 1000);
+                    countdownInterval = setInterval(() => { timeLeft--; const cdSpan = document.getElementById("auto-start-cd"); if (cdSpan) cdSpan.innerText = timeLeft; if (timeLeft <= 0) { clearInterval(countdownInterval); countdownInterval = null; if (isHost && !isNextHandSent) { isNextHandSent = true; send({type: 'NEXT_HAND', name: myName}); } } }, 1000);
                 }
-                banner.innerHTML = `
-                    <div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div>
-                    <div style="font-size: 14px; color: #ccc; display: flex; align-items: center; justify-content: center; gap: 15px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px;">
-                        <span>下一局: <span id="auto-start-cd" style="color:var(--gold); font-size:20px; font-weight:900;">10</span>s</span>
-                        ${isHost ? `<button onclick="isNextHandSent=true; send({type:'NEXT_HAND', name:'${myName}'})" style="padding: 6px 15px; background: var(--active-green); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">立刻开始</button>` : `<span style="font-size:12px; color:#888; border: 1px solid #555; padding: 4px 10px; border-radius: 6px;">等待房主开始...</span>`}
-                    </div>
-                `;
+                banner.innerHTML = `<div style="margin-bottom: 15px; font-size: 16px; line-height: 1.5;">${richMsg}</div><div style="font-size: 14px; color: #ccc; display: flex; align-items: center; justify-content: center; gap: 15px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 12px;"><span>下一局: <span id="auto-start-cd" style="color:var(--gold); font-size:20px; font-weight:900;">10</span>s</span>${isHost ? `<button onclick="isNextHandSent=true; send({type:'NEXT_HAND', name:'${myName}'})" style="padding: 6px 15px; background: var(--active-green); color: black; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">立刻开始</button>` : `<span style="font-size:12px; color:#888; border: 1px solid #555; padding: 4px 10px; border-radius: 6px;">等待房主开始...</span>`}</div>`;
             }
             banner.classList.remove("hidden");
-
-            let isUncontested = !!state.game.uncontestedWinner;
-            if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) {
-                if (!localMucked) uncontestedBtn.classList.remove("hidden");
-            } else { uncontestedBtn.classList.add("hidden"); }
-
-            const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked;
-            if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
-
-            if (state.game.board && state.game.board.length < 5 && (isHost || amIDealer)) {
-                dealerActionBtn.classList.remove("hidden");
-            } else {
-                dealerActionBtn.classList.add("hidden");
-            }
-
+            let isUncontested = !!state.game.uncontestedWinner; if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) { if (!localMucked) uncontestedBtn.classList.remove("hidden"); } else { uncontestedBtn.classList.add("hidden"); }
+            const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked; if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
+            if (state.game.board && state.game.board.length < 5 && (isHost || amIDealer)) { dealerActionBtn.classList.remove("hidden"); } else { dealerActionBtn.classList.add("hidden"); }
         } else {
-            localMucked = false; 
-            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-            banner.classList.add("hidden"); showCardsBtn.classList.add("hidden"); uncontestedBtn.classList.add("hidden");
-            dealerActionBtn.classList.add("hidden");
+            localMucked = false; if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; } banner.classList.add("hidden"); showCardsBtn.classList.add("hidden"); uncontestedBtn.classList.add("hidden"); dealerActionBtn.classList.add("hidden");
         }
 
         const inviteContainer = document.getElementById("invite-pill-container");
@@ -1157,48 +955,26 @@
         const unseatedPlayers = playersArray.filter(p => p.seatIndex === -1 && !p.isKicked);
         if (unseatedPlayers.length > 0 || state.game.status === "LOBBY" || state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             lobbyZone.classList.remove('hidden');
-            lobbyList.innerHTML = unseatedPlayers.map(p => {
-                let displayAvatar = p.name.split('|')[0] || '😎'; let displayName = p.name.split('|')[1] || p.name; let drawStatus = "";
-                if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") { drawStatus = p.drawCard ? `<span style="color:var(--gold); font-size:16px;">[${p.drawCard}]</span>` : `<span style="color:#aaa; font-size:12px;">(思考中)</span>`; }
-                return `<div class="lobby-item"><span>${displayAvatar}</span> ${displayName} ${drawStatus}</div>`;
-            }).join('');
+            lobbyList.innerHTML = unseatedPlayers.map(p => { let displayAvatar = p.name.split('|')[0] || '😎'; let displayName = p.name.split('|')[1] || p.name; let drawStatus = ""; if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") { drawStatus = p.drawCard ? `<span style="color:var(--gold); font-size:16px;">[${p.drawCard}]</span>` : `<span style="color:#aaa; font-size:12px;">(思考中)</span>`; } return `<div class="lobby-item"><span>${displayAvatar}</span> ${displayName} ${drawStatus}</div>`; }).join('');
         } else { lobbyZone.classList.add('hidden'); }
 
         const drawZone = document.getElementById('draw-zone');
         if (state.game.status === "DRAWING" || state.game.status === "PICK_SEAT") {
             drawZone.classList.remove('hidden'); inviteContainer.classList.add('hidden');
-            drawZone.innerHTML = state.game.drawingCards.map(c => {
-                if (c.faceUp) {
-                    const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : "";
-                    return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`;
-                } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; }
-            }).join('');
+            drawZone.innerHTML = state.game.drawingCards.map(c => { if (c.faceUp) { const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : ""; return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`; } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; } }).join('');
         } else { drawZone.classList.add('hidden'); }
 
-        const isWinner = (state.game.winnerName === myName);
+        // 观战秒入座按钮逻辑
+        const btnTakeSeat = document.getElementById('btn-take-seat');
+        if (myName && !amISeated && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { btnTakeSeat.classList.remove('hidden'); } else { btnTakeSeat.classList.add('hidden'); }
 
         if (isHost) {
             document.getElementById('player-panel').classList.add('hidden');
             if (state.game.status === "LOBBY") { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.remove('hidden'); } 
-            else {
-                document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('host-panel').classList.remove('hidden');
-                if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN") { document.getElementById('btn-start').classList.add('hidden'); document.getElementById('btn-pause-refund').classList.remove('hidden'); } 
-                else { document.getElementById('btn-start').classList.remove('hidden'); document.getElementById('btn-pause-refund').classList.add('hidden'); }
-            }
+            else { document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('host-panel').classList.remove('hidden'); if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY") { document.getElementById('btn-start').classList.add('hidden'); document.getElementById('btn-pause-refund').classList.remove('hidden'); } else { document.getElementById('btn-start').classList.remove('hidden'); document.getElementById('btn-pause-refund').classList.add('hidden'); } }
         } else if (amISeated) { 
-            document.getElementById('host-panel').classList.add('hidden'); 
-            document.getElementById('btn-start-draw').classList.add('hidden'); 
-            document.getElementById('player-panel').classList.remove('hidden'); 
-            
-            if (myDataRecord.isSittingOut) {
-                document.getElementById('btn-sit-out').innerText = "▶️ 回到座位";
-                document.getElementById('btn-sit-out').style.background = "#2ecc71";
-                document.getElementById('btn-sit-out').style.color = "black";
-            } else {
-                document.getElementById('btn-sit-out').innerText = "⏸️ 暂时离座";
-                document.getElementById('btn-sit-out').style.background = "#555";
-                document.getElementById('btn-sit-out').style.color = "white";
-            }
+            document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.remove('hidden'); 
+            if (myDataRecord.isSittingOut) { document.getElementById('btn-sit-out').innerText = "▶️ 回到座位"; document.getElementById('btn-sit-out').style.background = "#2ecc71"; document.getElementById('btn-sit-out').style.color = "black"; } else { document.getElementById('btn-sit-out').innerText = "⏸️ 暂时离座"; document.getElementById('btn-sit-out').style.background = "#555"; document.getElementById('btn-sit-out').style.color = "white"; }
         } 
         else { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.add('hidden'); }
 
@@ -1207,52 +983,33 @@
 
         const layer = document.getElementById("players-layer"); layer.innerHTML = ""; let isMyTurn = false;
         const isInitialDeal = state.game.status === 'PRE-FLOP' && !playersArray.some(p => p.actedThisRound) && !initialDealPlayed;
-        let playingSeatsOrder = [];
-        if (isInitialDeal) {
-            for (let i = 0; i < 10; i++) { let seatNum = (state.game.dealerIndex + 1 + i) % 10; let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked); if (sp) playingSeatsOrder.push(seatNum); }
-        }
+        let playingSeatsOrder = []; if (isInitialDeal) { for (let i = 0; i < 10; i++) { let seatNum = (state.game.dealerIndex + 1 + i) % 10; let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked); if (sp) playingSeatsOrder.push(seatNum); } }
 
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i]; const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
-            let posClass = ""; 
-            if (seatClass.includes("btm")) posClass = "pos-bottom"; if (seatClass.includes("top")) posClass = "pos-top";
-            if (seatClass === "s-lft-t") posClass = "s-lft-t"; if (seatClass === "s-lft-b") posClass = "s-lft-b";
-            if (seatClass === "s-rgt-t") posClass = "s-rgt-t"; if (seatClass === "s-rgt-b") posClass = "s-rgt-b";
+            let posClass = ""; if (seatClass.includes("btm")) posClass = "pos-bottom"; if (seatClass.includes("top")) posClass = "pos-top";
+            if (seatClass === "s-lft-t") posClass = "s-lft-t"; if (seatClass === "s-lft-b") posClass = "s-lft-b"; if (seatClass === "s-rgt-t") posClass = "s-rgt-t"; if (seatClass === "s-rgt-b") posClass = "s-rgt-b";
 
             if (p) {
-                if (localBuyIns[p.name] !== undefined && p.totalBuyIn > localBuyIns[p.name]) { 
-                    rebuyTimers[p.name] = Date.now();
-                }
-                localBuyIns[p.name] = p.totalBuyIn;
+                if (localBuyIns[p.name] !== undefined && p.totalBuyIn > localBuyIns[p.name]) { rebuyTimers[p.name] = Date.now(); } localBuyIns[p.name] = p.totalBuyIn;
                 let isRebuying = rebuyTimers[p.name] && (Date.now() - rebuyTimers[p.name] < 2500);
 
-                const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && p.seatIndex === state.game.turnIndex);
+                const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY" && p.seatIndex === state.game.turnIndex);
                 if (isActive && p.name === myName) isMyTurn = true;
-                const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true;
-                const isMySeat = (p.name === myName);
-                const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating);
-                const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating);
-                const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
+                const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true; const isMySeat = (p.name === myName);
+                const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating); const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating); const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
 
                 let displayAvatar = '😎'; let displayName = p.name; let displayColor = '#ffffff';
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; if(parts[2]) displayColor = parts[2]; }
 
-                const isMyFoldedCards = (p.folded && p.name === myName);
-                let isGlobalHidden = true; 
+                const isMyFoldedCards = (p.folded && p.name === myName); let isGlobalHidden = true; 
                 if (p.name === myName && !localMucked) isGlobalHidden = false; if (p.hasShownCards) isGlobalHidden = false; 
 
                 let cardsHtml = "";
                 if (p.hand && p.hand.length > 0 && !isSpectating && (!p.folded || isMyFoldedCards || p.hasShownCards)) {
                     cardsHtml = p.hand.map((c, idx) => {
-                        const isHidden = isGlobalHidden || c === "??"; const isRed = !isHidden && (c.includes('♥') || c.includes('♦'));
-                        let animDelay = "";
-                        if (isInitialDeal) {
-                            let dealIdx = playingSeatsOrder.indexOf(p.seatIndex);
-                            if (dealIdx !== -1) {
-                                let totalPlayers = playingSeatsOrder.length; let delayTime = (idx === 0) ? (dealIdx * 0.15) : ((totalPlayers + dealIdx) * 0.15);
-                                animDelay = `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${delayTime}s;`;
-                            }
-                        }
+                        const isHidden = isGlobalHidden || c === "??"; const isRed = !isHidden && (c.includes('♥') || c.includes('♦')); let animDelay = "";
+                        if (isInitialDeal) { let dealIdx = playingSeatsOrder.indexOf(p.seatIndex); if (dealIdx !== -1) { let totalPlayers = playingSeatsOrder.length; let delayTime = (idx === 0) ? (dealIdx * 0.15) : ((totalPlayers + dealIdx) * 0.15); animDelay = `animation: dealHoleCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards; animation-delay: ${delayTime}s;`; } }
                         const handKeyClass = `hand-${state.game.handCount}`; const foldStyle = (isMyFoldedCards && !p.hasShownCards) ? `filter: grayscale(1) brightness(0.4); opacity: 0.6;` : ``;
                         return `<div class="playing-card ${isHidden?'back':''} ${isRed?'red':''} card-${idx+1} ${handKeyClass}" style="${animDelay} ${foldStyle}">${isHidden?'':c}</div>`;
                     }).join("");
@@ -1270,17 +1027,16 @@
 
                 let hostControls = "";
                 if (isHost && p.name !== myName && !isOut && p.seatIndex !== -1) {
-                    hostControls = `
-                    <div style="position:absolute; bottom: -35px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:100; width: 140px; justify-content: center;">
-                        <button onclick="send({type:'MUTE_PLAYER', name:'${myName}', targetName:'${p.name}', duration: 60000})" style="background:#555; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer;">禁言1分</button>
-                        ${p.isBot && isActive && !p.folded ? `
-                            <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#e74c3c; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强退</button>
-                            <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强跟</button>
-                        ` : ''}
-                    </div>`;
+                    hostControls = `<div style="position:absolute; bottom: -35px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:100; width: 140px; justify-content: center;"><button onclick="send({type:'MUTE_PLAYER', name:'${myName}', targetName:'${p.name}', duration: 60000})" style="background:#555; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer;">禁言1分</button>${p.isBot && isActive && !p.folded ? `<button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#e74c3c; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强退</button><button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强跟</button>` : ''}</div>`;
                 }
                 
                 let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
+                
+                // 玩家倒计时进度条
+                let timerBarHtml = "";
+                if (isActive && state.game.actionTimerLimit > 0) {
+                    timerBarHtml = `<div class="turn-timer-bar" style="width: 100%; animation: drainTimer ${state.game.actionTimerLimit}s linear forwards;"></div><style>@keyframes drainTimer { from { width: 100%; } to { width: 0%; background: #000; } }</style>`;
+                }
 
                 layer.innerHTML += `
                     <div class="player-seat ${seatClass} ${posClass}">
@@ -1294,6 +1050,7 @@
                             <div style="min-height:22px;">${badgeHtml}</div>
                             <div class="player-name" style="color:${displayColor}">${displayName}</div>
                             <div class="player-chips">$${formatMoney(p.chips)}</div>
+                            ${timerBarHtml}
                         </div>
                         ${hostControls}
                         ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${formatMoney(p.betThisRound)}</div>` : ''}
@@ -1301,87 +1058,38 @@
                 `;
             } else { 
                 let addBotHtml = '';
-                if (state.game.status === "PICK_SEAT" && state.game.currentPicker === myName) { 
-                    addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">坐下</div>`; 
-                } 
-                else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { 
-                    addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`; 
-                }
+                if (state.game.status === "PICK_SEAT" && state.game.currentPicker === myName) { addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">坐下</div>`; } 
+                else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`; }
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
 
         if (isInitialDeal) initialDealPlayed = true; if (state.game.status === "SHOWDOWN") winTextPlayed = true;
 
-        const actionConsole = document.getElementById("action-console"); 
-        const buyinConsole = document.getElementById("buyin-console");
-        const preActionConsole = document.getElementById("pre-action-console");
-        const waitingTip = document.getElementById("waiting-tip"); 
-        const tableContainer = document.getElementById("table-container"); 
-        const btnCallTitle = document.getElementById("btn-call-title"); const btnCallSub = document.getElementById("btn-call-sub"); 
-        const actBtns = ["btn-action-fold", "btn-action-call", "btn-action-raise"];
+        const actionConsole = document.getElementById("action-console"); const buyinConsole = document.getElementById("buyin-console"); const preActionConsole = document.getElementById("pre-action-console"); const waitingTip = document.getElementById("waiting-tip"); const tableContainer = document.getElementById("table-container"); const btnCallTitle = document.getElementById("btn-call-title"); const btnCallSub = document.getElementById("btn-call-sub"); const actBtns = ["btn-action-fold", "btn-action-call", "btn-action-raise"];
         
-        actionConsole.classList.add("hidden"); 
-        buyinConsole.classList.add("hidden"); 
-        preActionConsole.classList.add("hidden");
-        waitingTip.classList.add("hidden"); 
-        tableContainer.style.transform = "translateY(0) scale(1)";
+        actionConsole.classList.add("hidden"); buyinConsole.classList.add("hidden"); preActionConsole.classList.add("hidden"); waitingTip.classList.add("hidden"); tableContainer.style.transform = "translateY(0) scale(1)";
 
         if (amISeated) {
-            if (myDataRecord.isSittingOut) {
-                return;
-            }
+            if (myDataRecord.isSittingOut) return;
             
-            if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
-                buyinConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)"; document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
-            } 
-            else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
+            if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) { buyinConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)"; document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30); } 
+            else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
-                    
-                    if (currentPreAction === 'FOLD') {
-                        currentPreAction = null; renderPreUI();
-                        send({type:'ACTION', name: myName, action:'FOLD'});
-                        return; 
-                    } else if (currentPreAction === 'CALL') {
-                        currentPreAction = null; renderPreUI();
-                        send({type:'ACTION', name: myName, action:'CALL'});
-                        return; 
-                    }
-
+                    if (currentPreAction === 'FOLD') { currentPreAction = null; renderPreUI(); send({type:'ACTION', name: myName, action:'FOLD'}); return; } else if (currentPreAction === 'CALL') { currentPreAction = null; renderPreUI(); send({type:'ACTION', name: myName, action:'CALL'}); return; }
                     actionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
-                    
-                    const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; 
-                    const minRaiseDelta = parseFloat(state.game.lastValidRaise) || parseFloat(state.game.bigBlind) || 5; 
-                    
+                    const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; const minRaiseDelta = parseFloat(state.game.lastValidRaise) || parseFloat(state.game.bigBlind) || 5; 
                     const callAmount = Math.round((currentBet - myBet) * 100) / 100;
-                    if (callAmount <= 0) { btnCallTitle.innerText = "CHECK"; btnCallSub.innerText = "过牌 (免费)"; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #2ecc71, #219653)"; } 
-                    else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "$" + formatMoney(callAmount); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
+                    if (callAmount <= 0) { btnCallTitle.innerText = "CHECK"; btnCallSub.innerText = "过牌 (免费)"; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #2ecc71, #219653)"; } else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "$" + formatMoney(callAmount); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
+                    const minRaiseTo = currentBet + minRaiseDelta; slider.min = minRaiseTo; slider.max = myChips + myBet; 
+                    let targetVal = parseFloat(slider.value) || 0; if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; slider.value = roundToQuarter(targetVal);
+                    if (document.activeElement !== inputAmount) { updateSliderFromSlider(); }
                     
-                    const minRaiseTo = currentBet + minRaiseDelta; 
-                    slider.min = minRaiseTo; slider.max = myChips + myBet; 
-                    
-                    let targetVal = parseFloat(slider.value) || 0;
-                    if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; 
-                    slider.value = roundToQuarter(targetVal);
-                    
-                    if (document.activeElement !== inputAmount) {
-                        updateSliderFromSlider();
-                    }
-                    
-                    document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'});
-                    document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'});
-                    document.getElementById("btn-action-raise").onclick = () => { 
-                        syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; 
-                        send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); 
-                    };
+                    document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'}); document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'}); document.getElementById("btn-action-raise").onclick = () => { syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
                 } else {
-                    preActionConsole.classList.remove("hidden");
-                    tableContainer.style.transform = "translateY(-120px) scale(0.85)";
-                    
-                    waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex);
-                    if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; }
-                    actBtns.forEach(id => document.getElementById(id).disabled = true);
+                    preActionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
+                    waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex); if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; } actBtns.forEach(id => document.getElementById(id).disabled = true);
                 }
             }
         }
@@ -1389,4 +1097,3 @@
 </script>
 </body>
 </html>
-
