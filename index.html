@@ -72,7 +72,8 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:95; }
+        /* 更新防遮挡动画：加入 transition 和左边距联动 */
+        #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:95; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         #chat-zone:hover #chat-list, #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; }
         #chat-list div { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 8px; word-wrap: break-word;}
@@ -117,6 +118,9 @@
         @keyframes shake { 0% { transform: translate(3px, 2px) rotate(0deg); } 10% { transform: translate(-2px, -3px) rotate(-2deg); } 20% { transform: translate(-4px, 0px) rotate(2deg); } 30% { transform: translate(0px, 3px) rotate(0deg); } 40% { transform: translate(2px, -2px) rotate(2deg); } 50% { transform: translate(-2px, 3px) rotate(-2deg); } 60% { transform: translate(-4px, 2px) rotate(0deg); } 70% { transform: translate(4px, 2px) rotate(-2deg); } 80% { transform: translate(-2px, -2px) rotate(2deg); } 90% { transform: translate(2px, 3px) rotate(0deg); } 100% { transform: translate(2px, -3px) rotate(-2deg); } }
 
         .draw-deck-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 15px; z-index: 100; }
+        .draw-card { width: 70px; height: 100px; background: white; border-radius: 8px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; font-weight: 900; color: black; font-size: 26px; transition: 0.3s; position: relative;}
+        .draw-card.back { background-color: #c0392b !important; background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px), repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px) !important; border: 3px solid #fff !important; box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.3) !important; color: transparent !important; }
+        .draw-card:hover { transform: translateY(-15px); border: 3px solid var(--gold) !important; }
         .draw-name { position: absolute; bottom: -25px; font-size: 12px; color: white; white-space: nowrap; text-shadow: 0 2px 4px black; }
 
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 300; }
@@ -136,24 +140,9 @@
         .win-fly-text { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #2ecc71; font-size: 28px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,1); animation: floatUp 4s ease-out forwards; z-index: 50; pointer-events: none; white-space: nowrap; }
         @keyframes floatUp { 0% { top: 20px; opacity: 0; transform: translateX(-50%) scale(0.5); } 10% { top: -20px; opacity: 1; transform: translateX(-50%) scale(1.3); } 20% { top: -30px; opacity: 1; transform: translateX(-50%) scale(1); } 80% { top: -60px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -80px; opacity: 0; transform: translateX(-50%) scale(1); } }
 
-        /* =========================================================
-           更新：扑克牌尺寸维持，但背面图案替换为经典的红色赌场方格纹 
-           ========================================================= */
-        .playing-card, .draw-card { background: white; color: black; width: 50px; height: 72px; border-radius: 5px; font-weight: bold; font-size: 24px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
-        .draw-card { width: 70px; height: 100px; font-size: 26px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .draw-card:hover { transform: translateY(-15px); border: 3px solid var(--gold); }
+        .playing-card { background: white; color: black; width: 50px; height: 72px; border-radius: 5px; font-weight: bold; font-size: 24px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
         .playing-card.red { color: #d32f2f; }
-        
-        .playing-card.back, .draw-card.back {
-            background-color: #c0392b !important;
-            background-image: 
-                repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px),
-                repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px) !important;
-            border: 3px solid #fff !important;
-            border-radius: 4px !important;
-            color: transparent !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.3) !important;
-        }
+        .playing-card.back { background-color: #c0392b !important; background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px), repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px) !important; border: 3px solid #fff !important; color: transparent !important; box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.3) !important; }
         
         @keyframes dealHoleCard { 0% { transform: translate(calc(50vw - 100%), calc(-50vh + 100%)) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
         @keyframes dealBoardCard { 0% { transform: translate(0, -100px) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
@@ -174,10 +163,10 @@
         .player-card.my-seat .player-chips { background: linear-gradient(145deg, #ffd700, #d4b400) !important; color: #000 !important; border-top: 1px solid rgba(255,255,255,0.3); }
 
         .player-card.empty-seat { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); box-shadow: none; min-height: 85px; border-radius: 8px; position: relative; }
-        .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.2s; font-weight: 100; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; user-select: none;}
+        .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; color: rgba(255, 255, 255, 0.6); cursor: pointer; transition: 0.2s; font-weight: bold; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; user-select: none; flex-direction: column;}
         .add-bot-btn:hover { color: var(--gold); background: rgba(255, 215, 0, 0.1); }
-        .add-bot-btn.pulse-gold { color: var(--gold); animation: pulseGold 1.5s infinite; background: rgba(255, 215, 0, 0.2); }
-        @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.7); } 70% { box-shadow: 0 0 0 15px rgba(255,215,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); } }
+        .add-bot-btn.pulse-gold { color: #111; animation: pulseGold 1.5s infinite; background: var(--gold); border: 2px solid white; box-shadow: 0 0 20px rgba(255,215,0,0.8);}
+        @keyframes pulseGold { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.1); } 100% { transform: translate(-50%, -50%) scale(1); } }
 
         .dealer-badges { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 20; align-items: center; justify-content: center; }
         .dealer-btn { width: 22px; height: 22px; background: white; color: black; border: 2px solid #555; border-radius: 50%; font-weight: 900; font-size: 11px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.6); }
@@ -305,7 +294,7 @@
                 </select>
             </div>
             <div class="setting-item" style="border-top: 1px dashed #444; padding-top: 15px;">
-                <span class="setting-label" style="color:var(--gold);">趣味抽牌选座 (抢庄)</span>
+                <span class="setting-label" style="color:var(--gold);">排队抽签选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
@@ -313,11 +302,11 @@
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
-                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 大逃杀生存模式</span>
+                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 生存模式</span>
                 <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item" id="set-twoseven-container">
-                <span class="setting-label" style="color:#e74c3c;">🧨 2-7 勇敢者奖励 (The 2-7 Bounty)</span>
+                <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金 (The 2-7 Bounty)</span>
                 <input type="checkbox" id="set-enable-twoseven" style="width:20px; height:20px; cursor:pointer;">
             </div>
         </div>
@@ -334,11 +323,11 @@
                 <input type="checkbox" id="update-enable-shortdeck" onchange="toggleTwoSeven('update')" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
-                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 大逃杀生存模式</span>
+                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 生存模式</span>
                 <input type="checkbox" id="update-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item" id="update-twoseven-container">
-                <span class="setting-label" style="color:#e74c3c;">🧨 2-7 勇敢者奖励</span>
+                <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金</span>
                 <input type="checkbox" id="update-enable-twoseven" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div style="font-size:12px; color:#aaa; margin-bottom:20px; text-align:left;">* 提示：规则修改将在【下一局】正式生效。短牌模式下将禁止触发2-7炸鱼。</div>
@@ -348,7 +337,7 @@
 
     <div id="sit-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 200;">
         <div class="menu-card" style="width: 420px; padding: 30px;">
-            <h2 style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
+            <h2 id="sit-modal-title" style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (下滑浏览海量表情)</div>
             <div id="avatar-grid" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-start; margin-bottom: 20px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #333;"></div>
             
@@ -357,8 +346,8 @@
 
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">3. 输入您的尊姓大名</div>
             <input type="text" id="sit-name" class="input-code" placeholder="Your Nickname" style="width:100%; box-sizing:border-box; margin-bottom: 25px;">
-            <button id="btn-confirm-sit" class="btn-main btn-gold" onclick="confirmSit()">确定进入</button>
-            <button class="btn-main btn-dark" style="margin-bottom:0;" onclick="document.getElementById('sit-modal').classList.add('hidden')">取消旁观</button>
+            <button id="btn-confirm-sit" class="btn-main btn-gold" onclick="confirmSit()">确定</button>
+            <button class="btn-main btn-dark" style="margin-bottom:0;" onclick="document.getElementById('sit-modal').classList.add('hidden')">取消</button>
         </div>
     </div>
 
@@ -438,6 +427,9 @@
                         <div id="display-room-url" style="color: #8ca0b3; font-size: 16px; letter-spacing: 2px; font-weight: bold;">ROOM: ------</div>
                     </div>
                 </div>
+                
+                <div id="pick-seat-banner" class="winner-banner hidden" style="top: 8%;"></div>
+                
                 <div id="winner-banner" class="winner-banner hidden"></div>
                 
                 <div id="players-layer"></div>
@@ -460,7 +452,7 @@
         <div class="lobby-zone hidden" id="lobby-zone">
             <div class="lobby-title">🚪 候场区玩家</div>
             <div id="lobby-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;"></div>
-            <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起抽牌选座</button>
+            <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起排队选座</button>
         </div>
 
         <button id="btn-take-seat" class="hidden" onclick="openSitModal()">🪑 入座参与 (Take a Seat)</button>
@@ -475,8 +467,9 @@
 
         <div class="host-panel hidden" id="player-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
-            <button onclick="standUpToSpectate()" class="host-btn" style="background:#2a3441; color:white;">👀 加入观看</button>
-            <button onclick="exitGame()" class="host-btn btn-red" style="margin-top:8px;">🏃 离开游戏</button>
+            <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black;">✏️ 修改资料</button>
+            <button onclick="toggleSitOut()" id="btn-sit-out" class="host-btn btn-dark" style="margin-top:8px;">⏸️ 暂时离座</button>
+            <button onclick="exitGame()" class="host-btn btn-red" style="margin-top:8px;">🏃 离开游戏 (退为观战)</button>
         </div>
 
         <div id="waiting-tip" class="waiting-tip hidden" style="bottom: 30px;">等待对手行动...</div>
@@ -532,10 +525,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v45.0 - 史诗视觉补丁 (当前版本)</strong><br>
-                - 🎴 [视觉优化] 还原经典：扑克牌背面修改为最经典的红色方格网纹样式，在绿色桌面上对比度拉满。<br>
-                - 🧍‍♂️ [文案调整] Stand Up 更名：全面移除了不合时宜的鱿鱼大逃杀（🦑）图标，统一替换为经典的起立（🧍‍♂️）图标。<br>
-                - 🐔 [海量头像] 新增了上百种全新的动物（涵盖全部形态的鸡、老虎、熊、蛋等），让入座更具个性。
+                <strong style="color:var(--gold)">v46.0 - 终极控制与便利更新</strong><br>
+                - 🪑 [选座优化] 取消了死板的顺时针分座！现在抽牌后，将严格按照**牌面大小排序排队**，大家可以手动点选自己风水最好的神位。<br>
+                - ⏸️ [离座功能] 内急想去厕所？点击【暂时离座】，保留你的座位和筹码，但在这期间系统会自动替你 Fold，等你回来再无缝接入战局！<br>
+                - ✏️ [资料修改] 进场后不满意头像或名字颜色？随时在控制台点击【修改资料】实时更新，即刻生效。<br>
+                - 🔇 [房主特权] 强力禁言套餐：遇到刷屏怪，房主可在一键点击头像底部的【禁言】，让对方 60 秒内闭嘴闭麦。<br>
+                - 💬 [防遮挡] 打开记录面板时，聊天框会自动丝滑地向右躲避，再也不用烦心 UI 遮挡了。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -562,11 +557,9 @@
     <div id="allin-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
 
 <script>
-    // ⚠️ 确保填入你的云端地址，末尾不要有斜杠
     const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
-    // 史诗级动物园扩容
     const AVATAR_LIST = [
         '😎','🤡','💩','👻','👽','🤖','🤠','🧛','🧟','🥷','🤴','👸','👼',
         '🍆','🍑','💦','🍌','👅','🥵','🥴','🌚','🙈','🤩','🤬','🤪',
@@ -603,6 +596,7 @@
     let warningPlayedThisHand = false; 
     let rebuyTimers = {};
     let currentPreAction = null; 
+    let isEditingProfile = false;
 
     function appendEmoji(emoji) {
         const input = document.getElementById('chat-input');
@@ -620,11 +614,8 @@
     }
 
     function togglePre(type) {
-        if (currentPreAction === type) {
-            currentPreAction = null; 
-        } else {
-            currentPreAction = type;
-        }
+        if (currentPreAction === type) currentPreAction = null; 
+        else currentPreAction = type;
         renderPreUI();
     }
 
@@ -698,7 +689,18 @@
     function roundToQuarter(val) { return Math.round(val * 4) / 4; }
     function openLedger() { document.getElementById('ledger-modal').classList.remove('hidden'); document.getElementById('settlement-area').style.display = 'none'; }
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
-    function toggleLogDrawer() { document.getElementById('log-drawer').classList.toggle('open'); }
+    
+    // 解决遮挡Bug
+    function toggleLogDrawer() { 
+        const drawer = document.getElementById('log-drawer');
+        const chatZone = document.getElementById('chat-zone');
+        drawer.classList.toggle('open'); 
+        if(drawer.classList.contains('open')) {
+            chatZone.style.left = '340px';
+        } else {
+            chatZone.style.left = '20px';
+        }
+    }
 
     function purgeRecord(targetName) {
         if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n如果该玩家曾参与过输赢，强行删除将导致全桌总盈亏无法配平（出现死账）！\n仅建议删除未产生实际交易的误加玩家。")) { send({type: 'PURGE_RECORD', name: myName, targetName: targetName}); }
@@ -706,6 +708,16 @@
 
     function standUpToSpectate() {
         if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌（已下注金额不退还）。")) { send({type: 'LEAVE_SEAT', name: myName}); }
+    }
+    
+    function toggleSitOut() {
+        if(latestGameState && latestGameState.players) {
+            let p = latestGameState.players.find(x => x.name === myName);
+            if (p) {
+                let newState = !p.isSittingOut;
+                send({type: 'TOGGLE_SIT_OUT', name: myName, isSittingOut: newState});
+            }
+        }
     }
 
     function exitGame() {
@@ -806,7 +818,25 @@
     function navTo(targetViewId) { document.querySelectorAll('.view-screen').forEach(el => el.classList.add('hidden')); document.getElementById(targetViewId).classList.remove('hidden'); }
     function copyInviteLink() { navigator.clipboard.writeText(window.location.href).then(() => { const el = document.getElementById('display-room-url'); const originalText = el.innerText; el.innerText = "✓ 链接已复制!"; el.style.color = "var(--active-green)"; setTimeout(() => { el.innerText = originalText; el.style.color = "#8ca0b3"; }, 2000); }); }
     
-    function openSitModal() { document.getElementById('sit-modal').classList.remove('hidden'); renderAvatarGrid(); renderColorGrid(); }
+    function openSitModal() { 
+        isEditingProfile = false;
+        document.getElementById('sit-modal-title').innerText = "Take a Seat";
+        document.getElementById('btn-confirm-sit').innerText = "确定进入";
+        document.getElementById('sit-modal').classList.remove('hidden'); 
+        renderAvatarGrid(); renderColorGrid(); 
+    }
+
+    function openEditProfile() {
+        isEditingProfile = true;
+        document.getElementById('sit-modal-title').innerText = "修改个人资料";
+        document.getElementById('btn-confirm-sit').innerText = "保存修改";
+        document.getElementById('sit-name').value = myName.split('|')[1] || '';
+        selectedAvatar = myName.split('|')[0] || '😎';
+        selectedColor = myName.split('|')[2] || '#ffffff';
+        document.getElementById('sit-modal').classList.remove('hidden');
+        renderAvatarGrid(); renderColorGrid();
+    }
+
     function renderAvatarGrid() { document.getElementById('avatar-grid').innerHTML = AVATAR_LIST.map(a => `<div class="avatar-opt ${a===selectedAvatar?'selected':''}" onclick="selectAvatar('${a}')">${a}</div>`).join(""); }
     function renderColorGrid() { document.getElementById('color-grid').innerHTML = COLOR_LIST.map(c => `<div class="color-opt ${c.hex===selectedColor?'selected':''}" style="background-color:${c.hex}" title="${c.name}" onclick="selectColor('${c.hex}')"></div>`).join(""); }
     
@@ -817,13 +847,22 @@
         let nameInput = document.getElementById('sit-name').value.trim();
         if(!nameInput) return alert("请输入昵称！");
         nameInput = nameInput.replace(/\|/g, ""); 
-        myName = selectedAvatar + "|" + nameInput + "|" + selectedColor; 
-        isWaitingForServer = true; 
-        localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
-        const btn = document.getElementById('btn-confirm-sit'); btn.innerText = "正在进入..."; btn.disabled = true;
-        if (ws && ws.readyState === 1) { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); } 
-        else { connectWebSocket(); } 
-        setTimeout(() => { if (isWaitingForServer) { alert("云端无响应。请换个名字重试！"); btn.innerText = "确定进入"; btn.disabled = false; isWaitingForServer = false; } }, 5000);
+        let newName = selectedAvatar + "|" + nameInput + "|" + selectedColor; 
+        
+        if (isEditingProfile) {
+            send({ type: 'UPDATE_PROFILE', oldName: myName, newName: newName });
+            myName = newName;
+            localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
+            document.getElementById('sit-modal').classList.add('hidden');
+        } else {
+            myName = newName;
+            isWaitingForServer = true; 
+            localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
+            const btn = document.getElementById('btn-confirm-sit'); btn.innerText = "正在进入..."; btn.disabled = true;
+            if (ws && ws.readyState === 1) { let joinMsg = { type: "JOIN", name: myName }; if (creatorSettings) { joinMsg.settings = creatorSettings; creatorSettings = null; } ws.send(JSON.stringify(joinMsg)); } 
+            else { connectWebSocket(); } 
+            setTimeout(() => { if (isWaitingForServer) { alert("云端无响应。请重试！"); btn.innerText = "确定进入"; btn.disabled = false; isWaitingForServer = false; } }, 5000);
+        }
     }
 
     function openUpdateSettings() {
@@ -1041,12 +1080,26 @@
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
 
         const banner = document.getElementById("winner-banner");
+        const psBanner = document.getElementById("pick-seat-banner");
         const showCardsBtn = document.getElementById("show-cards-container");
         const uncontestedBtn = document.getElementById("uncontested-action-container");
         const dealerActionBtn = document.getElementById("dealer-action-container");
 
+        // 选座横幅提示
+        if (state.game.status === "PICK_SEAT") {
+            let pName = state.game.currentPicker ? state.game.currentPicker.split('|')[1] : '';
+            if (state.game.currentPicker === myName) {
+                psBanner.innerHTML = `<div style="font-size:18px; color:var(--gold); font-weight:900;">👑 轮到您选座了！请点击桌上空位</div>`;
+            } else {
+                psBanner.innerHTML = `<div style="font-size:16px; color:#ccc;">等待 [ <span style="color:white;font-weight:bold;">${pName}</span> ] 选择座位...</div>`;
+            }
+            psBanner.classList.remove("hidden");
+        } else {
+            psBanner.classList.add("hidden");
+        }
+
         if (state.game.status === "SHOWDOWN") {
-            const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating);
+            const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating && !p.isSittingOut);
             let richMsg = state.game.winMessage;
 
             if (hasBankrupt) {
@@ -1135,7 +1188,22 @@
                 if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN") { document.getElementById('btn-start').classList.add('hidden'); document.getElementById('btn-pause-refund').classList.remove('hidden'); } 
                 else { document.getElementById('btn-start').classList.remove('hidden'); document.getElementById('btn-pause-refund').classList.add('hidden'); }
             }
-        } else if (amISeated) { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.remove('hidden'); } 
+        } else if (amISeated) { 
+            document.getElementById('host-panel').classList.add('hidden'); 
+            document.getElementById('btn-start-draw').classList.add('hidden'); 
+            document.getElementById('player-panel').classList.remove('hidden'); 
+            
+            // 离座按钮状态更新
+            if (myDataRecord.isSittingOut) {
+                document.getElementById('btn-sit-out').innerText = "▶️ 回到座位";
+                document.getElementById('btn-sit-out').style.background = "#2ecc71";
+                document.getElementById('btn-sit-out').style.color = "black";
+            } else {
+                document.getElementById('btn-sit-out').innerText = "⏸️ 暂时离座";
+                document.getElementById('btn-sit-out').style.background = "#555";
+                document.getElementById('btn-sit-out').style.color = "white";
+            }
+        } 
         else { document.getElementById('host-panel').classList.add('hidden'); document.getElementById('btn-start-draw').classList.add('hidden'); document.getElementById('player-panel').classList.add('hidden'); }
 
         if (myDataRecord && myDataRecord.isKicked) { alert("您已被房主移出房间。"); myName = ""; localStorage.removeItem('poker_session_' + currentRoomId); window.location.href = window.location.pathname; return; }
@@ -1196,29 +1264,34 @@
 
                 let badgeHtml = "";
                 if (isOffline && !p.isBot) badgeHtml = `<div class="status-badge-inner bg-offline">已离线</div>`;
+                else if (p.isSittingOut) badgeHtml = `<div class="status-badge-inner" style="background:#8e44ad; color:white;">⏸️ 离座中</div>`;
                 else if (isSpectating) badgeHtml = `<div class="status-badge-inner bg-spec">👀 观战中</div>`;
                 else if (p.folded && !isOut) badgeHtml = `<div class="status-badge-inner bg-fold">已弃牌</div>`;
                 else if (p.chips === 0 && !isOut && !p.folded && state.game.status !== "WAITING") badgeHtml = `<div class="status-badge-inner bg-allin">ALL-IN</div>`;
                 else if (isActive && !p.folded && !isOut) badgeHtml = `<div class="status-badge-inner bg-think">思考中...</div>`;
 
-                let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
                 let winFlyTextHtml = ''; if (p.winAmount > 0 && state.game.status === "SHOWDOWN" && !winTextPlayed) { winFlyTextHtml = `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>`; }
 
-                let botControls = "";
-                if (isHost && p.isBot && isActive && !p.folded && !isOut) {
-                    botControls = `
-                    <div style="position:absolute; bottom: -35px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:100; width: 120px; justify-content: center;">
-                        <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#e74c3c; color:white; border:1px solid #c0392b; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强退</button>
-                        <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:1px solid #2980b9; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强跟</button>
+                let hostControls = "";
+                if (isHost && p.name !== myName && !isOut && p.seatIndex !== -1) {
+                    hostControls = `
+                    <div style="position:absolute; bottom: -35px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:100; width: 140px; justify-content: center;">
+                        <button onclick="send({type:'MUTE_PLAYER', name:'${myName}', targetName:'${p.name}', duration: 60000})" style="background:#555; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer;">禁言1分</button>
+                        ${p.isBot && isActive && !p.folded ? `
+                            <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#e74c3c; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强退</button>
+                            <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强跟</button>
+                        ` : ''}
                     </div>`;
                 }
+                
+                let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
 
                 layer.innerHTML += `
                     <div class="player-seat ${seatClass} ${posClass}">
                         ${isRebuying ? `<div class="rebuy-fx">💸 钞能力充值</div>` : ''}
                         ${winFlyTextHtml}
                         <div class="hole-cards">${isOut || isSpectating ? '' : cardsHtml}</div>
-                        <div class="player-card ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating ? 'active' : ''} ${isOut || isSpectating ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
+                        <div class="player-card ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating && !p.isSittingOut ? 'active' : ''} ${isOut || isSpectating || p.isSittingOut ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
                             <div class="dealer-badges">${isDealer ? `<div class="dealer-btn">D</div>` : ''}${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}</div>
                             ${kickHtml}
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
@@ -1226,14 +1299,19 @@
                             <div class="player-name" style="color:${displayColor}">${displayName}</div>
                             <div class="player-chips">$${formatMoney(p.chips)}</div>
                         </div>
-                        ${botControls}
+                        ${hostControls}
                         ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${formatMoney(p.betThisRound)}</div>` : ''}
                     </div>
                 `;
             } else { 
                 let addBotHtml = '';
-                if (state.game.status === "PICK_SEAT" && isWinner) { addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">+</div>`; } 
-                else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`; }
+                // 只有当前 Picker 可以点击加号进行选座
+                if (state.game.status === "PICK_SEAT" && state.game.currentPicker === myName) { 
+                    addBotHtml = `<div class="add-bot-btn pulse-gold" onclick="send({type:'SELECT_SEAT', name: '${myName}', seatIndex: ${i}})">坐下</div>`; 
+                } 
+                else if (isHost && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { 
+                    addBotHtml = `<div class="add-bot-btn" onclick="send({type:'ADD_BOT', name: '${myName}', seatIndex: ${i}})">+</div>`; 
+                }
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
@@ -1255,6 +1333,11 @@
         tableContainer.style.transform = "translateY(0) scale(1)";
 
         if (amISeated) {
+            // 如果玩家被标记为离座中，不显示任何操作栏
+            if (myDataRecord.isSittingOut) {
+                return;
+            }
+            
             if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) {
                 buyinConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)"; document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30);
             } 
