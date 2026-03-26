@@ -532,11 +532,11 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v52.0 - 界面终极优化版</strong><br>
+                <strong style="color:var(--gold)">v53.0 - 界面终极修复版</strong><br>
                 - 🪑 [布局优化] 生存名单移至右侧战绩表下，支持点击折叠隐藏，彻底解决挡牌和挡聊天框的问题。<br>
                 - 🪑 [布局优化] “随时入座”按钮移至屏幕正下中心。<br>
-                - ⏱️ [倒计时] 修复了秒级死亡倒计时的判定逻辑。<br>
-                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！
+                - 🛠️ [Bug修复] 修复了房主无法点击“修改规则”按钮的严重Bug。<br>
+                - 🛠️ [Bug修复] 彻底修复了刷新网页时会误触发 ALL IN 等动画特效的Bug。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -596,6 +596,7 @@
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
+    // 状态记录器：用于判断是否是首次加载
     let localAllInCount = 0; let localAllInTime = 0; let localBurnTime = 0;
     let localBuyIns = {}; let warningPlayedThisHand = false; let rebuyTimers = {};
     let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
@@ -607,7 +608,6 @@
     function togglePre(type) { if (currentPreAction === type) currentPreAction = null; else currentPreAction = type; renderPreUI(); }
     function renderPreUI() { document.getElementById('btn-pre-fold').style.background = (currentPreAction === 'FOLD') ? '#e74c3c' : '#2a3441'; document.getElementById('btn-pre-call').style.background = (currentPreAction === 'CALL') ? '#349feb' : '#2a3441'; }
 
-    // 🔥 修复点 1: 折叠/展开生存名单的 JS 逻辑
     function toggleStandupList() {
         const container = document.getElementById('standup-list-container');
         const btn = document.getElementById('toggle-standup-btn');
@@ -823,13 +823,25 @@
 
         if (state.game.handCount !== localHandCount) {
             localHandCount = state.game.handCount; initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
-            localAllInCount = 0; warningPlayedThisHand = false; currentPreAction = null; renderPreUI();
+            currentPreAction = null; renderPreUI();
         }
 
-        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { localStandUpEffect = state.game.standUpEffect; playPainEffect(); }
-        
-        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { localAllInTime = state.game.lastActionTime; playAllInAnimation(); }
-        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { localBurnTime = state.game.lastActionTime; playBurnThreeAnimation(); }
+        // 🔥 修复点 2: 使用 wasZero 判断首次加载，杜绝刷新时乱闪特效
+        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { 
+            let wasZero = (localStandUpEffect === 0);
+            localStandUpEffect = state.game.standUpEffect; 
+            if(!wasZero) playPainEffect(); 
+        }
+        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { 
+            let wasZero = (localAllInTime === 0);
+            localAllInTime = state.game.lastActionTime; 
+            if(!wasZero) playAllInAnimation(); 
+        }
+        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { 
+            let wasZero = (localBurnTime === 0);
+            localBurnTime = state.game.lastActionTime; 
+            if(!wasZero) playBurnThreeAnimation(); 
+        }
 
         if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content'); contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
