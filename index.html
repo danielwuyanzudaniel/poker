@@ -383,8 +383,8 @@
             <div class="chat-tools">
                 <div class="chat-emojis">
                     <span onclick="appendEmoji('🍆')">🍆</span><span onclick="appendEmoji('🍑')">🍑</span><span onclick="appendEmoji('💦')">💦</span><span onclick="appendEmoji('👅')">👅</span>
-                    <span onclick="appendEmoji('🍌')">🍌</span><span onclick="appendEmoji('🤡')">🤡</span><span onclick="appendEmoji('💩')">💩</span><span onclick="appendEmoji('🥵')">🥵</span>
-                    <span onclick="appendEmoji('🥴')">🥴</span><span onclick="appendEmoji('😎')">😎</span><span onclick="appendEmoji('😂')">😂</span><span onclick="appendEmoji('🤬')">🤬</span>
+                    <span onclick="appendEmoji('🍌')">🍌</span><span onclick="appendEmoji('🤡')">🤡</span><span onclick="appendEmoji('💩')">🥵</span><span onclick="appendEmoji('🥴')">🥴</span>
+                    <span onclick="appendEmoji('😎')">😎</span><span onclick="appendEmoji('😂')">😂</span><span onclick="appendEmoji('🤬')">🤬</span>
                 </div>
                 <div class="chat-shortcuts">
                     <button onclick="sendQuickChat('HERO FOLD')">🛡️ HERO FOLD</button>
@@ -909,7 +909,8 @@
     }
 
     function connectWebSocket() {
-const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`;
+        // 🔥 此处修复了关键的 WebSocket 路由拦截问题，补上了问号前的斜杠
+        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`;
         ws = new WebSocket(wsUrl); 
         ws.onopen = () => {
             document.getElementById('disconnect-banner').classList.add('hidden');
