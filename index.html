@@ -554,8 +554,8 @@
     <div id="allin-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
 
 <script>
-    // 🔥 白嫖你朋友的 Cloudflare 付费服务器！完全秒杀一切报错！
-    const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
+    // 🔥 你的专属 Cloudflare 免费云端大厅！
+    const BACKEND_URL = "https://cb-poker-server.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
     const AVATAR_LIST = [
@@ -909,8 +909,8 @@
     }
 
     function connectWebSocket() {
-        // 🔥 此处完美对接朋友的 Cloudflare 服务器协议
-        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `?roomId=${currentRoomId}`;
+        // 🔥 此处完美对接你的 Cloudflare 专属服务器
+        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`;
         ws = new WebSocket(wsUrl); 
         ws.onopen = () => {
             document.getElementById('disconnect-banner').classList.add('hidden');
