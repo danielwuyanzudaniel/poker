@@ -117,9 +117,6 @@
         @keyframes shake { 0% { transform: translate(3px, 2px) rotate(0deg); } 10% { transform: translate(-2px, -3px) rotate(-2deg); } 20% { transform: translate(-4px, 0px) rotate(2deg); } 30% { transform: translate(0px, 3px) rotate(0deg); } 40% { transform: translate(2px, -2px) rotate(2deg); } 50% { transform: translate(-2px, 3px) rotate(-2deg); } 60% { transform: translate(-4px, 2px) rotate(0deg); } 70% { transform: translate(4px, 2px) rotate(-2deg); } 80% { transform: translate(-2px, -2px) rotate(2deg); } 90% { transform: translate(2px, 3px) rotate(0deg); } 100% { transform: translate(2px, -3px) rotate(-2deg); } }
 
         .draw-deck-area { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 15px; z-index: 100; }
-        .draw-card { width: 70px; height: 100px; background: white; border-radius: 8px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; font-weight: 900; color: black; font-size: 26px; transition: 0.3s; position: relative;}
-        .draw-card.back { background: #1976d2; background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,0.1) 5px, rgba(255,255,255,0.1) 10px); }
-        .draw-card:hover { transform: translateY(-15px); border: 3px solid var(--gold); }
         .draw-name { position: absolute; bottom: -25px; font-size: 12px; color: white; white-space: nowrap; text-shadow: 0 2px 4px black; }
 
         .ledger-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 300; }
@@ -139,9 +136,24 @@
         .win-fly-text { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #2ecc71; font-size: 28px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,1); animation: floatUp 4s ease-out forwards; z-index: 50; pointer-events: none; white-space: nowrap; }
         @keyframes floatUp { 0% { top: 20px; opacity: 0; transform: translateX(-50%) scale(0.5); } 10% { top: -20px; opacity: 1; transform: translateX(-50%) scale(1.3); } 20% { top: -30px; opacity: 1; transform: translateX(-50%) scale(1); } 80% { top: -60px; opacity: 1; transform: translateX(-50%) scale(1); } 100% { top: -80px; opacity: 0; transform: translateX(-50%) scale(1); } }
 
-        .playing-card { background: white; color: black; width: 50px; height: 72px; border-radius: 5px; font-weight: bold; font-size: 24px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
+        /* =========================================================
+           更新：扑克牌尺寸维持，但背面图案替换为经典的红色赌场方格纹 
+           ========================================================= */
+        .playing-card, .draw-card { background: white; color: black; width: 50px; height: 72px; border-radius: 5px; font-weight: bold; font-size: 24px; display: flex; justify-content: center; align-items: center; box-shadow: -1px 2px 5px rgba(0,0,0,0.4); border: 1px solid #ccc; position: relative;}
+        .draw-card { width: 70px; height: 100px; font-size: 26px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .draw-card:hover { transform: translateY(-15px); border: 3px solid var(--gold); }
         .playing-card.red { color: #d32f2f; }
-        .playing-card.back { background: #1976d2; background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255,255,255,.1) 5px, rgba(255,255,255,.1) 10px); color: transparent;}
+        
+        .playing-card.back, .draw-card.back {
+            background-color: #c0392b !important;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px),
+                repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px) !important;
+            border: 3px solid #fff !important;
+            border-radius: 4px !important;
+            color: transparent !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.3) !important;
+        }
         
         @keyframes dealHoleCard { 0% { transform: translate(calc(50vw - 100%), calc(-50vh + 100%)) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
         @keyframes dealBoardCard { 0% { transform: translate(0, -100px) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
@@ -301,7 +313,7 @@
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
-                <span class="setting-label" style="color:#e74c3c;">🦑 Stand Up 生存模式</span>
+                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 生存模式</span>
                 <input type="checkbox" id="set-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item" id="set-twoseven-container">
@@ -322,7 +334,7 @@
                 <input type="checkbox" id="update-enable-shortdeck" onchange="toggleTwoSeven('update')" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item">
-                <span class="setting-label" style="color:#e74c3c;">🦑 Stand Up 生存模式</span>
+                <span class="setting-label" style="color:#e74c3c;">🧍‍♂️ Stand Up 生存模式</span>
                 <input type="checkbox" id="update-enable-standup" style="width:20px; height:20px; cursor:pointer;">
             </div>
             <div class="setting-item" id="update-twoseven-container">
@@ -371,7 +383,7 @@
                     <div><span class="rule-label">2-7 赏金:</span> <strong id="rule-27" class="status-off">Inactive</strong></div>
                 </div>
                 <div id="standup-panel" class="hidden" style="width: 100%; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; border: 1px dashed #e74c3c;">
-                    <div style="color:#e74c3c; font-weight:bold; font-size:11px; margin-bottom:5px; text-align:center;">🦑 Stand Up 生存名单</div>
+                    <div style="color:#e74c3c; font-weight:bold; font-size:11px; margin-bottom:5px; text-align:center;">🧍‍♂️ Stand Up 生存名单</div>
                     <div id="standup-list" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center;"></div>
                 </div>
             </div>
@@ -476,6 +488,7 @@
                 <button class="action-btn" id="btn-pre-call" onclick="togglePre('CALL')" style="background: #2a3441; border: 1px solid #444;"><span class="btn-title" style="font-size:14px;">Call Any</span></button>
             </div>
         </div>
+
         <div id="action-console" class="action-console hidden">
             <div class="turn-badge">YOUR TURN</div>
             <div class="raise-control-area">
@@ -519,11 +532,10 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v43.0 - 终极控制与便利更新</strong><br>
-                - 🤖 [房主权限] 机器人上帝模式：机器人现在拥有了 AI 思考（胜率判断），并且会故意延迟 3-5 秒。在此期间，房主视角下机器人的头像底端会出现“强跟”和“强退”按钮，点击即可打断思考强制执行！<br>
-                - 🤖 [系统逻辑] 自动重购：机器人一旦破产出局，下局发牌前会自动补满 $30 筹码。<br>
-                - 🕹️ [玩家便利] 预设行动面板 (Pre-Action)：在未轮到你行动的等待期间，底部会展示 Fold Any 和 Call Any 按钮。提前点亮它，轮到你时系统将瞬间为你代打！<br>
-                - 🐛 [防吞特效] 修复了充值特效被网络瞬间广播重绘“吃掉闪退”的问题。
+                <strong style="color:var(--gold)">v45.0 - 史诗视觉补丁 (当前版本)</strong><br>
+                - 🎴 [视觉优化] 还原经典：扑克牌背面修改为最经典的红色方格网纹样式，在绿色桌面上对比度拉满。<br>
+                - 🧍‍♂️ [文案调整] Stand Up 更名：全面移除了不合时宜的鱿鱼大逃杀（🦑）图标，统一替换为经典的起立（🧍‍♂️）图标。<br>
+                - 🐔 [海量头像] 新增了上百种全新的动物（涵盖全部形态的鸡、老虎、熊、蛋等），让入座更具个性。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -554,14 +566,20 @@
     const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
+    // 史诗级动物园扩容
     const AVATAR_LIST = [
-        '😎','🤡','👽','👻','💩','🍆','🍑','💦','🍌','👅','🥵','🥴','🌚','🙈','🤩',
-        '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐻‍❄️','🐨','🐯','🦁','🐮','🐷','🐽',
-        '🐸','🐵','🐒','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄',
-        '🐝','🐛','🦋','🐌','🐞','🐜','蚊','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦀',
-        '🐡','🐠','🐟','🐬','🐳','🦈','鳄','豹','🦓','🦍','🦧','🐘','🦛','🦏','🐪','🦒',
-        '🦘','🐃','🐎','🐏','🐑','🦙','🐐','🦌','🦮','🐕‍🦺','🐈','🦃','🦚','🦜','🦢','🦩',
-        '鸽','🦝','🦨','🦡','🦦','🦥','鼠','🐿','🦔'
+        '😎','🤡','💩','👻','👽','🤖','🤠','🧛','🧟','🥷','🤴','👸','👼',
+        '🍆','🍑','💦','🍌','👅','🥵','🥴','🌚','🙈','🤩','🤬','🤪',
+        '🥚','🍳','🐔','🐓','🐥','🐣','🐤','🍗','🍖',
+        '🐯','🐅','🐆','🦁',
+        '🐻','🐻‍❄️','🐼','🐨',
+        '🐶','🐱','🐭','🐹','🐰','🦊','🐮','🐷','🐽','🐸','🐵','🐒',
+        '🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛',
+        '🦋','🐌','🐞','🐜','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐',
+        '🦀','🐡','🐠','🐟','🐬','🐳','🦈','🦓','🦍','🦧','🐘','🦛',
+        '🦏','🐪','🦒','🦘','🐃','🐎','🐏','🐑','🦙','🐐','🦌','🦮',
+        '🐕‍🦺','🐈','🦃','🦚','🦜','🦢','🦩','🦝','🦨','🦡','🦦','🦥',
+        '🐿','🦔'
     ];
     const COLOR_LIST = [
         { name: '纯白', hex: '#ffffff' }, { name: '土豪金', hex: '#ffd700' },
@@ -583,8 +601,8 @@
     let localAllInCount = 0; 
     let localBuyIns = {}; 
     let warningPlayedThisHand = false; 
-    let rebuyTimers = {}; // 防吞特效的时间戳记录
-    let currentPreAction = null; // FOLD, CALL, or null
+    let rebuyTimers = {};
+    let currentPreAction = null; 
 
     function appendEmoji(emoji) {
         const input = document.getElementById('chat-input');
@@ -601,10 +619,9 @@
         }
     }
 
-    // 预设行动按钮的点击控制
     function togglePre(type) {
         if (currentPreAction === type) {
-            currentPreAction = null; // 再次点击取消
+            currentPreAction = null; 
         } else {
             currentPreAction = type;
         }
@@ -799,7 +816,7 @@
     function confirmSit() {
         let nameInput = document.getElementById('sit-name').value.trim();
         if(!nameInput) return alert("请输入昵称！");
-        nameInput = nameInput.replace(/\|/g, ""); // 过滤掉导致 Bug 的竖线
+        nameInput = nameInput.replace(/\|/g, ""); 
         myName = selectedAvatar + "|" + nameInput + "|" + selectedColor; 
         isWaitingForServer = true; 
         localStorage.setItem('poker_session_' + currentRoomId, JSON.stringify({ name: myName, avatar: selectedAvatar, color: selectedColor }));
@@ -928,7 +945,7 @@
             initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
             localAllInCount = 0; 
             warningPlayedThisHand = false; 
-            currentPreAction = null; // 新的一局，清空预设动作
+            currentPreAction = null; 
             renderPreUI();
         }
 
@@ -1139,13 +1156,11 @@
             if (seatClass === "s-rgt-t") posClass = "s-rgt-t"; if (seatClass === "s-rgt-b") posClass = "s-rgt-b";
 
             if (p) {
-                // ===== 防闪退的充值特效检测 =====
                 if (localBuyIns[p.name] !== undefined && p.totalBuyIn > localBuyIns[p.name]) { 
                     rebuyTimers[p.name] = Date.now();
                 }
                 localBuyIns[p.name] = p.totalBuyIn;
                 let isRebuying = rebuyTimers[p.name] && (Date.now() - rebuyTimers[p.name] < 2500);
-                // ==============================
 
                 const isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && p.seatIndex === state.game.turnIndex);
                 if (isActive && p.name === myName) isMyTurn = true;
@@ -1189,7 +1204,6 @@
                 let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
                 let winFlyTextHtml = ''; if (p.winAmount > 0 && state.game.status === "SHOWDOWN" && !winTextPlayed) { winFlyTextHtml = `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>`; }
 
-                // ====== 新增：房主操作机器人的强制按钮 ======
                 let botControls = "";
                 if (isHost && p.isBot && isActive && !p.folded && !isOut) {
                     botControls = `
@@ -1247,17 +1261,15 @@
             else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
                 if (isMyTurn) {
                     
-                    // ======= 新增：预设行动检测 =======
                     if (currentPreAction === 'FOLD') {
                         currentPreAction = null; renderPreUI();
                         send({type:'ACTION', name: myName, action:'FOLD'});
-                        return; // 让出控制权，直接发请求
+                        return; 
                     } else if (currentPreAction === 'CALL') {
                         currentPreAction = null; renderPreUI();
                         send({type:'ACTION', name: myName, action:'CALL'});
                         return; 
                     }
-                    // ===============================
 
                     actionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
                     
@@ -1287,10 +1299,8 @@
                     };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
                 } else {
-                    // ======= 显示预设行动面板 =======
                     preActionConsole.classList.remove("hidden");
                     tableContainer.style.transform = "translateY(-120px) scale(0.85)";
-                    // ===============================
                     
                     waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex);
                     if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; }
