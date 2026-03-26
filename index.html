@@ -140,9 +140,9 @@
 
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
-        .kick-btn { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; border: 1px solid #111; border-radius: 5px; font-size: 12px; padding: 4px 12px; cursor: pointer; z-index: 30; box-shadow: 0 4px 10px rgba(0,0,0,0.8); display: none; font-weight: bold; white-space: nowrap;}
-        .kick-btn:hover { background: #ff5b4c; transform: translateX(-50%) scale(1.05);}
-        .player-seat:hover .kick-btn { display: block; }
+        /* 🔥 修复点 5: 强势加注者特效追踪 */
+        .aggressor-highlight { border-color: #ff4757 !important; box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 15px rgba(255, 71, 87, 0.5) !important; animation: aggressorPulse 1s infinite alternate; }
+        @keyframes aggressorPulse { 0% { box-shadow: 0 0 20px rgba(255,71,87,0.6); } 100% { box-shadow: 0 0 45px rgba(255,71,87,1); } }
 
         .player-card { width: 110px; min-height: 85px; background: #000; border-radius: 8px; overflow: visible; border: 3px solid transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; }
         .player-card.active { border-color: #2ecc71 !important; box-shadow: 0 0 25px rgba(46, 204, 113, 0.8), inset 0 0 10px rgba(46, 204, 113, 0.5); }
@@ -176,19 +176,20 @@
 
         .out-state { filter: grayscale(1) brightness(0.4); opacity: 0.8; }
         
+        /* 🔥 修复点 6: 下注筹码向内圈靠拢，防遮挡 */
         .hole-cards { position: absolute; display: flex; z-index: 5; }
         .card-1 { margin-right: -10px; z-index: 1; } .card-2 { z-index: 2; }
         
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         
         .pos-bottom .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); } 
-        .pos-bottom .bet-badge { top: -120px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
+        .pos-bottom .bet-badge { top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
         .pos-top .hole-cards { bottom: -55px; left: 50%; transform: translateX(-50%); }
-        .pos-top .bet-badge { bottom: -120px !important; top: auto !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
+        .pos-top .bet-badge { bottom: -45px !important; top: auto !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
         
         .s-lft-t .hole-cards, .s-lft-b .hole-cards, .s-rgt-t .hole-cards, .s-rgt-b .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); }
-        .s-lft-b .bet-badge, .s-lft-t .bet-badge { top: 20px !important; left: 130px !important; transform: none !important; right: auto !important; }
-        .s-rgt-b .bet-badge, .s-rgt-t .bet-badge { top: 20px !important; right: 130px !important; transform: none !important; left: auto !important; }
+        .s-lft-b .bet-badge, .s-lft-t .bet-badge { top: 20px !important; left: 110px !important; transform: none !important; right: auto !important; }
+        .s-rgt-b .bet-badge, .s-rgt-t .bet-badge { top: 20px !important; right: 110px !important; transform: none !important; left: auto !important; }
 
         .s-btm-c { top: 102%; left: 50%; } .s-lft-b { top: 75%; left: 6%; } .s-lft-t { top: 25%; left: 6%; } .s-top-l { top: -2%; left: 22%; } .s-top-c { top: -2%; left: 50%; }
         .s-top-r { top: -2%; left: 78%; } .s-rgt-t { top: 25%; left: 94%; } .s-rgt-b { top: 75%; left: 94%; } .s-btm-r { top: 102%; left: 78%; } .s-btm-l { top: 102%; left: 22%; }
@@ -208,6 +209,9 @@
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+        /* 🔥 修复点 4: 沉浸式手牌样式 */
+        #my-immersive-cards { position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%) scale(1.4); display: flex; gap: 8px; z-index: 105; transition: 0.3s; pointer-events: none;}
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
@@ -258,6 +262,7 @@
             .host-panel { width: 140px; padding: 10px; right: 10px; bottom: 10px; z-index: 110;}
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
+            #my-immersive-cards { bottom: 90px; transform: translateX(-50%) scale(1.1); }
         }
     </style>
 </head>
@@ -318,6 +323,16 @@
                 <span class="setting-label" style="color:#e74c3c;">🧨 2-7 炸鱼赏金 (The 2-7 Bounty)</span>
                 <input type="checkbox" id="set-enable-twoseven" style="width:20px; height:20px; cursor:pointer;">
             </div>
+        </div>
+    </div>
+
+    <div id="player-mgmt-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 500;">
+        <div class="menu-card" style="width: 360px; max-height: 80vh; overflow-y: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="color:var(--gold); margin:0;">🛠️ 玩家管理</h2>
+                <span style="font-size:24px; cursor:pointer; color:#8ca0b3;" onclick="document.getElementById('player-mgmt-modal').classList.add('hidden')">&times;</span>
+            </div>
+            <div id="mgmt-player-list" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
     </div>
 
@@ -418,8 +433,10 @@
                     <div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div><div class="card-placeholder"></div>
                 </div>
                 <div class="pot-display-container"><span class="pot-label">TOTAL POT</span><span class="pot-value" id="ui-pot">$0</span></div>
-                <div id="ui-burn" style="position: absolute; top: 52%; left: 28%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
+                
+                <div id="ui-burn" style="position: absolute; top: 52%; left: 15%; transform: translateY(-50%); display: flex; z-index: 5;"></div>
                 <div id="ui-board" style="position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; z-index: 5;"></div>
+                
                 <div id="draw-zone" class="draw-deck-area hidden"></div>
                 <div id="invite-pill-container" style="position: absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:100; display: flex; flex-direction: column; align-items: center;">
                     <div class="invite-pill" onclick="copyInviteLink()">
@@ -447,7 +464,7 @@
         </div>
 
         <div id="dealer-burn-container" class="hidden" style="position:absolute; bottom:180px; left:50%; transform:translateX(-50%); z-index:105;">
-            <button onclick="send({type: 'BURN_THREE', name: myName})" style="background:linear-gradient(145deg, #e74c3c, #c0392b); color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:2px solid #fff; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.6); animation: pulseGold 2s infinite;">🔥 削三张 (Burn 3 Cards)</button>
+            <button onclick="send({type: 'BURN_THREE', name: myName})" style="background:linear-gradient(145deg, #e74c3c, #c0392b); color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:2px solid #fff; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.6); animation: pulseGold 2s infinite;">🔥 过三张 (Burn 3 Cards)</button>
         </div>
 
         <div class="lobby-zone hidden" id="lobby-zone">
@@ -461,7 +478,7 @@
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
-            <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black; margin-bottom:10px;">✏️ 修改资料</button>
+            <button onclick="document.getElementById('player-mgmt-modal').classList.remove('hidden')" class="host-btn" style="background:#8e44ad; color:white; margin-bottom:10px;">🛠️ 玩家管理</button>
             <button onclick="openUpdateSettings()" class="host-btn" style="background:#349feb; color:white; margin-bottom:10px;">⚙️ 修改规则 / 倒计时</button>
             <button onclick="triggerStartGame()" id="btn-start" class="host-btn btn-green" style="margin-top:0;">▶ 开始新一局</button>
             <button onclick="pauseAndRefund()" id="btn-pause-refund" class="host-btn btn-red" style="margin-top:0px;">⏸️ 中止并退款</button>
@@ -475,6 +492,8 @@
         </div>
 
         <div id="waiting-tip" class="waiting-tip hidden" style="bottom: 30px;">等待对手行动...</div>
+
+        <div id="my-immersive-cards"></div>
 
         <div id="pre-action-console" class="action-console hidden" style="background: rgba(17, 21, 26, 0.8); z-index: 95;">
             <div style="text-align: center; color: #aaa; font-size: 12px; margin-bottom: 8px;">等待轮到您时，自动执行：</div>
@@ -533,10 +552,13 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v54.0 - 终极防御版</strong><br>
-                - 🛡️ [逻辑硬防] 强制隔离短牌(6+)与2-7炸鱼，选短牌自动禁用2-7。<br>
-                - 🚀 [数据直达] 重构房主建房参数封装，确保你选的模式能准确发送到云端。<br>
-                - 🛠️ [控制台解卡] 彻底清理同名控制面板，房主专属“修改规则”功能秒点秒开！
+                <strong style="color:var(--gold)">v55.0 - 职业赛场视觉全升级</strong><br>
+                - 🎯 [高亮追踪] 新增加注者全场红框暴闪特效，谁在发力一目了然！<br>
+                - 🃏 [第一人称] 史诗级改动！玩家自己的底牌将放大1.5倍悬浮在操作台上，第一人称沉浸感拉满。<br>
+                - 🛠️ [控制台收纳] 房主踢人、禁言按钮统一收纳到专属“玩家管理”弹窗，彻底告别误触与挡牌。<br>
+                - 🪑 [防遮挡优化] 重新校准全场下注筹码位置，不再与 Total Pot 和玩家名字打架。<br>
+                - 🔥 [过三张升级] 修正过三张展现位置及文案，动画仅触发一次不乱飞。<br>
+                - 🩸 [规则严防] 修复 Stand Up 逻辑：分池、边池均不算赢，唯有赢下主池方可安全。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -596,7 +618,6 @@
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
-    // 状态记录器：用于判断是否是首次加载
     let localAllInCount = 0; let localAllInTime = 0; let localBurnTime = 0;
     let localBuyIns = {}; let warningPlayedThisHand = false; let rebuyTimers = {};
     let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
@@ -609,31 +630,15 @@
     function renderPreUI() { document.getElementById('btn-pre-fold').style.background = (currentPreAction === 'FOLD') ? '#e74c3c' : '#2a3441'; document.getElementById('btn-pre-call').style.background = (currentPreAction === 'CALL') ? '#349feb' : '#2a3441'; }
 
     function toggleStandupList() {
-        const container = document.getElementById('standup-list-container');
-        const btn = document.getElementById('toggle-standup-btn');
-        if (container.classList.contains('hidden')) {
-            container.classList.remove('hidden');
-            btn.innerHTML = '🧍‍♂️ 生存名单 ▼';
-        } else {
-            container.classList.add('hidden');
-            btn.innerHTML = '🧍‍♂️ 生存名单 ◀';
-        }
+        const container = document.getElementById('standup-list-container'); const btn = document.getElementById('toggle-standup-btn');
+        if (container.classList.contains('hidden')) { container.classList.remove('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ▼'; } 
+        else { container.classList.add('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ◀'; }
     }
 
-    // 🔥 核心修复点 1：每次点击“短牌”，必须强制关闭“2-7”选项的钩子
     function toggleTwoSeven(prefix) {
-        const shortDeckBox = document.getElementById(prefix + '-enable-shortdeck');
-        const tsBox = document.getElementById(prefix + '-enable-twoseven');
-        const tsContainer = document.getElementById(prefix + '-twoseven-container');
-        
-        if (shortDeckBox && shortDeckBox.checked) {
-            tsBox.checked = false; // 强制拔除 2-7 的勾选
-            tsBox.disabled = true; // 直接灰掉不让点
-            if (tsContainer) tsContainer.style.opacity = '0.4';
-        } else {
-            tsBox.disabled = false;
-            if (tsContainer) tsContainer.style.opacity = '1';
-        }
+        const shortDeckBox = document.getElementById(prefix + '-enable-shortdeck'); const tsBox = document.getElementById(prefix + '-enable-twoseven'); const tsContainer = document.getElementById(prefix + '-twoseven-container');
+        if (shortDeckBox && shortDeckBox.checked) { tsBox.checked = false; tsBox.disabled = true; if (tsContainer) tsContainer.style.opacity = '0.4'; } 
+        else { tsBox.disabled = false; if (tsContainer) tsContainer.style.opacity = '1'; }
     }
 
     function shootDanmaku(sender, msg) {
@@ -651,22 +656,14 @@
         if(effectHtml) { const fx = document.createElement('div'); fx.innerHTML = effectHtml; fx.className = 'chat-fx-container'; document.body.appendChild(fx); setTimeout(() => fx.remove(), 3000); }
     }
 
-    function playGameStartAnimation() {
-        const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => fx.remove(), 2000);
-    }
+    function playGameStartAnimation() { const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => fx.remove(), 2000); }
 
-    function playBurnThreeAnimation() {
-        const fx = document.createElement('div'); fx.innerHTML = '🔥🔥🔥<br>削三张'; fx.style = "position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); font-size:50px; font-weight:900; color:#e74c3c; text-shadow:0 0 20px #000; animation: popZoom 1.5s forwards; z-index:999; text-align:center; pointer-events: none;"; document.getElementById('table-container').appendChild(fx); setTimeout(() => fx.remove(), 1500);
-    }
+    // 🔥 修复点 3: 过三张动画
+    function playBurnThreeAnimation() { const fx = document.createElement('div'); fx.innerHTML = '🔥🔥🔥<br>过三张'; fx.style = "position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); font-size:50px; font-weight:900; color:#e74c3c; text-shadow:0 0 20px #000; animation: popZoom 1.5s forwards; z-index:999; text-align:center; pointer-events: none;"; document.getElementById('table-container').appendChild(fx); setTimeout(() => fx.remove(), 1500); }
 
-    function playPainEffect() {
-        document.body.classList.add('pain-shake'); const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500);
-    }
+    function playPainEffect() { document.body.classList.add('pain-shake'); const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500); }
 
-    function playAllInAnimation() {
-        const overlay = document.getElementById('allin-overlay'); overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
-        document.body.classList.add('allin-flash'); setTimeout(() => { overlay.classList.add('hidden'); document.body.classList.remove('allin-flash'); }, 1000);
-    }
+    function playAllInAnimation() { const overlay = document.getElementById('allin-overlay'); overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`; document.body.classList.add('allin-flash'); setTimeout(() => { overlay.classList.add('hidden'); document.body.classList.remove('allin-flash'); }, 1000); }
 
     function wakeUpChat() { const cl = document.getElementById('chat-list'); if(cl) { cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer); chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000); } }
 
@@ -676,11 +673,7 @@
     function openLedger() { document.getElementById('ledger-modal').classList.remove('hidden'); document.getElementById('settlement-area').style.display = 'none'; }
     function closeLedger() { document.getElementById('ledger-modal').classList.add('hidden'); }
     
-    function toggleLogDrawer() { 
-        const drawer = document.getElementById('log-drawer'); const chatZone = document.getElementById('chat-zone');
-        drawer.classList.toggle('open'); 
-        if(drawer.classList.contains('open')) { chatZone.style.left = '340px'; } else { chatZone.style.left = '20px'; }
-    }
+    function toggleLogDrawer() { const drawer = document.getElementById('log-drawer'); const chatZone = document.getElementById('chat-zone'); drawer.classList.toggle('open'); if(drawer.classList.contains('open')) { chatZone.style.left = '340px'; } else { chatZone.style.left = '20px'; } }
 
     function purgeRecord(targetName) { if(confirm("【高危操作】确定要彻底抹除该玩家的数据吗？\n仅建议删除未产生实际交易的误加玩家。")) { send({type: 'PURGE_RECORD', name: myName, targetName: targetName}); } }
     function standUpToSpectate() { if(confirm("确定要站起并加入观看席吗？\n如果当前正在局中，您将自动弃牌。")) { send({type: 'LEAVE_SEAT', name: myName}); } }
@@ -763,17 +756,12 @@
     function openUpdateSettings() {
         if(latestGameState && latestGameState.game) {
             document.getElementById('update-enable-standup').checked = latestGameState.game.enableStandUp;
-            
-            // 🔥 修复点 2: 确保打开面板时，如果是短牌，2-7 也要被按死
             const shortDeckUI = document.getElementById('update-enable-shortdeck'); 
             if(shortDeckUI) { 
                 shortDeckUI.checked = latestGameState.game.isShortDeck; 
-                if (latestGameState.game.isShortDeck) {
-                    document.getElementById('update-enable-twoseven').checked = false;
-                } else {
-                    document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
-                }
-                toggleTwoSeven('update'); // 强制刷新变灰UI
+                if (latestGameState.game.isShortDeck) document.getElementById('update-enable-twoseven').checked = false;
+                else document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
+                toggleTwoSeven('update');
             }
             document.getElementById('update-timer').value = latestGameState.game.nextActionTimerLimit || latestGameState.game.actionTimerLimit || 0;
         }
@@ -781,14 +769,9 @@
     }
 
     function submitUpdateSettings() {
-        const standUp = document.getElementById('update-enable-standup').checked; 
-        const shortDeckUI = document.getElementById('update-enable-shortdeck');
-        const shortDeck = shortDeckUI ? shortDeckUI.checked : false; 
-        
-        // 🔥 修复点 4: 在打包发送给后端时，进行二次强制清洗，短牌下 2-7 绝对发不过去
-        const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
+        const standUp = document.getElementById('update-enable-standup').checked; const shortDeckUI = document.getElementById('update-enable-shortdeck');
+        const shortDeck = shortDeckUI ? shortDeckUI.checked : false; const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
         const actionTimerLimit = document.getElementById('update-timer').value;
-        
         send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, enableTwoSeven: twoSeven, enableShortDeck: shortDeck, actionTimerLimit: actionTimerLimit }});
         document.getElementById('update-settings-modal').classList.add('hidden');
     }
@@ -799,14 +782,9 @@
             window.history.pushState({}, "", `?room=${currentRoomId}`); document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30; const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1; const enableDraw = document.getElementById('set-enable-draw').checked;
-            const enableStandUp = document.getElementById('set-enable-standup').checked; 
-            const shortDeckUI = document.getElementById('set-enable-shortdeck');
-            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; 
-            
-            // 🔥 修复点 5: 在建房时打包发送，也要强制清洗 2-7 参数
-            const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
+            const enableStandUp = document.getElementById('set-enable-standup').checked; const shortDeckUI = document.getElementById('set-enable-shortdeck');
+            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
             const actionTimerLimit = document.getElementById('set-timer').value || 0;
-            
             creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck, actionTimerLimit: actionTimerLimit };
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden'); openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
@@ -857,27 +835,20 @@
 
         if (state.game.status === 'PRE-FLOP' && state.game.handCount !== localHandCount) { playGameStartAnimation(); }
 
+        // 🔥 修复点 3: 确保每次新牌局/等待时，清理动画标记，防止发牌乱跳
+        if (state.game.status === "WAITING" || state.game.status === "LOBBY") {
+            prevBoardLength = 0; prevBurnLength = 0;
+        }
+
         if (state.game.handCount !== localHandCount) {
             localHandCount = state.game.handCount; initialDealPlayed = false; winTextPlayed = false; isNextHandSent = false;
             currentPreAction = null; renderPreUI();
+            prevBoardLength = 0; prevBurnLength = 0;
         }
 
-        // 使用 wasZero 判断首次加载，杜绝刷新时乱闪特效
-        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { 
-            let wasZero = (localStandUpEffect === 0);
-            localStandUpEffect = state.game.standUpEffect; 
-            if(!wasZero) playPainEffect(); 
-        }
-        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { 
-            let wasZero = (localAllInTime === 0);
-            localAllInTime = state.game.lastActionTime; 
-            if(!wasZero) playAllInAnimation(); 
-        }
-        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { 
-            let wasZero = (localBurnTime === 0);
-            localBurnTime = state.game.lastActionTime; 
-            if(!wasZero) playBurnThreeAnimation(); 
-        }
+        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { let wasZero = (localStandUpEffect === 0); localStandUpEffect = state.game.standUpEffect; if(!wasZero) playPainEffect(); }
+        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { let wasZero = (localAllInTime === 0); localAllInTime = state.game.lastActionTime; if(!wasZero) playAllInAnimation(); }
+        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { let wasZero = (localBurnTime === 0); localBurnTime = state.game.lastActionTime; if(!wasZero) playBurnThreeAnimation(); }
 
         if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content'); contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
@@ -900,8 +871,6 @@
         let potPrefix = state.game.isShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
         document.getElementById("ui-pot").innerHTML = potPrefix + "$" + formatMoney(state.game.pot);
         
-        if (state.game.status === "WAITING" || state.game.status === "LOBBY" || state.game.status === "PRE-FLOP") { prevBoardLength = 0; prevBurnLength = 0; }
-
         let burnCardsHtml = "";
         if (state.game.burnCards && state.game.burnCards.length > 0) {
             burnCardsHtml = `<div class="burn-area">` + state.game.burnCards.map((c, i) => { const animDelay = (i >= prevBurnLength) ? `animation: dealBoardCard 0.3s ease-out backwards;` : ``; return `<div class="playing-card back" style="transform: rotate(${i*8 - 8}deg); left: ${i*10}px; position: ${i===0?'relative':'absolute'}; z-index: ${i}; ${animDelay}"></div>` }).join("") + `</div>`;
@@ -928,16 +897,33 @@
 
         if (playersArray.length > 0) { document.getElementById('btn-ledger-top').classList.remove('hidden'); document.getElementById('btn-log-top').classList.remove('hidden'); }
         
-        let ledgerBody = "";
+        let ledgerBody = ""; let mgmtListHtml = "";
         playersArray.forEach(p => {
             if(p.isKicked) return; 
             const netVal = p.chips - (p.totalBuyIn || 0); const netClass = netVal > 0 ? 'text-green' : (netVal < 0 ? 'text-red' : '');
             const netStr = netVal > 0 ? `+$${formatMoney(netVal)}` : (netVal < 0 ? `-$${formatMoney(Math.abs(netVal))}` : `$0`);
             const pName = p.name.split('|')[1] || p.name;
-            let purgeBtn = isHost ? `<button style="background:transparent; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px; padding:0 0 0 10px;" onclick="purgeRecord('${p.name}')" title="抹除此记录">✖</button>` : '';
-            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>$${formatMoney(p.totalBuyIn)}</td><td>$${formatMoney(p.chips)}</td><td class="${netClass}" style="text-align:right; white-space:nowrap;">${netStr} ${purgeBtn}</td></tr>`;
+            ledgerBody += `<tr><td style="text-align:left;">${pName}</td><td>$${formatMoney(p.totalBuyIn)}</td><td>$${formatMoney(p.chips)}</td><td class="${netClass}" style="text-align:right; white-space:nowrap;">${netStr}</td></tr>`;
+
+            // 🔥 修复点 1: 渲染弹窗里的玩家管理列表，不再放牌桌上
+            if (isHost && p.name !== myName && !p.isOut && p.seatIndex !== -1 && !p.isKicked) {
+                let isActive = (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY" && p.seatIndex === state.game.turnIndex);
+                mgmtListHtml += `
+                    <div style="background:#1a2028; padding:10px; border-radius:8px; border:1px solid #333; text-align:left;">
+                        <div style="color:white; font-weight:bold; margin-bottom:5px;">${pName}</div>
+                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                            <button onclick="send({type:'MUTE_PLAYER', name:'${myName}', targetName:'${p.name}', duration: 60000})" style="background:#555; color:white; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer;">禁言1分</button>
+                            <button onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})" style="background:#e74c3c; color:white; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer;">踢出游戏</button>
+                            ${p.isBot && isActive && !p.folded ? `
+                                <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#d95379; color:white; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer;">强退</button>
+                                <button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:none; padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer;">强跟</button>
+                            ` : ''}
+                        </div>
+                    </div>`;
+            }
         });
         document.getElementById("ledger-tbody").innerHTML = ledgerBody;
+        if(isHost) { document.getElementById("mgmt-player-list").innerHTML = mgmtListHtml || "<div style='color:#aaa; text-align:center;'>无其他在座玩家可管理</div>"; }
 
         const banner = document.getElementById("winner-banner"); const psBanner = document.getElementById("pick-seat-banner");
         const showCardsBtn = document.getElementById("show-cards-container"); const uncontestedBtn = document.getElementById("uncontested-action-container");
@@ -1022,6 +1008,8 @@
             }, 200);
         }
 
+        let myImmersiveCardsHtml = ""; // 🔥 记录我的沉浸式手牌
+
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i]; const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
             let posClass = ""; if (seatClass.includes("btm")) posClass = "pos-bottom"; if (seatClass.includes("top")) posClass = "pos-top";
@@ -1035,6 +1023,10 @@
                 if (isActive && p.name === myName) isMyTurn = true;
                 const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true; const isMySeat = (p.name === myName);
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating); const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating); const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
+
+                // 🔥 修复点 5: 强势加注者高亮特效
+                let isAggressor = (state.game.aggressorName && p.name === state.game.aggressorName && !isOut && !isSpectating);
+                let aggressorClass = isAggressor ? "aggressor-highlight" : "";
 
                 let displayAvatar = '🗿'; let displayName = p.name; let displayColor = '#ffffff';
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; if(parts[2]) displayColor = parts[2]; }
@@ -1052,6 +1044,12 @@
                     }).join("");
                 }
 
+                // 🔥 修复点 4: 如果是我自己的牌，不放桌上，存在变量里，一会儿放在底部的第一人称面板里
+                if (isMySeat) {
+                    myImmersiveCardsHtml = cardsHtml;
+                    cardsHtml = ""; // 掏空桌面渲染
+                }
+
                 let badgeHtml = "";
                 if (isOffline && !p.isBot) badgeHtml = `<div class="status-badge-inner bg-offline">已离线</div>`;
                 else if (p.isSittingOut) badgeHtml = `<div class="status-badge-inner" style="background:#8e44ad; color:white;">⏸️ 离座中</div>`;
@@ -1062,13 +1060,6 @@
 
                 let winFlyTextHtml = ''; if (p.winAmount > 0 && state.game.status === "SHOWDOWN" && !winTextPlayed) { winFlyTextHtml = `<div class="win-fly-text">+$${formatMoney(p.winAmount)}</div>`; }
 
-                let hostControls = "";
-                if (isHost && p.name !== myName && !isOut && p.seatIndex !== -1) {
-                    hostControls = `<div style="position:absolute; bottom: -35px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:100; width: 140px; justify-content: center;"><button onclick="send({type:'MUTE_PLAYER', name:'${myName}', targetName:'${p.name}', duration: 60000})" style="background:#555; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer;">禁言1分</button>${p.isBot && isActive && !p.folded ? `<button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'FOLD'})" style="background:#e74c3c; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强退</button><button onclick="send({type:'FORCE_BOT_ACTION', name:'${myName}', targetBotName:'${p.name}', action:'CALL'})" style="background:#349feb; color:white; border:none; padding:4px 6px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:bold;">强跟</button>` : ''}</div>`;
-                }
-                
-                let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
-                
                 let timerBarHtml = ""; let timerNumHtml = "";
                 if (isActive && state.game.actionTimerLimit > 0) {
                     timerBarHtml = `<div class="turn-timer-bar" style="width: 100%; animation: drainTimer ${state.game.actionTimerLimit}s linear forwards;"></div><style>@keyframes drainTimer { from { width: 100%; } to { width: 0%; background: #000; } }</style>`;
@@ -1080,9 +1071,8 @@
                         ${isRebuying ? `<div class="rebuy-fx">💸 钞能力充值</div>` : ''}
                         ${winFlyTextHtml}
                         <div class="hole-cards">${isOut || isSpectating ? '' : cardsHtml}</div>
-                        <div class="player-card ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating && !p.isSittingOut ? 'active' : ''} ${isOut || isSpectating || p.isSittingOut ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
+                        <div class="player-card ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating && !p.isSittingOut ? 'active' : ''} ${aggressorClass} ${isOut || isSpectating || p.isSittingOut ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
                             <div class="dealer-badges">${isDealer ? `<div class="dealer-btn">D</div>` : ''}${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}</div>
-                            ${kickHtml}
                             ${timerNumHtml}
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
                             <div style="min-height:22px;">${badgeHtml}</div>
@@ -1090,7 +1080,6 @@
                             <div class="player-chips">$${formatMoney(p.chips)}</div>
                             ${timerBarHtml}
                         </div>
-                        ${hostControls}
                         ${(p.betThisRound > 0 && state.game.status !== "WAITING" && state.game.status !== "LOBBY") ? `<div class="bet-badge">⚪ $${formatMoney(p.betThisRound)}</div>` : ''}
                     </div>
                 `;
@@ -1101,6 +1090,9 @@
                 layer.innerHTML += `<div class="player-seat ${seatClass} ${posClass}"><div class="player-card empty-seat">${addBotHtml}</div></div>`; 
             }
         }
+        
+        // 渲染沉浸式第一人称手牌
+        document.getElementById('my-immersive-cards').innerHTML = myImmersiveCardsHtml;
 
         if (isInitialDeal) initialDealPlayed = true; if (state.game.status === "SHOWDOWN") winTextPlayed = true;
 
