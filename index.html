@@ -1118,12 +1118,10 @@
                     document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'}); document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'}); document.getElementById("btn-action-raise").onclick = () => { syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); };
                     actBtns.forEach(id => document.getElementById(id).disabled = false);
                 } else {
+                    slider.value = 0; // 🔥让拉杆在回合结束后自动归零，下回合自动顶到 MIN
                     preActionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
                     waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex); if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; } actBtns.forEach(id => document.getElementById(id).disabled = true);
                 }
-            }
-        }
-    }
 </script>
 </body>
 </html>
