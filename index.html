@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CB POKER - 职业赛场</title>
     <style>
-        :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; }
-        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation;}
+        :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; --card-scale: 1.4; }
+        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation; overoverscroll-behavior-y: none;}
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; } 
 
@@ -140,7 +140,6 @@
 
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
-        /* 🔥 加注者红框跟踪特效 */
         .aggressor-highlight { border-color: #ff4757 !important; box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 15px rgba(255, 71, 87, 0.5) !important; animation: aggressorPulse 1s infinite alternate; }
         @keyframes aggressorPulse { 0% { box-shadow: 0 0 20px rgba(255,71,87,0.6); } 100% { box-shadow: 0 0 45px rgba(255,71,87,1); } }
 
@@ -152,11 +151,7 @@
         .player-card.my-seat .player-chips { background: linear-gradient(145deg, #ffd700, #d4b400) !important; color: #000 !important; border-top: 1px solid rgba(255,255,255,0.3); }
 
         .player-card.empty-seat { background: rgba(0, 0, 0, 0.4); border: 2px solid rgba(255, 255, 255, 0.05); box-shadow: none; min-height: 85px; border-radius: 8px; position: relative; }
-        .add-bot-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; color: rgba(255, 255, 255, 0.6); cursor: pointer; transition: 0.2s; font-weight: bold; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; border-radius: 8px; user-select: none; flex-direction: column;}
-        .add-bot-btn:hover { color: var(--gold); background: rgba(255, 215, 0, 0.1); }
-        .add-bot-btn.pulse-gold { color: #111; animation: pulseGold 1.5s infinite; background: var(--gold); border: 2px solid white; box-shadow: 0 0 20px rgba(255,215,0,0.8);}
-        @keyframes pulseGold { 0% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.1); } 100% { transform: translate(-50%, -50%) scale(1); } }
-
+        
         .dealer-badges { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 20; align-items: center; justify-content: center; }
         .dealer-btn { width: 22px; height: 22px; background: white; color: black; border: 2px solid #555; border-radius: 50%; font-weight: 900; font-size: 11px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.6); }
         .badge-s { background: #9b59b6; color: white; border-color: #8e44ad;} 
@@ -179,7 +174,6 @@
         .hole-cards { position: absolute; display: flex; z-index: 5; }
         .card-1 { margin-right: -10px; z-index: 1; } .card-2 { z-index: 2; }
         
-        /* 筹码向内圈缩进防遮挡 */
         .bet-badge { position: absolute; background: rgba(0,0,0,0.85); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #777; z-index: 15; white-space: nowrap; color: var(--gold); box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .pos-bottom .hole-cards { top: -55px; left: 50%; transform: translateX(-50%); } 
         .pos-bottom .bet-badge { top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; right: auto !important; } 
@@ -202,7 +196,6 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        /* 🔥 控制台侧滑抽屉样式 */
         .host-panel { position: absolute; bottom: 20px; right: -180px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; border-right: none; transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .host-panel.open { right: 0px; }
         .panel-toggle-tab { position: absolute; left: -34px; top: 15px; background: #11151a; border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 16px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto;}
@@ -212,8 +205,8 @@
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* 🔥 沉浸式手牌样式 (带防遮挡避让机制) */
-        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(1.4); display: flex; gap: 8px; z-index: 105; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none;}
+        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
+        #my-immersive-cards:active { cursor: grabbing; }
         #my-immersive-cards.shifted { left: 55%; }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
@@ -266,7 +259,7 @@
             .host-panel.open { right: 0px; }
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
-            #my-immersive-cards { bottom: 90px; left: 50%; transform: translateX(-50%) scale(1.1); }
+            #my-immersive-cards { bottom: 90px; left: 50%; --card-scale: 1.1; transform: translateX(-50%) scale(var(--card-scale)); }
             #my-immersive-cards.shifted { left: 40%; }
         }
     </style>
@@ -315,7 +308,6 @@
                 <span class="setting-label" style="color:var(--gold);">排队抽签选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
-            
             <div class="setting-item">
                 <span class="setting-label" style="color:#ff9800;">🔥 短牌模式 (Short Deck 6+)</span>
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
@@ -557,12 +549,10 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v56.0 - 终极满血修复版</strong><br>
-                - 🗄️ [全系收纳] 房主面板与玩家面板升级为“侧边抽屉式”，随点随收，彻底不遮挡牌桌。<br>
-                - 🎴 [智能避让] 第一人称放大手牌移至操作台与右侧之间的黄金位置，展开控制台时手牌将自动向左平移躲避。<br>
-                - 🔄 [操作优化] 修复了玩家回合结束时筹码拉杆不重置的问题，现已自动归零至 MIN。<br>
-                - 🗑️ [体验优化] 彻底删除了“随时入座”按钮，坚守排队抽签纪律，预防插队卡房。<br>
-                - 🛠️ [Bug修复] 解决了 JS 代码合并引起的语法崩溃，所有按钮与界面功能满血复活。
+                <strong style="color:var(--gold)">v57.0 - 界面终极修复版</strong><br>
+                - 🃏 [手感优化] 第一人称手牌现已支持全屏自由拖拽，彻底解决防遮挡问题，随心摆放。<br>
+                - 🪑 [布局优化] 生存名单移至右侧战绩表下，支持点击折叠隐藏。<br>
+                - 🛠️ [Bug修复] 彻底解决了“New Game”失效及面板卡死的所有问题。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -639,7 +629,6 @@
         else { container.classList.add('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ◀'; }
     }
     
-    // 🔥 面板联动逻辑
     function toggleHostPanel() {
         const hp = document.getElementById('host-panel');
         const pp = document.getElementById('player-panel');
@@ -1124,6 +1113,32 @@
             }
         }
     }
+
+    // --- 手牌自由拖拽引擎 ---
+    const dragCards = document.getElementById('my-immersive-cards');
+    let isDraggingCards = false, startX, startY, curX = 0, curY = 0, xOff = 0, yOff = 0;
+    
+    function dragStart(e) {
+        startX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - xOff;
+        startY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - yOff;
+        isDraggingCards = true;
+    }
+    function dragEnd() { isDraggingCards = false; }
+    function drag(e) {
+        if (!isDraggingCards) return;
+        e.preventDefault();
+        curX = (e.type === "touchmove" ? e.touches[0].clientX : e.clientX) - startX;
+        curY = (e.type === "touchmove" ? e.touches[0].clientY : e.clientY) - startY;
+        xOff = curX; yOff = curY;
+        dragCards.style.transform = `translate(calc(-50% + ${curX}px), ${curY}px) scale(var(--card-scale))`;
+    }
+    
+    dragCards.addEventListener("touchstart", dragStart, {passive: false});
+    document.addEventListener("touchend", dragEnd);
+    document.addEventListener("touchmove", drag, {passive: false});
+    dragCards.addEventListener("mousedown", dragStart);
+    document.addEventListener("mouseup", dragEnd);
+    document.addEventListener("mousemove", drag);
 </script>
 </body>
 </html>
