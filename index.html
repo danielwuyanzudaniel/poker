@@ -909,7 +909,7 @@
     }
 
     function connectWebSocket() {
-        const wsUrl = BACKEND_URL.replace("https://", "wss://") + `?roomId=${currentRoomId}`;
+const wsUrl = BACKEND_URL.replace("https://", "wss://") + `/?roomId=${currentRoomId}`;
         ws = new WebSocket(wsUrl); 
         ws.onopen = () => {
             document.getElementById('disconnect-banner').classList.add('hidden');
