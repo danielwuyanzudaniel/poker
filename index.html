@@ -305,6 +305,7 @@
                 <span class="setting-label" style="color:var(--gold);">排队抽签选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
+            
             <div class="setting-item">
                 <span class="setting-label" style="color:#ff9800;">🔥 短牌模式 (Short Deck 6+)</span>
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
@@ -532,11 +533,10 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v53.0 - 界面终极修复版</strong><br>
-                - 🪑 [布局优化] 生存名单移至右侧战绩表下，支持点击折叠隐藏，彻底解决挡牌和挡聊天框的问题。<br>
-                - 🪑 [布局优化] “随时入座”按钮移至屏幕正下中心。<br>
-                - 🛠️ [Bug修复] 修复了房主无法点击“修改规则”按钮的严重Bug。<br>
-                - 🛠️ [Bug修复] 彻底修复了刷新网页时会误触发 ALL IN 等动画特效的Bug。
+                <strong style="color:var(--gold)">v54.0 - 终极防御版</strong><br>
+                - 🛡️ [逻辑硬防] 强制隔离短牌(6+)与2-7炸鱼，选短牌自动禁用2-7。<br>
+                - 🚀 [数据直达] 重构房主建房参数封装，确保你选的模式能准确发送到云端。<br>
+                - 🛠️ [控制台解卡] 彻底清理同名控制面板，房主专属“修改规则”功能秒点秒开！
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -617,6 +617,22 @@
         } else {
             container.classList.add('hidden');
             btn.innerHTML = '🧍‍♂️ 生存名单 ◀';
+        }
+    }
+
+    // 🔥 核心修复点 1：每次点击“短牌”，必须强制关闭“2-7”选项的钩子
+    function toggleTwoSeven(prefix) {
+        const shortDeckBox = document.getElementById(prefix + '-enable-shortdeck');
+        const tsBox = document.getElementById(prefix + '-enable-twoseven');
+        const tsContainer = document.getElementById(prefix + '-twoseven-container');
+        
+        if (shortDeckBox && shortDeckBox.checked) {
+            tsBox.checked = false; // 强制拔除 2-7 的勾选
+            tsBox.disabled = true; // 直接灰掉不让点
+            if (tsContainer) tsContainer.style.opacity = '0.4';
+        } else {
+            tsBox.disabled = false;
+            if (tsContainer) tsContainer.style.opacity = '1';
         }
     }
 
@@ -747,17 +763,32 @@
     function openUpdateSettings() {
         if(latestGameState && latestGameState.game) {
             document.getElementById('update-enable-standup').checked = latestGameState.game.enableStandUp;
-            document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
-            const shortDeckUI = document.getElementById('update-enable-shortdeck'); if(shortDeckUI) { shortDeckUI.checked = latestGameState.game.isShortDeck; toggleTwoSeven('update'); }
+            
+            // 🔥 修复点 2: 确保打开面板时，如果是短牌，2-7 也要被按死
+            const shortDeckUI = document.getElementById('update-enable-shortdeck'); 
+            if(shortDeckUI) { 
+                shortDeckUI.checked = latestGameState.game.isShortDeck; 
+                if (latestGameState.game.isShortDeck) {
+                    document.getElementById('update-enable-twoseven').checked = false;
+                } else {
+                    document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
+                }
+                toggleTwoSeven('update'); // 强制刷新变灰UI
+            }
             document.getElementById('update-timer').value = latestGameState.game.nextActionTimerLimit || latestGameState.game.actionTimerLimit || 0;
         }
         document.getElementById('update-settings-modal').classList.remove('hidden');
     }
 
     function submitUpdateSettings() {
-        const standUp = document.getElementById('update-enable-standup').checked; const shortDeckUI = document.getElementById('update-enable-shortdeck');
-        const shortDeck = shortDeckUI ? shortDeckUI.checked : false; const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
+        const standUp = document.getElementById('update-enable-standup').checked; 
+        const shortDeckUI = document.getElementById('update-enable-shortdeck');
+        const shortDeck = shortDeckUI ? shortDeckUI.checked : false; 
+        
+        // 🔥 修复点 4: 在打包发送给后端时，进行二次强制清洗，短牌下 2-7 绝对发不过去
+        const twoSeven = shortDeck ? false : document.getElementById('update-enable-twoseven').checked;
         const actionTimerLimit = document.getElementById('update-timer').value;
+        
         send({type: 'UPDATE_SETTINGS', name: myName, settings: { enableStandUp: standUp, enableTwoSeven: twoSeven, enableShortDeck: shortDeck, actionTimerLimit: actionTimerLimit }});
         document.getElementById('update-settings-modal').classList.add('hidden');
     }
@@ -768,9 +799,14 @@
             window.history.pushState({}, "", `?room=${currentRoomId}`); document.getElementById('display-room-url').innerText = `ROOM CODE: ${currentRoomId}`;
             const buyInVal = parseFloat(document.getElementById('set-buyin').value) || 30; const sb = parseFloat(document.getElementById('set-sb').value) || 0.25;
             const botLevel = parseInt(document.getElementById('set-bot-level').value) || 1; const enableDraw = document.getElementById('set-enable-draw').checked;
-            const enableStandUp = document.getElementById('set-enable-standup').checked; const shortDeckUI = document.getElementById('set-enable-shortdeck');
-            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
+            const enableStandUp = document.getElementById('set-enable-standup').checked; 
+            const shortDeckUI = document.getElementById('set-enable-shortdeck');
+            const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; 
+            
+            // 🔥 修复点 5: 在建房时打包发送，也要强制清洗 2-7 参数
+            const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
             const actionTimerLimit = document.getElementById('set-timer').value || 0;
+            
             creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck, actionTimerLimit: actionTimerLimit };
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden'); openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
@@ -826,7 +862,7 @@
             currentPreAction = null; renderPreUI();
         }
 
-        // 🔥 修复点 2: 使用 wasZero 判断首次加载，杜绝刷新时乱闪特效
+        // 使用 wasZero 判断首次加载，杜绝刷新时乱闪特效
         if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { 
             let wasZero = (localStandUpEffect === 0);
             localStandUpEffect = state.game.standUpEffect; 
