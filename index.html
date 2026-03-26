@@ -59,7 +59,8 @@
         .log-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 13px; color: #ccc; display: flex; flex-direction: column; gap: 8px; }
         .log-item { background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; line-height: 1.4; }
 
-        .lobby-zone { position: absolute; left: 20px; bottom: 220px; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 16px; border: 1px solid #444; width: 200px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 90; }
+        /* 🔥 修复点 1: 将候场区移到左上方，避免遮挡聊天框 */
+        .lobby-zone { position: absolute; left: 20px; top: 70px; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 16px; border: 1px solid #444; width: 200px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 90; }
         .lobby-title { font-size: 14px; color: var(--gold); margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 8px; }
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
@@ -432,7 +433,7 @@
             <button id="btn-start-draw" class="hidden" style="width:100%; padding:10px; background:var(--gold); border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="send({type:'START_DRAW', name:myName})">🃏 发起排队选座</button>
         </div>
 
-        <button id="btn-take-seat" class="hidden" onclick="openSitModal()" style="position: absolute; bottom: 20px; left: 20px; z-index: 120; background: linear-gradient(145deg, #ffd700, #d4b400); color: black; font-weight: 900; padding: 12px 25px; border-radius: 25px; border: 2px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.6); cursor: pointer; font-size: 16px; animation: pulseGold 2s infinite;">🪑 随时入座 (Take a Seat)</button>
+        <button id="btn-take-seat" class="hidden" onclick="openSitModal()" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 120; background: linear-gradient(145deg, #ffd700, #d4b400); color: black; font-weight: 900; padding: 12px 25px; border-radius: 25px; border: 2px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.6); cursor: pointer; font-size: 16px; animation: pulseGold 2s infinite;">🪑 随时入座 (Take a Seat)</button>
 
         <div class="host-panel hidden" id="host-panel">
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
@@ -509,11 +510,11 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v50.0 - 终极机制增强版</strong><br>
-                - ⏱️ [倒计时] 新增行动死亡倒计时功能，房主随时配置。<br>
-                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！<br>
-                - 🪑 [随时加入] 观战玩家可随时点击入座按钮，游戏将自动分配座位并在下一手发牌，告别抢10秒间隔。<br>
-                - 🎉 [视觉优化] 取消开局误报的ALL-IN特效，新增专属 GAME START 黄金过场。
+                <strong style="color:var(--gold)">v51.0 - UI 终极优化版</strong><br>
+                - 🪑 [布局优化] 候场区面板移至左上角，彻底解决与聊天框的重叠遮挡问题。<br>
+                - 🪑 [布局优化] “随时入座”按钮移至屏幕正下中心，再也不怕遮挡聊天输入框。<br>
+                - ⏱️ [倒计时] 修复了秒级死亡倒计时的判定逻辑。<br>
+                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -543,25 +544,42 @@
     const BACKEND_URL = "https://cb-poker-server.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
-    const AVATAR_LIST = [
-        '😎','🤡','💩','👻','👽','🤖','🤠','🧛','🧟','🥷','🤴','👸','👼',
-        '🍆','🍑','💦','🍌','👅','🥵','🥴','🌚','🙈','🤩','🤬','🤪',
-        '🥚','🍳','🐔','🐓','🐥','🐣','🐤','🍗','🍖',
-        '🐯','🐅','🐆','🦁',
-        '🐻','🐻‍❄️','🐼','🐨',
-        '🐶','🐱','🐭','🐹','🐰','🦊','🐮','🐷','🐽','🐸','🐵','🐒',
-        '🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛',
-        '🦋','🐌','🐞','🐜','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐',
-        '🦀','🐡','🐠','🐟','🐬','🐳','🦈','🦓','🦍','🦧','🐘','🦛',
-        '🦏','🐪','🦒','🦘','🐃','🐎','🐏','🐑','🦙','🐐','🦌','🦮',
-        '🐕‍🦺','🐈','🦃','🦚','🦜','🦢','🦩','🦝','🦨','🦡','🦦','🦥',
-        '🐿','🦔'
+const AVATAR_LIST = [
+        // 🤡 究极搞怪 & 抽象阴阳人 (嘲讽拉满)
+        '🗿','🤡','💩','🫠','🫨','🥴','🥸','🤪','😝','🤑','🫣','🙄','😮‍💨','🥱','😴','🤤',
+        '🤮','🤢','🤧','🥵','🥶','🤯','🤫','🤥','🤬','😈','👿','👹','👺','💀','☠️','👻','👽','👾',
+        // 🤌 肢体嘲讽 & 动作戏
+        '🤷‍♂️','🤦‍♂️','💆‍♂️','🙅‍♂️','💅','🤌','🤏','🫵','🫶','🖕','👎','👇','🤝','🙏','💪','👁️','👄','👅',
+        // 🍆 经典节目效果 & 擦边暗示
+        '🍆','🍑','💦','🍌','🦴','🦵','🦶','🧠','🫀','🫁','🩸',
+        // 🍔 饭桶 & 韭菜专区
+        '🌭','🍔','🍟','🍕','🌮','🌯','🍗','🍖','🥦','🧅','🧄','🥚','🍳','🥬','韭',
+        // 🧨 道具 & 搞心态工具
+        '🧨','💣','🚽','🧻','🗑️','💊','🩹','🔪','🗡️','🔮','🧿','💸','💵','📉','🤡',
+        // 🐔 飞禽走兽 & 经典动物 (原版保留)
+        '🐔','🐓','🐥','🐣','🐤','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛',
+        '🦋','🐌','🐞','🐜','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦀','🐡','🐠','🐟','🐬','🐳','🦈',
+        '🐯','🐅','🐆','🦁','🐻','🐻‍❄️','🐼','🐨','🐶','🐱','🐭','🐹','🐰','🦊','🐮','🐷','🐽','🐸','🐵','🐒','🦍','🦧',
+        '🦓','🐘','🦛','🦏','🐪','🦒','🦘','🐃','🐎','🐏','🐑','🦙','🐐','🦌','🦮','🐕‍🦺','🐈','🦃','🦚','🦜','🦢','🦩','🦝','🦨','🦡','🦦','🦥','🐿','🦔'
     ];
+    
     const COLOR_LIST = [
-        { name: '纯白', hex: '#ffffff' }, { name: '土豪金', hex: '#ffd700' },
-        { name: '猛男粉', hex: '#ff9ff3' }, { name: '原谅绿', hex: '#2ecc71' },
-        { name: '海王蓝', hex: '#0abde3' }, { name: '基佬紫', hex: '#9b59b6' },
-        { name: '警示红', hex: '#ff4757' }, { name: '活力橙', hex: '#ffa502' }
+        { name: '纯白 (默认)', hex: '#ffffff' }, 
+        { name: '土豪金', hex: '#ffd700' },
+        { name: '猛男粉', hex: '#ff9ff3' }, 
+        { name: '原谅绿', hex: '#2ecc71' },
+        { name: '海王蓝', hex: '#0abde3' }, 
+        { name: '基佬紫', hex: '#9b59b6' },
+        { name: '警示红', hex: '#ff4757' }, 
+        { name: '活力橙', hex: '#ffa502' },
+        { name: '赛博青', hex: '#00e5ff' },
+        { name: '电竞荧光绿', hex: '#39ff14' },
+        { name: '纯粹血红', hex: '#ff0000' },
+        { name: '冰川亮银', hex: '#bdc3c7' },
+        { name: '骚气洋红', hex: '#ff00ff' },
+        { name: '初号机紫', hex: '#D980FA' },
+        { name: '警告黄', hex: '#fff200' },
+        { name: '玫瑰金', hex: '#ffcccc' }
     ];
 
     const MAX_SEATS = 10;
@@ -893,7 +911,7 @@
             const currentAllIns = playersArray.filter(p => p.chips === 0 && !p.folded && !p.isOut && !p.isSpectating).length;
             if (currentAllIns > localAllInCount) {
                 localAllInCount = currentAllIns;
-                if (initialDealPlayed) { playAllInAnimation(); } // 只有在首轮发牌完毕后才触发 ALL IN 动画
+                if (initialDealPlayed) { playAllInAnimation(); } 
             } else if (currentAllIns < localAllInCount) {
                 localAllInCount = currentAllIns;
             }
@@ -964,7 +982,7 @@
             drawZone.innerHTML = state.game.drawingCards.map(c => { if (c.faceUp) { const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : ""; return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`; } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; } }).join('');
         } else { drawZone.classList.add('hidden'); }
 
-        // 观战秒入座按钮逻辑
+        // 观战随时入座按钮逻辑
         const btnTakeSeat = document.getElementById('btn-take-seat');
         if (myName && !amISeated && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { btnTakeSeat.classList.remove('hidden'); } else { btnTakeSeat.classList.add('hidden'); }
 
@@ -1032,7 +1050,6 @@
                 
                 let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
                 
-                // 玩家倒计时进度条
                 let timerBarHtml = "";
                 if (isActive && state.game.actionTimerLimit > 0) {
                     timerBarHtml = `<div class="turn-timer-bar" style="width: 100%; animation: drainTimer ${state.game.actionTimerLimit}s linear forwards;"></div><style>@keyframes drainTimer { from { width: 100%; } to { width: 0%; background: #000; } }</style>`;
