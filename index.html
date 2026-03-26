@@ -2,21 +2,21 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CB POKER - 职业赛场</title>
     <style>
         :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; }
-        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center;}
+        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation;}
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; } 
 
-        .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #333; width: 320px; position: relative;}
+        .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #333; width: 320px; max-width: 90vw; position: relative; box-sizing: border-box;}
         .logo-title { color: var(--gold); font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 30px; margin-top: 0;}
-        .btn-main { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 15px; transition: 0.2s; }
+        .btn-main { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 15px; transition: 0.2s; box-sizing: border-box;}
         .btn-gold { background: var(--gold); color: black; } .btn-gold:hover { transform: scale(1.03); background: #e6c200; }
         .btn-dark { background: #2a3441; color: white; border: 1px solid #444; } .btn-dark:hover { background: #354252; }
         .input-group { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #333; }
-        .input-code { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; text-align: center; font-size: 16px; font-weight: bold; letter-spacing: 2px; outline: none; text-transform: uppercase;}
+        .input-code { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; text-align: center; font-size: 16px; font-weight: bold; letter-spacing: 2px; outline: none; text-transform: uppercase; width: 100%; box-sizing: border-box;}
         .input-code:focus { border-color: var(--gold); }
         .btn-join { padding: 0 25px; border-radius: 8px; border: none; background: #1976d2; color: white; font-weight: bold; cursor: pointer; transition: 0.2s;}
 
@@ -53,13 +53,12 @@
         .btn-ledger { color: var(--gold); } .btn-ledger:hover { background: rgba(255, 215, 0, 0.2); }
         .btn-log { color: #349feb; border-color: #349feb; } .btn-log:hover { background: rgba(52, 159, 235, 0.2); }
 
-        #log-drawer { position: fixed; left: -350px; top: 0; width: 320px; height: 100%; background: rgba(17, 21, 26, 0.98); border-right: 1px solid #333; z-index: 400; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
+        #log-drawer { position: fixed; left: -350px; top: 0; width: 320px; max-width: 80vw; height: 100%; background: rgba(17, 21, 26, 0.98); border-right: 1px solid #333; z-index: 400; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.8); }
         #log-drawer.open { left: 0; }
         .log-header { padding: 20px; font-size: 18px; font-weight: 900; color: var(--gold); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
         .log-content { flex: 1; overflow-y: auto; padding: 15px; font-size: 13px; color: #ccc; display: flex; flex-direction: column; gap: 8px; }
         .log-item { background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 6px; line-height: 1.4; }
 
-        /* 🔥 修复点 1: 将候场区移到左上方，避免遮挡聊天框 */
         .lobby-zone { position: absolute; left: 20px; top: 70px; background: rgba(0,0,0,0.8); padding: 20px; border-radius: 16px; border: 1px solid #444; width: 200px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 90; }
         .lobby-title { font-size: 14px; color: var(--gold); margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #333; padding-bottom: 8px; }
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
@@ -80,7 +79,7 @@
         .chat-shortcuts button { white-space: nowrap; background: #2a3441; border: 1px solid #444; color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
         .chat-shortcuts button:hover { background: var(--gold); color: black; border-color: var(--gold); }
 
-        #chat-input { background:rgba(0,0,0,0.6); border:1px solid #444; color:white; padding:12px; font-size:13px; outline:none; border-radius:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: 0.3s;}
+        #chat-input { background:rgba(0,0,0,0.6); border:1px solid #444; color:white; padding:12px; font-size:13px; outline:none; border-radius:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: 0.3s; width: 100%; box-sizing: border-box;}
         #chat-input:focus { border-color: var(--gold); background:rgba(17, 21, 26, 0.95); }
 
         #danmaku-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
@@ -205,12 +204,12 @@
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
         .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 90; width: 180px; box-sizing: border-box; border: 1px solid #333;}
-        .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px;}
+        .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
         .raise-control-area { display: flex; flex-direction: column; gap: 10px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #2a3441; }
         .raise-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #8ca0b3; font-weight: bold; }
@@ -243,7 +242,24 @@
         .pain-shake { animation: earthquake 0.5s cubic-bezier(.36,.07,.19,.97) both; box-shadow: inset 0 0 150px rgba(255,0,0,0.9); }
         @keyframes earthquake { 0% {transform: translate(10px, 10px)} 20% {transform: translate(-10px, -10px)} 40% {transform: translate(10px, -10px)} 60% {transform: translate(-10px, 10px)} 80% {transform: translate(5px, 5px)} 100% {transform: translate(0, 0)} }
         
-        .turn-timer-bar { position: absolute; bottom: 0; left: 0; height: 6px; background: #ff4757; border-radius: 3px; z-index: 20; box-shadow: 0 0 10px red; }
+        .timer-number { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); border: 2px solid var(--gold); color: white; padding: 4px 12px; border-radius: 12px; font-size: 16px; font-weight: 900; z-index: 30; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
+        /* 📱 手机端极限自适应 CSS */
+        @media (max-width: 768px) {
+            .poker-table { width: 96vw; height: 50vh; border-width: 10px; border-radius: 150px; }
+            .player-card { transform: scale(0.85); }
+            .s-lft-t, .s-lft-b { left: 5%; } .s-rgt-t, .s-rgt-b { left: 95%; }
+            .s-top-l { left: 20%; } .s-top-r { left: 80%; } .s-btm-l { left: 20%; } .s-btm-r { left: 80%; }
+            .action-console { width: 98vw; padding: 10px; bottom: 5px; }
+            .main-action-row { height: 50px; } .btn-title { font-size: 14px; }
+            #chat-zone { width: 220px; bottom: 85px; pointer-events: none; z-index: 105; }
+            #chat-zone:focus-within, #chat-zone:hover { pointer-events: auto; }
+            #chat-list { height: 100px; font-size: 12px; }
+            .chat-tools { display: flex; } /* Always show tools on mobile if active */
+            .host-panel { width: 140px; padding: 10px; right: 10px; bottom: 10px; z-index: 110;}
+            .host-btn { font-size: 12px; padding: 8px; }
+            #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -335,7 +351,7 @@
     <div id="sit-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 200;">
         <div class="menu-card" style="width: 420px; padding: 30px;">
             <h2 id="sit-modal-title" style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
-            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (下滑浏览海量表情)</div>
+            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (下滑浏览海量梗图)</div>
             <div id="avatar-grid" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-start; margin-bottom: 20px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #333;"></div>
             
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">2. 选择名字专属颜色</div>
@@ -427,6 +443,10 @@
             <button onclick="send({type: 'RABBIT_HUNT', name: myName})" style="background:linear-gradient(145deg, #9b59b6, #8e44ad); color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:2px solid #fff; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.6); animation: pulseGold 2s infinite;">🐇 亮出余牌 (Rabbit Hunt)</button>
         </div>
 
+        <div id="dealer-burn-container" class="hidden" style="position:absolute; bottom:180px; left:50%; transform:translateX(-50%); z-index:105;">
+            <button onclick="send({type: 'BURN_THREE', name: myName})" style="background:linear-gradient(145deg, #e74c3c, #c0392b); color:white; font-weight:bold; padding:10px 20px; border-radius:20px; border:2px solid #fff; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.6); animation: pulseGold 2s infinite;">🔥 削三张 (Burn 3 Cards)</button>
+        </div>
+
         <div class="lobby-zone hidden" id="lobby-zone">
             <div class="lobby-title">🚪 候场区玩家</div>
             <div id="lobby-list" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto;"></div>
@@ -510,11 +530,14 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v51.0 - UI 终极优化版</strong><br>
-                - 🪑 [布局优化] 候场区面板移至左上角，彻底解决与聊天框的重叠遮挡问题。<br>
-                - 🪑 [布局优化] “随时入座”按钮移至屏幕正下中心，再也不怕遮挡聊天输入框。<br>
-                - ⏱️ [倒计时] 修复了秒级死亡倒计时的判定逻辑。<br>
-                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！
+                <strong style="color:var(--gold)">v51.0 - 极限职业增强版</strong><br>
+                - 📱 [全端适配] 深度重构 CSS，手机端体验完美优化，无遮挡、不越界。<br>
+                - 🎲 [内核升级] 后端全面引入 Fisher-Yates 密码学级洗牌算法，告别玄学发牌。<br>
+                - 🔥 [高级机制] 翻牌前庄家专属特权：新增“🔥削三张”功能及霸气特效。<br>
+                - ⏱️ [倒计时] 头像上方新增实体数字读秒器，最后 5 秒自动飘红警报。<br>
+                - 🩸 [Stand Up] 优化痛觉机制：最后一名玩家必须亲手点击支付按钮才能结束惩罚，全屏爆血震动！<br>
+                - 🎉 [视觉优化] 修复误报 ALL-IN 动画，新增专属 GAME START 黄金过场。<br>
+                - 🤡 [表情扩容] 引入全网最火抽象梗图及赛博朋克调色板，阴阳怪气拉满。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -544,47 +567,29 @@
     const BACKEND_URL = "https://cb-poker-server.wuqidong333.workers.dev";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
-const AVATAR_LIST = [
-        // 🤡 究极搞怪 & 抽象阴阳人 (嘲讽拉满)
+    const AVATAR_LIST = [
         '🗿','🤡','💩','🫠','🫨','🥴','🥸','🤪','😝','🤑','🫣','🙄','😮‍💨','🥱','😴','🤤',
         '🤮','🤢','🤧','🥵','🥶','🤯','🤫','🤥','🤬','😈','👿','👹','👺','💀','☠️','👻','👽','👾',
-        // 🤌 肢体嘲讽 & 动作戏
         '🤷‍♂️','🤦‍♂️','💆‍♂️','🙅‍♂️','💅','🤌','🤏','🫵','🫶','🖕','👎','👇','🤝','🙏','💪','👁️','👄','👅',
-        // 🍆 经典节目效果 & 擦边暗示
         '🍆','🍑','💦','🍌','🦴','🦵','🦶','🧠','🫀','🫁','🩸',
-        // 🍔 饭桶 & 韭菜专区
         '🌭','🍔','🍟','🍕','🌮','🌯','🍗','🍖','🥦','🧅','🧄','🥚','🍳','🥬','韭',
-        // 🧨 道具 & 搞心态工具
-        '🧨','💣','🚽','🧻','🗑️','💊','🩹','🔪','🗡️','🔮','🧿','💸','💵','📉','🤡',
-        // 🐔 飞禽走兽 & 经典动物 (原版保留)
+        '🧨','💣','🚽','🧻','🗑️','💊','🩹','🔪','🗡️','🔮','🧿','💸','💵','📉','📈',
         '🐔','🐓','🐥','🐣','🐤','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛',
         '🦋','🐌','🐞','🐜','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦀','🐡','🐠','🐟','🐬','🐳','🦈',
         '🐯','🐅','🐆','🦁','🐻','🐻‍❄️','🐼','🐨','🐶','🐱','🐭','🐹','🐰','🦊','🐮','🐷','🐽','🐸','🐵','🐒','🦍','🦧',
         '🦓','🐘','🦛','🦏','🐪','🦒','🦘','🐃','🐎','🐏','🐑','🦙','🐐','🦌','🦮','🐕‍🦺','🐈','🦃','🦚','🦜','🦢','🦩','🦝','🦨','🦡','🦦','🦥','🐿','🦔'
     ];
-    
     const COLOR_LIST = [
-        { name: '纯白 (默认)', hex: '#ffffff' }, 
-        { name: '土豪金', hex: '#ffd700' },
-        { name: '猛男粉', hex: '#ff9ff3' }, 
-        { name: '原谅绿', hex: '#2ecc71' },
-        { name: '海王蓝', hex: '#0abde3' }, 
-        { name: '基佬紫', hex: '#9b59b6' },
-        { name: '警示红', hex: '#ff4757' }, 
-        { name: '活力橙', hex: '#ffa502' },
-        { name: '赛博青', hex: '#00e5ff' },
-        { name: '电竞荧光绿', hex: '#39ff14' },
-        { name: '纯粹血红', hex: '#ff0000' },
-        { name: '冰川亮银', hex: '#bdc3c7' },
-        { name: '骚气洋红', hex: '#ff00ff' },
-        { name: '初号机紫', hex: '#D980FA' },
-        { name: '警告黄', hex: '#fff200' },
-        { name: '玫瑰金', hex: '#ffcccc' }
+        { name: '纯白 (默认)', hex: '#ffffff' }, { name: '土豪金', hex: '#ffd700' }, { name: '猛男粉', hex: '#ff9ff3' }, 
+        { name: '原谅绿', hex: '#2ecc71' }, { name: '海王蓝', hex: '#0abde3' }, { name: '基佬紫', hex: '#9b59b6' },
+        { name: '警示红', hex: '#ff4757' }, { name: '活力橙', hex: '#ffa502' }, { name: '赛博青', hex: '#00e5ff' },
+        { name: '电竞荧光绿', hex: '#39ff14' }, { name: '纯粹血红', hex: '#ff0000' }, { name: '冰川亮银', hex: '#bdc3c7' },
+        { name: '骚气洋红', hex: '#ff00ff' }, { name: '初号机紫', hex: '#D980FA' }, { name: '警告黄', hex: '#fff200' }, { name: '玫瑰金', hex: '#ffcccc' }
     ];
 
     const MAX_SEATS = 10;
 
-    let ws = null; let myName = ""; let currentRoomId = null; let selectedAvatar = '😎'; let selectedColor = '#ffffff';
+    let ws = null; let myName = ""; let currentRoomId = null; let selectedAvatar = '🗿'; let selectedColor = '#ffffff';
     let isWaitingForServer = false; let latestGameState = null; let countdownInterval = null; 
     let creatorSettings = null; let heartbeatInterval = null;
 
@@ -592,84 +597,53 @@ const AVATAR_LIST = [
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
-    let localAllInCount = 0; 
-    let localBuyIns = {}; 
-    let warningPlayedThisHand = false; 
-    let rebuyTimers = {};
-    let currentPreAction = null; 
-    let isEditingProfile = false;
-    let localStandUpEffect = 0;
+    let localAllInCount = 0; let localAllInTime = 0; let localBurnTime = 0;
+    let localBuyIns = {}; let warningPlayedThisHand = false; let rebuyTimers = {};
+    let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
+    let countdownNumInterval = null;
 
-    function appendEmoji(emoji) {
-        const input = document.getElementById('chat-input');
-        input.value += emoji;
-        input.focus();
-    }
+    function appendEmoji(emoji) { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); }
+    function sendQuickChat(msg) { if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); } }
 
-    function sendQuickChat(msg) {
-        if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); }
-    }
-
-    function togglePre(type) {
-        if (currentPreAction === type) currentPreAction = null; else currentPreAction = type;
-        renderPreUI();
-    }
-
-    function renderPreUI() {
-        document.getElementById('btn-pre-fold').style.background = (currentPreAction === 'FOLD') ? '#e74c3c' : '#2a3441';
-        document.getElementById('btn-pre-call').style.background = (currentPreAction === 'CALL') ? '#349feb' : '#2a3441';
-    }
+    function togglePre(type) { if (currentPreAction === type) currentPreAction = null; else currentPreAction = type; renderPreUI(); }
+    function renderPreUI() { document.getElementById('btn-pre-fold').style.background = (currentPreAction === 'FOLD') ? '#e74c3c' : '#2a3441'; document.getElementById('btn-pre-call').style.background = (currentPreAction === 'CALL') ? '#349feb' : '#2a3441'; }
 
     function shootDanmaku(sender, msg) {
-        let senderColor = '#ffffff';
-        if (latestGameState && latestGameState.players) { let p = latestGameState.players.find(x => (x.name.split('|')[1] || x.name) === sender); if(p && p.name.split('|')[2]) senderColor = p.name.split('|')[2]; }
+        let senderColor = '#ffffff'; if (latestGameState && latestGameState.players) { let p = latestGameState.players.find(x => (x.name.split('|')[1] || x.name) === sender); if(p && p.name.split('|')[2]) senderColor = p.name.split('|')[2]; }
         const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item';
         el.innerHTML = `<span style="color:${senderColor}; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${sender}:</span> <span style="color:#ffffff; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${msg}</span>`;
         el.style.top = Math.floor(Math.random() * 50 + 10) + '%'; container.appendChild(el); setTimeout(() => el.remove(), 16000); 
     }
 
-    function shootSystemWarning(msg) {
-        const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item system-warning';
-        el.innerText = `🚨 ${msg}`; container.appendChild(el); setTimeout(() => el.remove(), 26000); 
-    }
+    function shootSystemWarning(msg) { const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item system-warning'; el.innerText = `🚨 ${msg}`; container.appendChild(el); setTimeout(() => el.remove(), 26000); }
 
     function playChatEffect(msg) {
         let effectHtml = '';
-        if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>';
-        else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>';
-        else if (msg === '抓鸡') effectHtml = '<div class="effect-catch">🦅 抓鸡！</div>';
-        else if (msg === '游击队') effectHtml = '<div class="effect-guerilla">🏃‍♂️ 敌进我退 游击队！</div>';
-        else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>';
-        else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>';
-        else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
+        if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>'; else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>'; else if (msg === '抓鸡') effectHtml = '<div class="effect-catch">🦅 抓鸡！</div>'; else if (msg === '游击队') effectHtml = '<div class="effect-guerilla">🏃‍♂️ 敌进我退 游击队！</div>'; else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>'; else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>'; else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
         if(effectHtml) { const fx = document.createElement('div'); fx.innerHTML = effectHtml; fx.className = 'chat-fx-container'; document.body.appendChild(fx); setTimeout(() => fx.remove(), 3000); }
     }
 
     function playGameStartAnimation() {
-        const fx = document.createElement('div');
-        fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>';
-        fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards;";
-        document.body.appendChild(fx);
-        setTimeout(() => fx.remove(), 2000);
+        const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 80px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px #fff;">GAME START</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slideLeftRight 2s ease-in-out forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => fx.remove(), 2000);
+    }
+
+    function playBurnThreeAnimation() {
+        const fx = document.createElement('div'); fx.innerHTML = '🔥🔥🔥<br>削三张'; fx.style = "position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); font-size:50px; font-weight:900; color:#e74c3c; text-shadow:0 0 20px #000; animation: popZoom 1.5s forwards; z-index:999; text-align:center; pointer-events: none;"; document.getElementById('table-container').appendChild(fx); setTimeout(() => fx.remove(), 1500);
     }
 
     function playPainEffect() {
-        document.body.classList.add('pain-shake');
-        const fx = document.createElement('div');
-        fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>';
-        fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards;";
-        document.body.appendChild(fx);
-        setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500);
+        document.body.classList.add('pain-shake'); const fx = document.createElement('div'); fx.innerHTML = '<div style="font-size: 100px; font-weight: 900; color: red; text-shadow: 0 0 50px black;">FATAL BLOW</div>'; fx.style = "position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:9999; animation: slamFX 1.5s forwards; pointer-events: none;"; document.body.appendChild(fx); setTimeout(() => { document.body.classList.remove('pain-shake'); fx.remove(); }, 1500);
     }
 
-    function wakeUpChat() {
-        const cl = document.getElementById('chat-list');
-        if(cl) { cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer); chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000); }
+    function playAllInAnimation() {
+        const overlay = document.getElementById('allin-overlay'); overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
+        document.body.classList.add('allin-flash'); setTimeout(() => { overlay.classList.add('hidden'); document.body.classList.remove('allin-flash'); }, 1000);
     }
+
+    function wakeUpChat() { const cl = document.getElementById('chat-list'); if(cl) { cl.classList.add('active'); if(chatSleepTimer) clearTimeout(chatSleepTimer); chatSleepTimer = setTimeout(() => { cl.classList.remove('active'); }, 8000); } }
 
     function toggleTwoSeven(prefix) {
-        const isShortDeck = document.getElementById(prefix + '-enable-shortdeck').checked;
-        const tsBox = document.getElementById(prefix + '-enable-twoseven'); const tsContainer = document.getElementById(prefix + '-twoseven-container');
+        const isShortDeck = document.getElementById(prefix + '-enable-shortdeck').checked; const tsBox = document.getElementById(prefix + '-enable-twoseven'); const tsContainer = document.getElementById(prefix + '-twoseven-container');
         if(isShortDeck) { tsBox.checked = false; tsBox.disabled = true; tsContainer.style.opacity = '0.4'; } else { tsBox.disabled = false; tsContainer.style.opacity = '1'; }
     }
 
@@ -708,9 +682,7 @@ const AVATAR_LIST = [
         document.getElementById('settlement-list').innerHTML = html; document.getElementById('settlement-area').style.display = 'block';
     }
 
-    const slider = document.getElementById('raise-slider');
-    const inputAmount = document.getElementById('input-raise-amount');
-    const btnRaiseSub = document.getElementById('btn-raise-sub');
+    const slider = document.getElementById('raise-slider'); const inputAmount = document.getElementById('input-raise-amount'); const btnRaiseSub = document.getElementById('btn-raise-sub');
 
     function updateSliderFromSlider() { let val = parseFloat(slider.value) || 0; let cleanVal = formatMoney(val); inputAmount.value = cleanVal; btnRaiseSub.innerText = (val >= parseFloat(slider.max)) ? "ALL-IN" : "$" + cleanVal; }
     function syncInputToSlider() { let val = parseFloat(inputAmount.value) || 0; let min = parseFloat(slider.min); let max = parseFloat(slider.max); if (val > max) val = max; slider.value = val; btnRaiseSub.innerText = (val >= max) ? "ALL-IN" : "$" + formatMoney(val); }
@@ -723,17 +695,12 @@ const AVATAR_LIST = [
         slider.value = target; updateSliderFromSlider();
     }
 
-    function playAllInAnimation() {
-        const overlay = document.getElementById('allin-overlay'); overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="allin-text">ALL IN!</div>`;
-        document.body.classList.add('allin-flash'); setTimeout(() => { overlay.classList.add('hidden'); document.body.classList.remove('allin-flash'); }, 1000);
-    }
-
     function triggerMuckCards() { localMucked = true; const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); renderEngine(latestGameState); }
     function triggerShowCards() { send({type:'SHOW_CARDS', name: myName}); document.getElementById('show-cards-container').classList.add('hidden'); const uncontestedEl = document.getElementById('uncontested-action-container'); if (uncontestedEl) uncontestedEl.classList.add('hidden'); }
 
     function checkAutoLogin() {
         if (!currentRoomId) return false; const saved = localStorage.getItem('poker_session_' + currentRoomId);
-        if (saved) { const data = JSON.parse(saved); myName = data.name; selectedAvatar = data.avatar || '😎'; selectedColor = data.color || '#ffffff'; isWaitingForServer = true; connectWebSocket(); return true; } return false;
+        if (saved) { const data = JSON.parse(saved); myName = data.name; selectedAvatar = data.avatar || '🗿'; selectedColor = data.color || '#ffffff'; isWaitingForServer = true; connectWebSocket(); return true; } return false;
     }
 
     window.onload = () => { 
@@ -753,7 +720,7 @@ const AVATAR_LIST = [
 
     function openEditProfile() {
         isEditingProfile = true; document.getElementById('sit-modal-title').innerText = "修改个人资料"; document.getElementById('btn-confirm-sit').innerText = "保存修改";
-        document.getElementById('sit-name').value = myName.split('|')[1] || ''; selectedAvatar = myName.split('|')[0] || '😎'; selectedColor = myName.split('|')[2] || '#ffffff';
+        document.getElementById('sit-name').value = myName.split('|')[1] || ''; selectedAvatar = myName.split('|')[0] || '🗿'; selectedColor = myName.split('|')[2] || '#ffffff';
         document.getElementById('sit-modal').classList.remove('hidden'); renderAvatarGrid(); renderColorGrid();
     }
 
@@ -829,14 +796,11 @@ const AVATAR_LIST = [
     function renderEngine(state) {
         if (!state || !state.game) return;
 
-        const rulesBox = document.getElementById("game-rules-box");
-        const standupPanel = document.getElementById("standup-panel");
+        const rulesBox = document.getElementById("game-rules-box"); const standupPanel = document.getElementById("standup-panel");
 
         if(state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             rulesBox.classList.remove("hidden");
-            document.getElementById("rule-mode").innerText = state.game.isShortDeck ? "短牌(6+)" : "普通";
-            document.getElementById("rule-mode").style.color = state.game.isShortDeck ? "#ff9800" : "#fff";
-            
+            document.getElementById("rule-mode").innerText = state.game.isShortDeck ? "短牌(6+)" : "普通"; document.getElementById("rule-mode").style.color = state.game.isShortDeck ? "#ff9800" : "#fff";
             const suNode = document.getElementById("rule-standup"); suNode.innerText = state.game.enableStandUp ? "Active" : "Inactive"; suNode.className = state.game.enableStandUp ? "status-on" : "status-off";
             const tsNode = document.getElementById("rule-27"); tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive"; tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
 
@@ -847,7 +811,6 @@ const AVATAR_LIST = [
             } else { standupPanel.classList.add("hidden"); }
         } else { rulesBox.classList.add("hidden"); }
 
-        // Game Start Animation Hook
         if (state.game.status === 'PRE-FLOP' && state.game.handCount !== localHandCount) { playGameStartAnimation(); }
 
         if (state.game.handCount !== localHandCount) {
@@ -855,8 +818,10 @@ const AVATAR_LIST = [
             localAllInCount = 0; warningPlayedThisHand = false; currentPreAction = null; renderPreUI();
         }
 
-        // Stand Up Pain Effect Hook
         if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { localStandUpEffect = state.game.standUpEffect; playPainEffect(); }
+        
+        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { localAllInTime = state.game.lastActionTime; playAllInAnimation(); }
+        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { localBurnTime = state.game.lastActionTime; playBurnThreeAnimation(); }
 
         if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content'); contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
@@ -895,26 +860,14 @@ const AVATAR_LIST = [
         document.getElementById("ui-burn").innerHTML = burnCardsHtml; document.getElementById("ui-board").innerHTML = boardCardsHtml;
         prevBoardLength = state.game.board ? state.game.board.length : 0; prevBurnLength = state.game.burnCards ? state.game.burnCards.length : 0;
 
-        let playersArray = state.players || [];
-        const pureMyName = myName.split('|')[1] || myName;
+        let playersArray = state.players || []; const pureMyName = myName.split('|')[1] || myName;
         const myDataRecord = playersArray.find(p => p && (p.name.split('|')[1] || p.name) === pureMyName);
-        let amISeated = !!(myDataRecord && myDataRecord.seatIndex !== -1);
-        const isHost = (state.game.hostName === myName);
+        let amISeated = !!(myDataRecord && myDataRecord.seatIndex !== -1); const isHost = (state.game.hostName === myName);
         const amIDealer = (amISeated && myDataRecord.seatIndex === state.game.dealerIndex);
         
         if (!warningPlayedThisHand && state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             let poorPlayer = playersArray.find(p => p.seatIndex !== -1 && !p.isSpectating && !p.isOut && p.chips >= 0 && p.chips < 5);
             if (poorPlayer) { shootSystemWarning("系统警告：聚众赌博会导致家庭破碎、负债累累，不仅伤身，更可能导致为了筹集赌资而走上盗窃、抢劫的违法道路！"); warningPlayedThisHand = true; }
-        }
-
-        if (state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
-            const currentAllIns = playersArray.filter(p => p.chips === 0 && !p.folded && !p.isOut && !p.isSpectating).length;
-            if (currentAllIns > localAllInCount) {
-                localAllInCount = currentAllIns;
-                if (initialDealPlayed) { playAllInAnimation(); } 
-            } else if (currentAllIns < localAllInCount) {
-                localAllInCount = currentAllIns;
-            }
         }
 
         if (playersArray.length > 0) { document.getElementById('btn-ledger-top').classList.remove('hidden'); document.getElementById('btn-log-top').classList.remove('hidden'); }
@@ -933,6 +886,10 @@ const AVATAR_LIST = [
         const banner = document.getElementById("winner-banner"); const psBanner = document.getElementById("pick-seat-banner");
         const showCardsBtn = document.getElementById("show-cards-container"); const uncontestedBtn = document.getElementById("uncontested-action-container");
         const dealerActionBtn = document.getElementById("dealer-action-container"); const standUpPayConsole = document.getElementById("standup-pay-console");
+        const dealerBurnBtn = document.getElementById("dealer-burn-container");
+
+        // 🔥 修复点 3: Dealer 削三张按钮显隐逻辑
+        if (state.game.status === "PRE-FLOP" && amIDealer && !state.game.burnedThree) { dealerBurnBtn.classList.remove("hidden"); } else { dealerBurnBtn.classList.add("hidden"); }
 
         if (state.game.status === "PICK_SEAT") {
             let pName = state.game.currentPicker ? state.game.currentPicker.split('|')[1] : '';
@@ -940,9 +897,7 @@ const AVATAR_LIST = [
             psBanner.classList.remove("hidden");
         } else { psBanner.classList.add("hidden"); }
 
-        if (state.game.status === "STANDUP_PAY") {
-            if (state.game.standUpLoser === myName) { standUpPayConsole.classList.remove("hidden"); } else { standUpPayConsole.classList.add("hidden"); }
-        } else { standUpPayConsole.classList.add("hidden"); }
+        if (state.game.status === "STANDUP_PAY") { if (state.game.standUpLoser === myName) { standUpPayConsole.classList.remove("hidden"); } else { standUpPayConsole.classList.add("hidden"); } } else { standUpPayConsole.classList.add("hidden"); }
 
         if (state.game.status === "SHOWDOWN") {
             const hasBankrupt = playersArray.some(p => !p.isKicked && p.seatIndex !== -1 && (p.chips === 0 || p.isOut) && !p.isSpectating && !p.isSittingOut);
@@ -982,7 +937,6 @@ const AVATAR_LIST = [
             drawZone.innerHTML = state.game.drawingCards.map(c => { if (c.faceUp) { const isRed = c.card.includes('♥') || c.card.includes('♦'); const sName = c.playerName ? (c.playerName.split('|')[1] || c.playerName) : ""; return `<div class="draw-card ${isRed?'red':''}">${c.card}<div class="draw-name">${sName}</div></div>`; } else { return `<div class="draw-card back" onclick="send({type:'PICK_DRAW_CARD', name:'${myName}'})"></div>`; } }).join('');
         } else { drawZone.classList.add('hidden'); }
 
-        // 观战随时入座按钮逻辑
         const btnTakeSeat = document.getElementById('btn-take-seat');
         if (myName && !amISeated && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT") { btnTakeSeat.classList.remove('hidden'); } else { btnTakeSeat.classList.add('hidden'); }
 
@@ -1003,6 +957,17 @@ const AVATAR_LIST = [
         const isInitialDeal = state.game.status === 'PRE-FLOP' && !playersArray.some(p => p.actedThisRound) && !initialDealPlayed;
         let playingSeatsOrder = []; if (isInitialDeal) { for (let i = 0; i < 10; i++) { let seatNum = (state.game.dealerIndex + 1 + i) % 10; let sp = playersArray.find(x => x.seatIndex === seatNum && !x.isSpectating && !x.isOut && !x.isKicked); if (sp) playingSeatsOrder.push(seatNum); } }
 
+        // 🔥 修复点 4: 处理本地独立读秒 UI
+        if (countdownNumInterval) clearInterval(countdownNumInterval);
+        if (state.game.status !== "WAITING" && state.game.status !== "SHOWDOWN" && state.game.status !== "LOBBY" && state.game.status !== "STANDUP_PAY" && state.game.actionTimerLimit > 0 && state.game.turnStartTime > 0) {
+            countdownNumInterval = setInterval(() => {
+                let elapsed = Math.floor((Date.now() - state.game.turnStartTime) / 1000);
+                let left = state.game.actionTimerLimit - elapsed; if (left < 0) left = 0;
+                const numEl = document.getElementById(`timer-num-display`);
+                if (numEl) { numEl.innerText = left + "s"; numEl.style.color = left <= 5 ? "#ff4757" : "white"; numEl.style.borderColor = left <= 5 ? "#ff4757" : "var(--gold)"; }
+            }, 200);
+        }
+
         for (let i = 0; i < MAX_SEATS; i++) {
             const seatClass = SEAT_ORDER[i]; const p = playersArray.find(x => x.seatIndex === i && !x.isKicked); 
             let posClass = ""; if (seatClass.includes("btm")) posClass = "pos-bottom"; if (seatClass.includes("top")) posClass = "pos-top";
@@ -1017,7 +982,7 @@ const AVATAR_LIST = [
                 const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true; const isMySeat = (p.name === myName);
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating); const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating); const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
 
-                let displayAvatar = '😎'; let displayName = p.name; let displayColor = '#ffffff';
+                let displayAvatar = '🗿'; let displayName = p.name; let displayColor = '#ffffff';
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; if(parts[2]) displayColor = parts[2]; }
 
                 const isMyFoldedCards = (p.folded && p.name === myName); let isGlobalHidden = true; 
@@ -1050,9 +1015,10 @@ const AVATAR_LIST = [
                 
                 let kickHtml = ''; if (isHost && p.name !== myName) { kickHtml = `<button class="kick-btn" onclick="send({type:'KICK', name: '${myName}', targetName:'${p.name}'})">踢出玩家</button>`; }
                 
-                let timerBarHtml = "";
+                let timerBarHtml = ""; let timerNumHtml = "";
                 if (isActive && state.game.actionTimerLimit > 0) {
                     timerBarHtml = `<div class="turn-timer-bar" style="width: 100%; animation: drainTimer ${state.game.actionTimerLimit}s linear forwards;"></div><style>@keyframes drainTimer { from { width: 100%; } to { width: 0%; background: #000; } }</style>`;
+                    timerNumHtml = `<div class="timer-number" id="timer-num-display">${state.game.actionTimerLimit}s</div>`;
                 }
 
                 layer.innerHTML += `
@@ -1063,6 +1029,7 @@ const AVATAR_LIST = [
                         <div class="player-card ${isMySeat ? 'my-seat' : ''} ${isActive && !p.folded && !isOut && !isSpectating && !p.isSittingOut ? 'active' : ''} ${isOut || isSpectating || p.isSittingOut ? 'out-state' : ''}" style="${(p.folded && !isOut) ? 'opacity: 0.6;' : ''}">
                             <div class="dealer-badges">${isDealer ? `<div class="dealer-btn">D</div>` : ''}${isSB ? `<div class="dealer-btn badge-s">S</div>` : ''}${isBB ? `<div class="dealer-btn badge-b">B</div>` : ''}</div>
                             ${kickHtml}
+                            ${timerNumHtml}
                             <div class="player-avatar"><span>${displayAvatar}</span></div>
                             <div style="min-height:22px;">${badgeHtml}</div>
                             <div class="player-name" style="color:${displayColor}">${displayName}</div>
