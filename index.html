@@ -554,8 +554,8 @@
     <div id="allin-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:999; pointer-events:none; display:flex; justify-content:center; align-items:center;"></div>
 
 <script>
-    // ⚠️ 在这里填入你朋友提供的 Cloudflare Worker 地址 (或者你新搭好的 Render/Glitch 地址)
-    const BACKEND_URL = "https://fancy-heart-df1d.wuqidong333.workers.dev";
+    // ⚠️ 你的 Render 免费中央服务器地址
+    const BACKEND_URL = "https://cb-poker-backend.onrender.com";
     
     const SEAT_ORDER = ['s-btm-c', 's-btm-l', 's-lft-b', 's-lft-t', 's-top-l', 's-top-c', 's-top-r', 's-rgt-t', 's-rgt-b', 's-btm-r'];
     const AVATAR_LIST = [
@@ -892,7 +892,7 @@
             creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck };
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden');
             openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
-        } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
+        } catch (e) { alert("无法连接 Render 服务器。"); }
     }
 
     function triggerStartGame() { send({ type: 'START_GAME', name: myName }); }
