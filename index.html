@@ -6,7 +6,7 @@
     <title>CB POKER - 职业赛场</title>
     <style>
         :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; --card-scale: 1.4; }
-        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation; overoverscroll-behavior-y: none;}
+        body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation; overscroll-behavior-y: none;}
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; } 
 
@@ -71,11 +71,9 @@
         
         .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 8px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
         #chat-zone:hover .chat-tools, #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
-        .chat-emojis { display: flex; gap: 8px; font-size: 20px; overflow-x: auto; padding-bottom: 4px; border-bottom: 1px solid #333;}
-        .chat-emojis::-webkit-scrollbar { height: 4px; } .chat-emojis::-webkit-scrollbar-thumb { background: #555; border-radius: 2px; }
+        .chat-emojis { display: flex; gap: 8px; font-size: 20px; flex-wrap: wrap; padding-bottom: 8px; border-bottom: 1px solid #333;}
         .chat-emojis span { cursor: pointer; transition: 0.2s; user-select: none; } .chat-emojis span:hover { transform: scale(1.3); }
-        .chat-shortcuts { display: flex; gap: 6px; overflow-x: auto; padding-top: 4px; padding-bottom: 4px;}
-        .chat-shortcuts::-webkit-scrollbar { height: 4px; } .chat-shortcuts::-webkit-scrollbar-thumb { background: #555; border-radius: 2px; }
+        .chat-shortcuts { display: flex; gap: 6px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 4px;}
         .chat-shortcuts button { white-space: nowrap; background: #2a3441; border: 1px solid #444; color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
         .chat-shortcuts button:hover { background: var(--gold); color: black; border-color: var(--gold); }
 
@@ -138,6 +136,12 @@
         @keyframes dealHoleCard { 0% { transform: translate(calc(50vw - 100%), calc(-50vh + 100%)) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
         @keyframes dealBoardCard { 0% { transform: translate(0, -100px) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
 
+        /* 🔥 入场特效 */
+        .anim-bot-spawn { animation: botSpawn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes botSpawn { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .anim-human-spawn { animation: humanSpawn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes humanSpawn { 0% { transform: translate(-50%, -100%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
         .aggressor-highlight { border-color: #ff4757 !important; box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 15px rgba(255, 71, 87, 0.5) !important; animation: aggressorPulse 1s infinite alternate; }
@@ -196,10 +200,8 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        .host-panel { position: absolute; bottom: 20px; right: -180px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; border-right: none; transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-        .host-panel.open { right: 0px; }
-        .panel-toggle-tab { position: absolute; left: -34px; top: 15px; background: #11151a; border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 16px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto;}
-        
+        .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; transition: 0.3s; backdrop-filter: blur(5px);}
+        .host-panel:hover { background: rgba(0,0,0,0.95); }
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
@@ -207,7 +209,6 @@
 
         #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
         #my-immersive-cards:active { cursor: grabbing; }
-        #my-immersive-cards.shifted { left: 55%; }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
@@ -255,12 +256,10 @@
             #chat-zone:focus-within, #chat-zone:hover { pointer-events: auto; }
             #chat-list { height: 100px; font-size: 12px; }
             .chat-tools { display: flex; } 
-            .host-panel { right: -140px; width: 140px; }
-            .host-panel.open { right: 0px; }
+            .host-panel { right: 10px; width: 140px; }
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
             #my-immersive-cards { bottom: 90px; left: 50%; --card-scale: 1.1; transform: translateX(-50%) scale(var(--card-scale)); }
-            #my-immersive-cards.shifted { left: 40%; }
         }
     </style>
 </head>
@@ -308,6 +307,7 @@
                 <span class="setting-label" style="color:var(--gold);">排队抽签选座 (抢庄)</span>
                 <input type="checkbox" id="set-enable-draw" style="width:20px; height:20px; cursor:pointer;">
             </div>
+            
             <div class="setting-item">
                 <span class="setting-label" style="color:#ff9800;">🔥 短牌模式 (Short Deck 6+)</span>
                 <input type="checkbox" id="set-enable-shortdeck" onchange="toggleTwoSeven('set')" style="width:20px; height:20px; cursor:pointer;">
@@ -471,7 +471,6 @@
         </div>
 
         <div class="host-panel hidden" id="host-panel">
-            <div class="panel-toggle-tab" onclick="toggleHostPanel()">⚙️</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="document.getElementById('player-mgmt-modal').classList.remove('hidden')" class="host-btn" style="background:#8e44ad; color:white; margin-bottom:10px;">🛠️ 玩家管理</button>
@@ -481,7 +480,6 @@
         </div>
 
         <div class="host-panel hidden" id="player-panel">
-            <div class="panel-toggle-tab" onclick="toggleHostPanel()">👤</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
             <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black;">✏️ 修改资料</button>
             <button onclick="toggleSitOut()" id="btn-sit-out" class="host-btn btn-dark" style="margin-top:8px;">⏸️ 暂时离座</button>
@@ -549,10 +547,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v57.0 - 界面终极修复版</strong><br>
-                - 🃏 [手感优化] 第一人称手牌现已支持全屏自由拖拽，彻底解决防遮挡问题，随心摆放。<br>
-                - 🪑 [布局优化] 生存名单移至右侧战绩表下，支持点击折叠隐藏。<br>
-                - 🛠️ [Bug修复] 彻底解决了“New Game”失效及面板卡死的所有问题。
+                <strong style="color:var(--gold)">v58.0 - 终极纯净版</strong><br>
+                - 🪑 [上桌特效] 增加真人金光爆闪/机器人赛博弹射入座特效。<br>
+                - 🃏 [手感优化] 手牌可全屏自由拖拽。<br>
+                - 🛠️ [面板固化] 控制面板不再隐藏，永远随时待命。<br>
+                - 🤣 [表情铺开] 聊天表情与快捷语句直接全屏铺开，拒绝左右滑动。<br>
+                - 🩸 [铁律重铸] 严格修复 Stand Up 逻辑，多人平分/边池均无效，仅独赢主池可脱身。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -616,6 +616,9 @@
     let localBuyIns = {}; let warningPlayedThisHand = false; let rebuyTimers = {};
     let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
     let countdownNumInterval = null;
+    
+    // 🔥 全局入座监控数组
+    let knownSeatedPlayers = [];
 
     function appendEmoji(emoji) { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); }
     function sendQuickChat(msg) { if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); } }
@@ -627,15 +630,6 @@
         const container = document.getElementById('standup-list-container'); const btn = document.getElementById('toggle-standup-btn');
         if (container.classList.contains('hidden')) { container.classList.remove('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ▼'; } 
         else { container.classList.add('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ◀'; }
-    }
-    
-    function toggleHostPanel() {
-        const hp = document.getElementById('host-panel');
-        const pp = document.getElementById('player-panel');
-        if (!hp.classList.contains('hidden')) hp.classList.toggle('open');
-        if (!pp.classList.contains('hidden')) pp.classList.toggle('open');
-        const cards = document.getElementById('my-immersive-cards');
-        if (cards) cards.classList.toggle('shifted');
     }
 
     function toggleTwoSeven(prefix) {
@@ -896,6 +890,16 @@
         if (playersArray.length > 0) { document.getElementById('btn-ledger-top').classList.remove('hidden'); document.getElementById('btn-log-top').classList.remove('hidden'); }
         
         let ledgerBody = ""; let mgmtListHtml = "";
+        
+        // 🔥 全局入座监控，触发登场特效
+        let newlySeated = [];
+        playersArray.forEach(p => {
+            if (p.seatIndex !== -1 && !knownSeatedPlayers.includes(p.id)) {
+                newlySeated.push(p.id);
+                knownSeatedPlayers.push(p.id);
+            }
+        });
+
         playersArray.forEach(p => {
             if(p.isKicked) return; 
             const netVal = p.chips - (p.totalBuyIn || 0); const netClass = netVal > 0 ? 'text-green' : (netVal < 0 ? 'text-red' : '');
@@ -1020,6 +1024,10 @@
 
                 let isAggressor = (state.game.aggressorName && p.name === state.game.aggressorName && !isOut && !isSpectating);
                 let aggressorClass = isAggressor ? "aggressor-highlight" : "";
+                
+                // 🔥 入座登场特效分配
+                let spawnClass = "";
+                if (newlySeated.includes(p.id)) { spawnClass = p.isBot ? "anim-bot-spawn" : "anim-human-spawn"; }
 
                 let displayAvatar = '🗿'; let displayName = p.name; let displayColor = '#ffffff';
                 if (p.name.includes('|')) { const parts = p.name.split('|'); displayAvatar = parts[0]; displayName = parts[1]; if(parts[2]) displayColor = parts[2]; }
@@ -1056,7 +1064,7 @@
                 }
 
                 layer.innerHTML += `
-                    <div class="player-seat ${seatClass} ${posClass}">
+                    <div class="player-seat ${seatClass} ${posClass} ${spawnClass}">
                         ${isRebuying ? `<div class="rebuy-fx">💸 钞能力充值</div>` : ''}
                         ${winFlyTextHtml}
                         <div class="hole-cards">${isOut || isSpectating ? '' : cardsHtml}</div>
