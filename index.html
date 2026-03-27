@@ -69,11 +69,12 @@
         #chat-zone:hover #chat-list, #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; }
         #chat-list div { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 8px; word-wrap: break-word;}
         
-        .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 8px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
+        /* 🔥 修复点 4: 闲聊信息全部向上铺开，不折叠滚动 */
+        .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 12px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
         #chat-zone:hover .chat-tools, #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
-        .chat-emojis { display: flex; gap: 8px; font-size: 20px; flex-wrap: wrap; padding-bottom: 8px; border-bottom: 1px solid #333;}
+        .chat-emojis { display: flex; gap: 10px; font-size: 22px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid #333;}
         .chat-emojis span { cursor: pointer; transition: 0.2s; user-select: none; } .chat-emojis span:hover { transform: scale(1.3); }
-        .chat-shortcuts { display: flex; gap: 6px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 4px;}
+        .chat-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 10px; }
         .chat-shortcuts button { white-space: nowrap; background: #2a3441; border: 1px solid #444; color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; font-weight: bold;}
         .chat-shortcuts button:hover { background: var(--gold); color: black; border-color: var(--gold); }
 
@@ -136,11 +137,11 @@
         @keyframes dealHoleCard { 0% { transform: translate(calc(50vw - 100%), calc(-50vh + 100%)) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
         @keyframes dealBoardCard { 0% { transform: translate(0, -100px) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
 
-        /* 🔥 入场特效 */
+        /* 🔥 1 & 2: 入座特效增强 */
         .anim-bot-spawn { animation: botSpawn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes botSpawn { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        .anim-human-spawn { animation: humanSpawn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes humanSpawn { 0% { transform: translate(-50%, -100%) scale(0.5); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        @keyframes botSpawn { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; box-shadow: 0 0 50px #349feb; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.5); } }
+        .anim-human-spawn { animation: humanSpawn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes humanSpawn { 0% { transform: translate(-50%, -100%) scale(0.5); opacity: 0; box-shadow: 0 0 100px #ffd700; border-color: #ffd700; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border-color: transparent;} }
 
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
@@ -154,11 +155,10 @@
         .player-card.my-seat { border-color: #ffd700 !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2) !important; }
         .player-card.my-seat .player-chips { background: linear-gradient(145deg, #ffd700, #d4b400) !important; color: #000 !important; border-top: 1px solid rgba(255,255,255,0.3); }
 
-        /* 🔥 极品空座位/坐下/加机器人 UI 隔离优化 */
         .player-card.empty-seat { background: rgba(0, 0, 0, 0.3); border: 2px dashed rgba(255, 255, 255, 0.15); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; box-shadow: none; min-height: 85px; border-radius: 8px; position: relative;}
         .player-card.empty-seat:hover { background: rgba(0, 0, 0, 0.5); border-color: var(--gold); }
         
-        .btn-add-bot { font-size: 30px; color: rgba(255, 255, 255, 0.3); transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; font-weight: bold; user-select: none; }
+        .btn-add-bot { font-size: 36px; color: rgba(255, 255, 255, 0.3); transition: 0.3s; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; font-weight: bold; user-select: none; }
         .btn-add-bot::after { content: '添加 Bot'; font-size: 10px; opacity: 0; margin-top: 2px; transition: 0.3s; }
         .player-card.empty-seat:hover .btn-add-bot { color: var(--gold); transform: scale(1.1); }
         .player-card.empty-seat:hover .btn-add-bot::after { opacity: 1; }
@@ -210,10 +210,8 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        .host-panel { position: absolute; bottom: 20px; right: -180px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; border-right: none; transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-        .host-panel.open { right: 0px; }
-        .panel-toggle-tab { position: absolute; left: -34px; top: 15px; background: #11151a; border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 16px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto;}
-        
+        /* 🔥 修复点 3: 房主控制台不隐藏，固定显示 */
+        .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; backdrop-filter: blur(5px);}
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
@@ -221,7 +219,6 @@
 
         #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
         #my-immersive-cards:active { cursor: grabbing; }
-        #my-immersive-cards.shifted { left: 55%; }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
@@ -269,12 +266,10 @@
             #chat-zone:focus-within, #chat-zone:hover { pointer-events: auto; }
             #chat-list { height: 100px; font-size: 12px; }
             .chat-tools { display: flex; } 
-            .host-panel { right: -140px; width: 140px; }
-            .host-panel.open { right: 0px; }
+            .host-panel { right: 10px; width: 140px; }
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
             #my-immersive-cards { bottom: 90px; left: 50%; --card-scale: 1.1; transform: translateX(-50%) scale(var(--card-scale)); }
-            #my-immersive-cards.shifted { left: 40%; }
         }
     </style>
 </head>
@@ -378,7 +373,7 @@
     <div id="sit-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 200;">
         <div class="menu-card" style="width: 420px; padding: 30px;">
             <h2 id="sit-modal-title" style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
-            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (下滑浏览海量梗图)</div>
+            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (海量梗图)</div>
             <div id="avatar-grid" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-start; margin-bottom: 20px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #333;"></div>
             
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">2. 选择名字专属颜色</div>
@@ -486,7 +481,6 @@
         </div>
 
         <div class="host-panel hidden" id="host-panel">
-            <div class="panel-toggle-tab" onclick="toggleHostPanel()">⚙️</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="document.getElementById('player-mgmt-modal').classList.remove('hidden')" class="host-btn" style="background:#8e44ad; color:white; margin-bottom:10px;">🛠️ 玩家管理</button>
@@ -496,7 +490,6 @@
         </div>
 
         <div class="host-panel hidden" id="player-panel">
-            <div class="panel-toggle-tab" onclick="toggleHostPanel()">👤</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
             <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black;">✏️ 修改资料</button>
             <button onclick="toggleSitOut()" id="btn-sit-out" class="host-btn btn-dark" style="margin-top:8px;">⏸️ 暂时离座</button>
@@ -558,17 +551,24 @@
             <button onclick="send({type:'PAY_STANDUP', name: myName})" style="background: black; color: #ff4757; font-size: 22px; font-weight: 900; padding: 15px; border-radius: 12px; border: 2px solid #ff4757; cursor: pointer; transition: 0.2s;">💸 接受打击并付款</button>
         </div>
 
+        <div id="two-seven-pay-console" class="action-console hidden" style="z-index: 110; bottom: 30%; background: rgba(46, 204, 113, 0.95); border: 2px solid #ffd700; box-shadow: 0 0 50px rgba(46,204,113,0.6);">
+            <div style="font-size: 28px; font-weight: 900; color: white; text-align: center; margin-bottom: 10px; text-shadow: 0 2px 10px black;">🧨 2-7 炸鱼成功！ 🧨</div>
+            <div id="two-seven-msg" style="color: #fff; text-align: center; margin-bottom: 20px; font-size: 15px;"></div>
+            <button onclick="document.getElementById('two-seven-pay-console').classList.add('hidden')" style="background: black; color: #ffd700; font-size: 22px; font-weight: 900; padding: 15px; border-radius: 12px; border: 2px solid #ffd700; cursor: pointer; transition: 0.2s;">👏 支付奖励 (Pay Bounty)</button>
+        </div>
+
     </div>
 
     <div id="ledger-modal" class="ledger-modal hidden">
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v59.0 - 终极空座UI升级版</strong><br>
-                - 🪑 [视觉重构] 彻底剥离“坐下”与“添加Bot”按钮的样式，解决字体溢出、排版廉价的问题。<br>
-                - 👑 [选座专属] 轮到玩家选座时，座位中央呈现呼吸发光的“🪑坐下”按钮。<br>
-                - 🤖 [房主专属] 添加机器人的空位重置为高级幽灵边框，鼠标悬停时平滑呼出“添加 Bot”指令。<br>
-                - 🛡️ [后端加强] Stand Up 逻辑进一步收紧，平分与边池严格判定。
+                <strong style="color:var(--gold)">v60.0 - 满血大结局版</strong><br>
+                - 🧨 [规则加强] 新增 2-7 炸鱼全服通报界面，赏金支付仪式感拉满。<br>
+                - 🤖 [防卡机制] Stand Up 中如遇机器人倒数第一，系统自动代扣罚金防卡房。<br>
+                - 🛠️ [面板固化] 移除控制台把手收缩逻辑，控制台长驻界面右下角。<br>
+                - 🤣 [一屏打尽] 闲聊与梗图菜单升级为自动换行，直接向上铺开展示，点选更畅快。<br>
+                - 🩸 [铁律重铸] 严格修复 Stand Up 逻辑，多人平分/边池均无效，仅独赢主池可脱身。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -628,7 +628,7 @@
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
-    let localAllInCount = 0; let localAllInTime = 0; let localBurnTime = 0;
+    let localAllInCount = 0; let localAllInTime = 0; let localBurnTime = 0; let localTwoSevenTime = 0;
     let localBuyIns = {}; let warningPlayedThisHand = false; let rebuyTimers = {};
     let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
     let countdownNumInterval = null;
@@ -644,15 +644,6 @@
         const container = document.getElementById('standup-list-container'); const btn = document.getElementById('toggle-standup-btn');
         if (container.classList.contains('hidden')) { container.classList.remove('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ▼'; } 
         else { container.classList.add('hidden'); btn.innerHTML = '🧍‍♂️ 生存名单 ◀'; }
-    }
-    
-    function toggleHostPanel() {
-        const hp = document.getElementById('host-panel');
-        const pp = document.getElementById('player-panel');
-        if (!hp.classList.contains('hidden')) hp.classList.toggle('open');
-        if (!pp.classList.contains('hidden')) pp.classList.toggle('open');
-        const cards = document.getElementById('my-immersive-cards');
-        if (cards) cards.classList.toggle('shifted');
     }
 
     function toggleTwoSeven(prefix) {
@@ -864,6 +855,17 @@
         if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { let wasZero = (localStandUpEffect === 0); localStandUpEffect = state.game.standUpEffect; if(!wasZero) playPainEffect(); }
         if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { let wasZero = (localAllInTime === 0); localAllInTime = state.game.lastActionTime; if(!wasZero) playAllInAnimation(); }
         if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { let wasZero = (localBurnTime === 0); localBurnTime = state.game.lastActionTime; if(!wasZero) playBurnThreeAnimation(); }
+
+        // 🔥 修复点 2: 2-7 专属赏金大弹窗触发布置
+        if (state.game.twoSevenEffect && state.game.twoSevenEffect !== localTwoSevenTime) {
+            let wasZero = (localTwoSevenTime === 0);
+            localTwoSevenTime = state.game.twoSevenEffect;
+            if (!wasZero && state.game.lastTwoSevenWinner) {
+                let wName = state.game.lastTwoSevenWinner.split('|')[1] || state.game.lastTwoSevenWinner;
+                document.getElementById("two-seven-msg").innerHTML = `玩家 <strong style="color:var(--gold); font-size: 18px;">${wName}</strong> 使用 2,7 赢得了底池！<br>他很勇敢，现在大家来奖励这份勇气！<br><span style="font-size:12px; color:#ddd;">(系统已自动扣除您的赏金)</span>`;
+                document.getElementById('two-seven-pay-console').classList.remove('hidden');
+            }
+        }
 
         if (state.game.logVersion !== localLogVersion) {
             const contentBox = document.getElementById('log-content'); contentBox.innerHTML = (state.game.logs || []).map(log => `<div class="log-item">${log}</div>`).join('');
@@ -1098,7 +1100,6 @@
                     </div>
                 `;
             } else { 
-                // 🔥 修复点 1 & 2: 分离选座和添加Bot的样式
                 let addBotHtml = ''; let emptySeatOnClick = '';
                 if (state.game.status === "PICK_SEAT" && state.game.currentPicker === myName) { 
                     addBotHtml = `<div class="btn-sit-here">🪑 坐下</div>`; 
