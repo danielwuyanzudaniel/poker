@@ -64,12 +64,13 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:95; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* 🔥 修复点 2: 聊天面板彻底不被拦截 */
+        #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:150; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
+        #chat-zone > * { pointer-events: auto; }
         #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         #chat-zone:hover #chat-list, #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; }
         #chat-list div { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 8px; word-wrap: break-word;}
         
-        /* 🔥 修复点 4: 闲聊信息全部向上铺开，不折叠滚动 */
         .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 12px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
         #chat-zone:hover .chat-tools, #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
         .chat-emojis { display: flex; gap: 10px; font-size: 22px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid #333;}
@@ -137,7 +138,6 @@
         @keyframes dealHoleCard { 0% { transform: translate(calc(50vw - 100%), calc(-50vh + 100%)) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
         @keyframes dealBoardCard { 0% { transform: translate(0, -100px) scale(0) rotate(180deg); opacity: 0; } 100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } }
 
-        /* 🔥 1 & 2: 入座特效增强 */
         .anim-bot-spawn { animation: botSpawn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes botSpawn { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; box-shadow: 0 0 50px #349feb; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.5); } }
         .anim-human-spawn { animation: humanSpawn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -210,7 +210,6 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        /* 🔥 修复点 3: 房主控制台不隐藏，固定显示 */
         .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; backdrop-filter: blur(5px);}
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
@@ -262,11 +261,9 @@
             .s-top-l { left: 20%; } .s-top-r { left: 80%; } .s-btm-l { left: 20%; } .s-btm-r { left: 80%; }
             .action-console { width: 98vw; padding: 10px; bottom: 5px; }
             .main-action-row { height: 50px; } .btn-title { font-size: 14px; }
-            #chat-zone { width: 220px; bottom: 85px; pointer-events: none; z-index: 105; }
-            #chat-zone:focus-within, #chat-zone:hover { pointer-events: auto; }
-            #chat-list { height: 100px; font-size: 12px; }
-            .chat-tools { display: flex; } 
-            .host-panel { right: 10px; width: 140px; }
+            #chat-zone { width: 240px; bottom: 85px; z-index: 150; }
+            #chat-list { height: 100px; font-size: 12px; pointer-events: auto;}
+            .host-panel { width: 140px; padding: 10px; right: 10px; bottom: 10px;}
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
             #my-immersive-cards { bottom: 90px; left: 50%; --card-scale: 1.1; transform: translateX(-50%) scale(var(--card-scale)); }
@@ -563,12 +560,11 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v60.0 - 满血大结局版</strong><br>
-                - 🧨 [规则加强] 新增 2-7 炸鱼全服通报界面，赏金支付仪式感拉满。<br>
-                - 🤖 [防卡机制] Stand Up 中如遇机器人倒数第一，系统自动代扣罚金防卡房。<br>
-                - 🛠️ [面板固化] 移除控制台把手收缩逻辑，控制台长驻界面右下角。<br>
-                - 🤣 [一屏打尽] 闲聊与梗图菜单升级为自动换行，直接向上铺开展示，点选更畅快。<br>
-                - 🩸 [铁律重铸] 严格修复 Stand Up 逻辑，多人平分/边池均无效，仅独赢主池可脱身。
+                <strong style="color:var(--gold)">v61.0 - 全量严谨版</strong><br>
+                - 🎯 [引擎重构] 修复了Dealer与大小盲注的轮换Bug，严守顺时针轮替规则。<br>
+                - 🧨 [规则加强] 就算未到决胜圈，只要赢家手动亮牌，系统将自动核算并执行 2-7 全场赏金！<br>
+                - 🪑 [防卡机制] Stand Up 中逃脱制裁的玩家必须强制亮出底牌供全桌核验。<br>
+                - 🤣 [界面优化] 聊天面板交互解禁，所有抽象表情点击如丝般顺滑。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -768,8 +764,8 @@
             document.getElementById('update-enable-standup').checked = latestGameState.game.enableStandUp;
             const shortDeckUI = document.getElementById('update-enable-shortdeck'); 
             if(shortDeckUI) { 
-                shortDeckUI.checked = latestGameState.game.isShortDeck; 
-                if (latestGameState.game.isShortDeck) document.getElementById('update-enable-twoseven').checked = false;
+                shortDeckUI.checked = latestGameState.game.enableShortDeck; 
+                if (latestGameState.game.enableShortDeck) document.getElementById('update-enable-twoseven').checked = false;
                 else document.getElementById('update-enable-twoseven').checked = latestGameState.game.enableTwoSeven;
                 toggleTwoSeven('update');
             }
@@ -795,7 +791,7 @@
             const enableStandUp = document.getElementById('set-enable-standup').checked; const shortDeckUI = document.getElementById('set-enable-shortdeck');
             const enableShortDeck = shortDeckUI ? shortDeckUI.checked : false; const enableTwoSeven = enableShortDeck ? false : document.getElementById('set-enable-twoseven').checked;
             const actionTimerLimit = document.getElementById('set-timer').value || 0;
-            creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, isShortDeck: enableShortDeck, actionTimerLimit: actionTimerLimit };
+            creatorSettings = { initialChips: buyInVal, smallBlind: sb, bigBlind: sb * 2, botLevel: botLevel, enableDraw: enableDraw, enableStandUp: enableStandUp, enableTwoSeven: enableTwoSeven, enableShortDeck: enableShortDeck, actionTimerLimit: actionTimerLimit };
             navTo('view-game'); document.getElementById('host-panel').classList.remove('hidden'); openSitModal(); renderEngine({ status: "WAITING", game: { pot: 0, status: "WAITING", board: [], logs: [], chatLogs: [], logVersion: 0 }, players: [] });
         } catch (e) { alert("无法连接 Cloudflare 服务器。"); }
     }
@@ -831,7 +827,7 @@
 
         if(state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
             rulesBox.classList.remove("hidden");
-            document.getElementById("rule-mode").innerText = state.game.isShortDeck ? "短牌(6+)" : "普通"; document.getElementById("rule-mode").style.color = state.game.isShortDeck ? "#ff9800" : "#fff";
+            document.getElementById("rule-mode").innerText = state.game.enableShortDeck ? "短牌(6+)" : "普通"; document.getElementById("rule-mode").style.color = state.game.enableShortDeck ? "#ff9800" : "#fff";
             const suNode = document.getElementById("rule-standup"); suNode.innerText = state.game.enableStandUp ? "Active" : "Inactive"; suNode.className = state.game.enableStandUp ? "status-on" : "status-off";
             const tsNode = document.getElementById("rule-27"); tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive"; tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
 
@@ -856,7 +852,6 @@
         if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { let wasZero = (localAllInTime === 0); localAllInTime = state.game.lastActionTime; if(!wasZero) playAllInAnimation(); }
         if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { let wasZero = (localBurnTime === 0); localBurnTime = state.game.lastActionTime; if(!wasZero) playBurnThreeAnimation(); }
 
-        // 🔥 修复点 2: 2-7 专属赏金大弹窗触发布置
         if (state.game.twoSevenEffect && state.game.twoSevenEffect !== localTwoSevenTime) {
             let wasZero = (localTwoSevenTime === 0);
             localTwoSevenTime = state.game.twoSevenEffect;
@@ -885,7 +880,7 @@
         if (elBuyin) elBuyin.innerText = formatMoney(state.game.buyIn || 30);
         if (elBlinds) elBlinds.innerText = `${formatMoney(state.game.smallBlind || 0.25)}/${formatMoney(state.game.bigBlind || 0.50)}`;
 
-        let potPrefix = state.game.isShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
+        let potPrefix = state.game.enableShortDeck ? `<span style="color:#ff9800; font-size:10px;">[短牌6+] </span>` : "";
         document.getElementById("ui-pot").innerHTML = potPrefix + "$" + formatMoney(state.game.pot);
         
         let burnCardsHtml = "";
@@ -979,10 +974,8 @@
             banner.classList.remove("hidden");
             let isUncontested = !!state.game.uncontestedWinner; if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) { if (!localMucked) uncontestedBtn.classList.remove("hidden"); } else { uncontestedBtn.classList.add("hidden"); }
             const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked; if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
-            // 🔥 修复点：前端 UI 也严格限制只有 Dealer 才能看到亮牌按钮
             if (state.game.board && state.game.board.length < 5 && amIDealer) { dealerActionBtn.classList.remove("hidden"); } else { dealerActionBtn.classList.add("hidden"); }
         } else {
-            
             localMucked = false; if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; } banner.classList.add("hidden"); showCardsBtn.classList.add("hidden"); uncontestedBtn.classList.add("hidden"); dealerActionBtn.classList.add("hidden");
         }
 
