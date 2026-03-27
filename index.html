@@ -979,8 +979,10 @@
             banner.classList.remove("hidden");
             let isUncontested = !!state.game.uncontestedWinner; if (isUncontested && amISeated && myDataRecord.name === state.game.uncontestedWinner && !myDataRecord.hasShownCards) { if (!localMucked) uncontestedBtn.classList.remove("hidden"); } else { uncontestedBtn.classList.add("hidden"); }
             const canShow = amISeated && !myDataRecord.isWinner && !myDataRecord.hasShownCards && !localMucked; if (canShow) showCardsBtn.classList.remove("hidden"); else showCardsBtn.classList.add("hidden");
-            if (state.game.board && state.game.board.length < 5 && (isHost || amIDealer)) { dealerActionBtn.classList.remove("hidden"); } else { dealerActionBtn.classList.add("hidden"); }
+            // 🔥 修复点：前端 UI 也严格限制只有 Dealer 才能看到亮牌按钮
+            if (state.game.board && state.game.board.length < 5 && amIDealer) { dealerActionBtn.classList.remove("hidden"); } else { dealerActionBtn.classList.add("hidden"); }
         } else {
+            
             localMucked = false; if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; } banner.classList.add("hidden"); showCardsBtn.classList.add("hidden"); uncontestedBtn.classList.add("hidden"); dealerActionBtn.classList.add("hidden");
         }
 
