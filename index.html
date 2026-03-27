@@ -144,7 +144,6 @@
 
         .player-seat { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, -50%); transition: all 0.3s ease;}
         
-        /* 🔥 加注者 Spotlight 跟踪特效 */
         .aggressor-highlight { border-color: #ff4757 !important; box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 15px rgba(255, 71, 87, 0.5) !important; animation: aggressorPulse 1s infinite alternate; }
         @keyframes aggressorPulse { 0% { box-shadow: 0 0 20px rgba(255,71,87,0.6); } 100% { box-shadow: 0 0 45px rgba(255,71,87,1); } }
         @keyframes aggressorBounce { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-10px) scale(1.2); } }
@@ -584,11 +583,9 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v63.0 - 全量实战护航版</strong><br>
-                - 🚽 [公平机制] 新增“去上厕所”全局冻结机制！离座玩家不发牌、免惩罚，且全服 StandUp 倒数自动暂停，归座后无缝恢复。<br>
-                - 🚨 [高压聚光灯] 引入加注王（Aggressor）专属警报灯特效！谁是当前主导者，全场一目了然，重注玩家必将夺走此殊荣。<br>
-                - 💰 [动态罚金] 彻底废除固定盲注罚款，房主现可自由选定 Stand Up 每次罚金档位（$0.5 / $1 / $2 / $5）。<br>
-                - 🧨 [规则补全] 哪怕没有打到决胜圈，只要赢家手动亮出底牌包含 2和7，系统将照样无情没收全桌赏金并发放！
+                <strong style="color:var(--gold)">v64.0 - 第一人称稳定特装版</strong><br>
+                - 🚀 [修复] 彻底修复了“第一次特效失效”（刚进房间或刚开始第一局时，特效如 ALL-IN, 2-7 被错误拦截）的 Bug。<br>
+                - 🚀 [重构] 采用“首次同步锁(hasSyncedOnce)”防重刷机制，完美保留刷新不乱闪、但开局必爆闪的双重优势。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -653,6 +650,7 @@
     let currentPreAction = null; let isEditingProfile = false; let localStandUpEffect = 0;
     let countdownNumInterval = null;
     let knownSeatedPlayers = [];
+    let hasSyncedOnce = false; // 🔥 终极防拦截锁
 
     function appendEmoji(emoji) { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); }
     function sendQuickChat(msg) { if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); } }
@@ -853,10 +851,18 @@
     function renderEngine(state) {
         if (!state || !state.game) return;
 
+        // 🔥 首次同步防拦截锁
+        if (!hasSyncedOnce) {
+            localAllInTime = state.game.lastActionTime || 0;
+            localBurnTime = state.game.lastActionTime || 0;
+            localStandUpEffect = state.game.standUpEffect || 0;
+            localTwoSevenTime = state.game.twoSevenEffect || 0;
+            hasSyncedOnce = true;
+        }
+
         const rulesBox = document.getElementById("game-rules-box"); const standupWidget = document.getElementById("standup-widget");
         let playersArray = state.players || [];
         
-        // 🔥 检查全局是否有上厕所的人 (暂停 StandUp)
         let isStandupPaused = playersArray.some(p => p.seatIndex !== -1 && p.isSittingOut && !p.isKicked);
 
         if(state.game.status !== "WAITING" && state.game.status !== "LOBBY") {
@@ -905,14 +911,14 @@
             currentPreAction = null; renderPreUI(); prevBoardLength = 0; prevBurnLength = 0;
         }
 
-        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { let wasZero = (localStandUpEffect === 0); localStandUpEffect = state.game.standUpEffect; if(!wasZero) playPainEffect(); }
-        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { let wasZero = (localAllInTime === 0); localAllInTime = state.game.lastActionTime; if(!wasZero) playAllInAnimation(); }
-        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { let wasZero = (localBurnTime === 0); localBurnTime = state.game.lastActionTime; if(!wasZero) playBurnThreeAnimation(); }
+        // 🔥 动画拦截机制更新
+        if (state.game.standUpEffect && state.game.standUpEffect !== localStandUpEffect) { localStandUpEffect = state.game.standUpEffect; playPainEffect(); }
+        if (state.game.lastActionEffect === "ALL_IN" && state.game.lastActionTime !== localAllInTime) { localAllInTime = state.game.lastActionTime; playAllInAnimation(); }
+        if (state.game.lastActionEffect === "BURN_THREE" && state.game.lastActionTime !== localBurnTime) { localBurnTime = state.game.lastActionTime; playBurnThreeAnimation(); }
 
         if (state.game.twoSevenEffect && state.game.twoSevenEffect !== localTwoSevenTime) {
-            let wasZero = (localTwoSevenTime === 0);
             localTwoSevenTime = state.game.twoSevenEffect;
-            if (!wasZero && state.game.lastTwoSevenWinner) {
+            if (state.game.lastTwoSevenWinner) {
                 let wName = state.game.lastTwoSevenWinner.split('|')[1] || state.game.lastTwoSevenWinner;
                 document.getElementById("two-seven-msg").innerHTML = `玩家 <strong style="color:var(--gold); font-size: 18px;">${wName}</strong> 使用 2,7 赢得了底池！<br>他很勇敢，现在大家来奖励这份勇气！<br><span style="font-size:12px; color:#ddd;">(系统已自动扣除您的赏金)</span>`;
                 document.getElementById('two-seven-pay-console').classList.remove('hidden');
@@ -1066,7 +1072,6 @@
             btnRandomJoin.classList.add('hidden');
         }
 
-        // 🔥 更新去上厕所的按钮UI状态 (房主和普通玩家)
         let sitOutBtnText = (myDataRecord && myDataRecord.isSittingOut) ? "▶️ 上完回来" : "🚽 去上厕所 (防罚)";
         let sitOutBtnBg = (myDataRecord && myDataRecord.isSittingOut) ? "#2ecc71" : "#555";
         let sitOutBtnColor = (myDataRecord && myDataRecord.isSittingOut) ? "black" : "white";
@@ -1120,7 +1125,6 @@
                 const isOut = p.isOut === true; const isOffline = p.isOnline === false; const isSpectating = p.isSpectating === true; const isMySeat = (p.name === myName);
                 const isDealer = (p.seatIndex === state.game.dealerIndex && state.game.status !== "WAITING" && !isSpectating); const isSB = (p.seatIndex === state.game.sbIndex && state.game.status !== "WAITING" && !isSpectating); const isBB = (p.seatIndex === state.game.bbIndex && state.game.status !== "WAITING" && !isSpectating);
 
-                // 🔥 修复点 3: 加注者获得疯狂报警灯 Spotlight 特效
                 let isAggressor = (state.game.aggressorName && p.name === state.game.aggressorName && !isOut && !isSpectating);
                 let aggressorClass = isAggressor ? "aggressor-highlight" : "";
                 let aggressorEmoji = isAggressor ? `<div style="position:absolute; top:-28px; font-size:26px; animation: aggressorBounce 0.5s infinite alternate; z-index: 30; text-shadow: 0 0 10px red;">🚨</div>` : "";
