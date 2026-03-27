@@ -64,7 +64,6 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        /* 🔥 修复点 2: 聊天面板彻底不被拦截 */
         #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:150; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
         #chat-zone > * { pointer-events: auto; }
         #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
@@ -370,7 +369,7 @@
     <div id="sit-modal" class="view-screen hidden" style="background: rgba(0,0,0,0.85); z-index: 200;">
         <div class="menu-card" style="width: 420px; padding: 30px;">
             <h2 id="sit-modal-title" style="color:var(--gold); margin:0; margin-bottom: 20px;">Take a Seat</h2>
-            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (海量梗图)</div>
+            <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">1. 选择头像 (下滑浏览海量梗图)</div>
             <div id="avatar-grid" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-start; margin-bottom: 20px; background: #1a2028; padding: 12px; border-radius: 12px; border: 1px solid #333;"></div>
             
             <div style="text-align: left; font-size: 13px; color:#aaa; margin-bottom: 8px;">2. 选择名字专属颜色</div>
@@ -560,11 +559,11 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v61.0 - 全量严谨版</strong><br>
+                <strong style="color:var(--gold)">v62.0 - 聊天框满血复活版</strong><br>
+                - 🚀 [底层重构] 彻底修复了聊天框在达到 50 条消息后瘫痪罢工的恶性 Bug。<br>
                 - 🎯 [引擎重构] 修复了Dealer与大小盲注的轮换Bug，严守顺时针轮替规则。<br>
                 - 🧨 [规则加强] 就算未到决胜圈，只要赢家手动亮牌，系统将自动核算并执行 2-7 全场赏金！<br>
-                - 🪑 [防卡机制] Stand Up 中逃脱制裁的玩家必须强制亮出底牌供全桌核验。<br>
-                - 🤣 [界面优化] 聊天面板交互解禁，所有抽象表情点击如丝般顺滑。
+                - 🪑 [防卡机制] Stand Up 中逃脱制裁的玩家必须强制亮出底牌供全桌核验。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -620,7 +619,8 @@
     let isWaitingForServer = false; let latestGameState = null; let countdownInterval = null; 
     let creatorSettings = null; let heartbeatInterval = null;
 
-    let prevBoardLength = 0; let prevBurnLength = 0; let localLogVersion = -1; let localChatLength = 0;
+    // 🔥 这里把 localChatLength 换成了 localChatVersion
+    let prevBoardLength = 0; let prevBurnLength = 0; let localLogVersion = -1; let localChatVersion = -1;
     let localMucked = false; let localHandCount = -1; let initialDealPlayed = false; let winTextPlayed = false;
     let isNextHandSent = false; let chatSleepTimer = null; 
     
@@ -867,11 +867,18 @@
             contentBox.scrollTop = contentBox.scrollHeight; localLogVersion = state.game.logVersion;
         }
 
-        if (state.game.chatLogs && state.game.chatLogs.length !== localChatLength) {
-            const chatList = document.getElementById('chat-list'); const newLogs = state.game.chatLogs.slice(localChatLength);
+        // 🔥 修复点 2: 依据版本号判断聊天记录，永不瘫痪
+        if (state.game.chatVersion !== undefined && state.game.chatVersion !== localChatVersion) {
+            const chatList = document.getElementById('chat-list'); 
+            let newCount = localChatVersion === -1 ? state.game.chatLogs.length : state.game.chatVersion - localChatVersion;
+            if (newCount > state.game.chatLogs.length) newCount = state.game.chatLogs.length;
+            const newLogs = state.game.chatLogs.slice(state.game.chatLogs.length - newCount);
+            
             newLogs.forEach(c => { shootDanmaku(c.sender, c.msg); playChatEffect(c.msg); });
             chatList.innerHTML = state.game.chatLogs.map(c => { let p = state.players.find(x => (x.name.split('|')[1] || x.name) === c.sender); let col = (p && p.name.split('|')[2]) ? p.name.split('|')[2] : '#349feb'; return `<div><strong style="color:${col}">${c.sender}:</strong> ${c.msg}</div>` }).join('');
-            chatList.scrollTop = chatList.scrollHeight; localChatLength = state.game.chatLogs.length; wakeUpChat();
+            chatList.scrollTop = chatList.scrollHeight; 
+            localChatVersion = state.game.chatVersion; 
+            wakeUpChat();
         }
 
         if (myName !== "") { document.getElementById('chat-zone').classList.remove('hidden'); }
@@ -1112,48 +1119,4 @@
 
         if (isInitialDeal) initialDealPlayed = true; if (state.game.status === "SHOWDOWN") winTextPlayed = true;
 
-        const actionConsole = document.getElementById("action-console"); const buyinConsole = document.getElementById("buyin-console"); const preActionConsole = document.getElementById("pre-action-console"); const waitingTip = document.getElementById("waiting-tip"); const tableContainer = document.getElementById("table-container"); const btnCallTitle = document.getElementById("btn-call-title"); const btnCallSub = document.getElementById("btn-call-sub"); const actBtns = ["btn-action-fold", "btn-action-call", "btn-action-raise"];
-        
-        actionConsole.classList.add("hidden"); buyinConsole.classList.add("hidden"); preActionConsole.classList.add("hidden"); waitingTip.classList.add("hidden"); tableContainer.style.transform = "translateY(0) scale(1)";
-
-        if (amISeated) {
-            if (myDataRecord.isSittingOut) return;
-            
-            if (myDataRecord.chips === 0 && (state.game.status === "WAITING" || state.game.status === "SHOWDOWN" || myDataRecord.isOut || myDataRecord.isSpectating)) { buyinConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)"; document.getElementById('ui-buyin-amount').innerText = formatMoney(state.game.buyIn || 30); } 
-            else if (state.game.status !== "WAITING" && state.game.status !== "LOBBY" && state.game.status !== "DRAWING" && state.game.status !== "PICK_SEAT" && state.game.status !== "SHOWDOWN" && state.game.status !== "STANDUP_PAY" && !myDataRecord.folded && !myDataRecord.isSpectating && myDataRecord.chips > 0) {
-                if (isMyTurn) {
-                    if (currentPreAction === 'FOLD') { currentPreAction = null; renderPreUI(); send({type:'ACTION', name: myName, action:'FOLD'}); return; } else if (currentPreAction === 'CALL') { currentPreAction = null; renderPreUI(); send({type:'ACTION', name: myName, action:'CALL'}); return; }
-                    actionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
-                    const currentBet = parseFloat(state.game.currentBet) || 0; const myBet = parseFloat(myDataRecord.betThisRound) || 0; const myChips = parseFloat(myDataRecord.chips) || 0; const minRaiseDelta = parseFloat(state.game.lastValidRaise) || parseFloat(state.game.bigBlind) || 5; 
-                    const callAmount = Math.round((currentBet - myBet) * 100) / 100;
-                    if (callAmount <= 0) { btnCallTitle.innerText = "CHECK"; btnCallSub.innerText = "过牌 (免费)"; document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #2ecc71, #219653)"; } else { btnCallTitle.innerText = "CALL"; btnCallSub.innerText = "$" + formatMoney(callAmount); document.getElementById("btn-action-call").style.background = "linear-gradient(145deg, #1976d2, #115293)"; }
-                    const minRaiseTo = currentBet + minRaiseDelta; slider.min = minRaiseTo; slider.max = myChips + myBet; 
-                    let targetVal = parseFloat(slider.value) || 0; if (targetVal < minRaiseTo || targetVal > parseFloat(slider.max)) targetVal = minRaiseTo; slider.value = roundToQuarter(targetVal);
-                    if (document.activeElement !== inputAmount) { updateSliderFromSlider(); }
-                    
-                    document.getElementById("btn-action-fold").onclick = () => send({type:'ACTION', name: myName, action:'FOLD'}); document.getElementById("btn-action-call").onclick = () => send({type:'ACTION', name: myName, action:'CALL'}); document.getElementById("btn-action-raise").onclick = () => { syncInputToSlider(); const raiseTo = parseFloat(slider.value); const extraAmount = Math.round((raiseTo - currentBet) * 100) / 100; send({type:'ACTION', name: myName, action:'RAISE', amount: extraAmount}); };
-                    actBtns.forEach(id => document.getElementById(id).disabled = false);
-                } else {
-                    slider.value = 0;
-                    preActionConsole.classList.remove("hidden"); tableContainer.style.transform = "translateY(-120px) scale(0.85)";
-                    waitingTip.classList.remove("hidden"); const currentActor = playersArray.find(x => x.seatIndex === state.game.turnIndex); if(currentActor) { const actorName = currentActor.name.split('|')[1] || currentActor.name; waitingTip.innerText = `等待 ${actorName} 行动...`; } actBtns.forEach(id => document.getElementById(id).disabled = true);
-                }
-            }
-        }
-    }
-
-    const dragCards = document.getElementById('my-immersive-cards');
-    let isDraggingCards = false, startX, startY, curX = 0, curY = 0, xOff = 0, yOff = 0;
-    
-    function dragStart(e) { startX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - xOff; startY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - yOff; isDraggingCards = true; }
-    function dragEnd() { isDraggingCards = false; }
-    function drag(e) {
-        if (!isDraggingCards) return; e.preventDefault();
-        curX = (e.type === "touchmove" ? e.touches[0].clientX : e.clientX) - startX; curY = (e.type === "touchmove" ? e.touches[0].clientY : e.clientY) - startY; xOff = curX; yOff = curY;
-        dragCards.style.transform = `translate(calc(-50% + ${curX}px), ${curY}px) scale(var(--card-scale))`;
-    }
-    
-    dragCards.addEventListener("touchstart", dragStart, {passive: false}); document.addEventListener("touchend", dragEnd); document.addEventListener("touchmove", drag, {passive: false}); dragCards.addEventListener("mousedown", dragStart); document.addEventListener("mouseup", dragEnd); document.addEventListener("mousemove", drag);
-</script>
-</body>
-</html>
+        const actionConsole = document.getElementById("action-console"); const buyinConsole = document.getElementById("buyin-console"); const preActionConsole = document.getElementById("pre-action-console"); const waitingTip = document.getElementById("waiting-tip"); const
