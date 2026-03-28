@@ -680,9 +680,19 @@
 
     function shootSystemWarning(msg) { const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item system-warning'; el.innerText = `🚨 ${msg}`; container.appendChild(el); setTimeout(() => el.remove(), 26000); }
 
-    function playChatEffect(msg) {
+   function playChatEffect(msg) {
         let effectHtml = '';
-        if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>'; else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>'; else if (msg === '抓鸡') effectHtml = '<div class="effect-catch">🦅 抓鸡！</div>'; else if (msg === '游击队') effectHtml = '<div class="effect-guerilla">🏃‍♂️ 敌进我退 游击队！</div>'; else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>'; else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>'; else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
+        if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>'; 
+        else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>'; 
+        else if (msg === '抓鸡') effectHtml = '<div class="effect-catch">🦅 抓鸡！</div>'; 
+        else if (msg === '游击队') effectHtml = '<div class="effect-guerilla">🏃‍♂️ 敌进我退 游击队！</div>'; 
+        else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>'; 
+        else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>'; 
+        else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
+        // 👇 新增的两个特效在这里 👇
+        else if (msg === '我要验牌') effectHtml = '<div class="effect-big" style="color:#f39c12; text-shadow: 0 10px 25px rgba(0,0,0,1);">🧐 裁判！我要验牌！</div>';
+        else if (msg === '牌没问题') effectHtml = '<div class="effect-catch" style="color:#2ecc71; text-shadow: 0 0 30px #2ecc71;">👌 牌没问题！</div>';
+        
         if(effectHtml) { const fx = document.createElement('div'); fx.innerHTML = effectHtml; fx.className = 'chat-fx-container'; document.body.appendChild(fx); setTimeout(() => fx.remove(), 3000); }
     }
 
