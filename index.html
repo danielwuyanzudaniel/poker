@@ -2,13 +2,16 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CB POKER - 职业赛场</title>
     <style>
         :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; --card-scale: 1.4; }
         body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation; overscroll-behavior-y: none;}
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; } 
+
+        #portrait-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 999999; flex-direction: column; justify-content: center; align-items: center; color: var(--gold); text-align: center; }
+        @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
 
         .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #333; width: 320px; max-width: 90vw; position: relative; box-sizing: border-box;}
         .logo-title { color: var(--gold); font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 30px; margin-top: 0;}
@@ -64,14 +67,17 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
+        /* 🔥 核心修复：聊天框仅在点击输入框时展开，拒绝 hover 烦扰 */
         #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:150; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
         #chat-zone > * { pointer-events: auto; }
-        #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
-        #chat-zone:hover #chat-list, #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; }
+        
+        #chat-list { height:150px; overflow-y:auto; padding:12px; font-size:13px; color:#ddd; display:flex; flex-direction:column; gap:8px; scroll-behavior: smooth; transition: opacity 0.4s ease; opacity: 0; background:rgba(17, 21, 26, 0.85); border:1px solid #333; border-radius:12px; margin-bottom: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: none; }
+        #chat-zone:focus-within #chat-list, #chat-list.active { opacity: 1; pointer-events: auto; }
         #chat-list div { background: rgba(0,0,0,0.3); padding: 6px 10px; border-radius: 8px; word-wrap: break-word;}
         
         .chat-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; opacity: 0; transition: opacity 0.3s; background: rgba(17, 21, 26, 0.95); border-radius: 12px; padding: 12px; border: 1px solid #444; box-shadow: 0 5px 15px rgba(0,0,0,0.5); pointer-events: none;}
-        #chat-zone:hover .chat-tools, #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
+        #chat-zone:focus-within .chat-tools { opacity: 1; pointer-events: auto; }
+        
         .chat-emojis { display: flex; gap: 10px; font-size: 22px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid #333;}
         .chat-emojis span { cursor: pointer; transition: 0.2s; user-select: none; } .chat-emojis span:hover { transform: scale(1.3); }
         .chat-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 10px; }
@@ -210,14 +216,19 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        .host-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px; font-size: 12px; color: #aaa; z-index: 120; width: 180px; box-sizing: border-box; border: 1px solid #333; backdrop-filter: blur(5px);}
+        /* 🔥 核心修复：隐藏面板并增加触发拉环 */
+        .host-panel { position: absolute; bottom: 20px; right: -200px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 200px; box-sizing: border-box; border: 1px solid #333; border-right: none; backdrop-filter: blur(5px); transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
+        .host-panel.open { right: 0; }
+        .panel-toggle-tab { position: absolute; left: -36px; top: 15px; background: rgba(0,0,0,0.85); border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 18px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto; backdrop-filter: blur(5px);}
+        
         .host-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; font-size: 14px; box-sizing: border-box;}
         .btn-green { background: linear-gradient(145deg, #2ecc71, #219653); color: black; }
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
+        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease, transform 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
         #my-immersive-cards:active { cursor: grabbing; }
+        #my-immersive-cards.shifted { left: 55%; transform: translateX(-50%) scale(var(--card-scale)); }
 
         .action-console { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(17, 21, 26, 0.95); border: 1px solid #333; border-radius: 16px; padding: 15px; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; z-index: 100; box-sizing: border-box; }
         .turn-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #2ecc71; color: black; font-weight: 900; font-size: 13px; padding: 4px 15px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4); }
@@ -265,14 +276,67 @@
             .main-action-row { height: 50px; } .btn-title { font-size: 14px; }
             #chat-zone { width: 240px; bottom: 85px; z-index: 150; }
             #chat-list { height: 100px; font-size: 12px; pointer-events: auto;}
-            .host-panel { width: 140px; padding: 10px; right: 10px; bottom: 10px;}
+            .host-panel { width: 140px; padding: 10px; right: -140px; bottom: 10px;}
+            .panel-toggle-tab { left: -30px; font-size: 14px; padding: 8px 6px;}
             .host-btn { font-size: 12px; padding: 8px; }
             #dealer-burn-container button { padding: 8px 15px; font-size: 14px; }
             #my-immersive-cards { bottom: 90px; left: 50%; --card-scale: 1.1; transform: translateX(-50%) scale(var(--card-scale)); }
+            #my-immersive-cards.shifted { left: 40%; }
+        }
+        
+        @media screen and (max-width: 950px) and (orientation: landscape) {
+            .poker-table { width: 92vw; height: 55vh; border-width: 10px; border-radius: 120px; margin-top: -15vh; }
+            .player-card { transform: scale(0.75); min-height: 70px; width: 95px; }
+            .player-avatar span { font-size: 20px; }
+            .player-chips { font-size: 11px; padding: 3px 0; }
+            .bet-badge { font-size: 10px; padding: 2px 8px; }
+            .s-lft-t { left: 8%; top: 25%; } .s-lft-b { left: 8%; top: 75%; }
+            .s-rgt-t { left: 92%; top: 25%; } .s-rgt-b { left: 92%; top: 75%; }
+            .s-top-l { left: 28%; top: -5%; } .s-top-r { left: 72%; top: -5%; }
+            .s-btm-l { left: 28%; top: 105%; } .s-btm-r { left: 72%; top: 105%; }
+            .action-console { width: 96vw; bottom: 5px; padding: 8px; flex-direction: row; flex-wrap: nowrap; gap: 8px; align-items: center; }
+            .raise-control-area { flex: 1; padding: 6px; margin: 0; min-width: 180px;}
+            .raise-header { font-size: 11px; }
+            #input-raise-amount { font-size: 14px; width: 60px; }
+            .custom-slider::-webkit-slider-thumb { width: 16px; height: 16px; }
+            .qb-btn { font-size: 10px; padding: 4px 0; }
+            .main-action-row { flex: 1.2; height: 45px; gap: 6px; }
+            .btn-title { font-size: 14px; }
+            .btn-sub { font-size: 10px; }
+            #pre-action-console { flex-direction: row; justify-content: center; height: auto;}
+            #chat-zone { width: 220px; bottom: 70px; left: 10px; pointer-events: none; }
+            #chat-list { height: 90px; font-size: 11px; padding: 8px;}
+            .chat-tools { padding: 8px; }
+            .chat-emojis span { font-size: 18px; }
+            .chat-shortcuts button { font-size: 10px; padding: 4px 6px; }
+            #chat-input { padding: 8px; font-size: 11px; }
+            .host-panel { width: 140px; padding: 8px; bottom: 70px; right: -140px; font-size: 11px; }
+            .panel-toggle-tab { left: -30px; font-size: 14px; padding: 8px 6px;}
+            .host-btn { padding: 6px; font-size: 11px; margin-top: 5px; }
+            #my-immersive-cards { bottom: 65px; left: 50%; --card-scale: 0.9; }
+            #my-immersive-cards.shifted { left: 40%; }
+            .menu-card { padding: 20px; width: 90vw; max-width: 500px; max-height: 90vh; overflow-y: auto;}
+            .logo-title { font-size: 24px; margin-bottom: 15px; }
+            .setting-item { margin-bottom: 8px; }
+            .setting-label { font-size: 12px; }
+            .setting-input { padding: 4px 8px; font-size: 12px; }
+        }
+
+        @media screen and (orientation: portrait) {
+            @media (max-width: 1024px) {
+                #portrait-warning { display: flex; }
+                #view-home, #view-settings, #view-game, #sit-modal, #update-settings-modal, #player-mgmt-modal, #ledger-modal { display: none !important; }
+            }
         }
     </style>
 </head>
 <body>
+
+    <div id="portrait-warning">
+        <div style="font-size: 60px; animation: rotatePhone 1.5s infinite ease-in-out;">📱🔄</div>
+        <div style="margin-top: 20px; font-weight: 900; font-size: 28px;">请旋转手机至横屏</div>
+        <div style="font-size: 16px; color: #aaa; margin-top: 10px;">大桌德州扑克需要横屏以获得最佳游玩视野</div>
+    </div>
 
     <div id="danmaku-container"></div>
     <div id="disconnect-banner" class="hidden" style="position:absolute; top:0; left:0; width:100%; background:#e74c3c; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size: 14px;">🔌 失去与云端的连接，正在尝试重连...</div>
@@ -449,7 +513,7 @@
                     <button onclick="sendQuickChat('HERO CALL')">🦸‍♂️ HERO CALL</button>
                 </div>
             </div>
-            <input type="text" id="chat-input" placeholder="输入闲聊信息 (Enter发送)..." autocomplete="off">
+            <input type="text" id="chat-input" placeholder="输入闲聊信息 (点击展开)..." autocomplete="off">
         </div>
 
         <div id="table-container">
@@ -502,6 +566,7 @@
         </div>
 
         <div class="host-panel hidden" id="host-panel">
+            <div class="panel-toggle-tab" onclick="toggleHostPanel()">⚙️</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:var(--gold);">👑 房主控制台</div>
             <div style="margin-bottom: 10px; opacity: 0.6;">标准底金 $<span id="info-buyin">0</span> | 盲注 <span id="info-blinds">0/0</span></div>
             <button onclick="document.getElementById('player-mgmt-modal').classList.remove('hidden')" class="host-btn" style="background:#8e44ad; color:white; margin-bottom:10px;">🛠️ 玩家管理</button>
@@ -512,6 +577,7 @@
         </div>
 
         <div class="host-panel hidden" id="player-panel">
+            <div class="panel-toggle-tab" onclick="toggleHostPanel()">👤</div>
             <div style="margin-bottom: 5px; opacity: 0.8; font-weight:bold; color:#349feb;">👤 玩家控制台</div>
             <button onclick="openEditProfile()" class="host-btn" style="background:#f39c12; color:black;">✏️ 修改资料</button>
             <button onclick="toggleSitOut()" id="btn-sit-out" class="host-btn btn-dark" style="margin-top:8px;">🚽 去上厕所 (防罚)</button>
@@ -585,10 +651,10 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v65.0 - 终极纯净解卡版</strong><br>
-                - 🚀 [修复] 彻底修复了刷新页面或进入新房间时，历史聊天记录如火山爆发般全部弹出并疯狂播放特效的恶性 Bug。现已增加“静默初载锁”。<br>
-                - 🤣 [素材扩展] 引入了国际 Unicode 官方标准规范化排序的海量 Emoji 库，上百款头像供您畅选。新增 🔥 和 💥 头像。<br>
-                - 💬 [快捷沟通] 聊天面板增加 “🧐 我要验牌” 和 “👌 牌没问题” 两个全新裁判级语音按键。<br>
+                <strong style="color:var(--gold)">v67.0 - 空间极致优化版</strong><br>
+                - 📱 [空间释放] 房主与玩家控制台升级为侧边隐藏抽屉，点击齿轮/人像拉环才展开，告别屏幕遮挡。<br>
+                - 💬 [体验优化] 聊天框废除烦人的“悬停自动展开”逻辑，现在只有您明确点击输入框打算打字时，才会弹出表情与快捷语，体验清爽十倍。<br>
+                - 🚀 [修复] 彻底解决刷新页面历史聊天如火山爆发般乱闪的 Bug。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -653,6 +719,16 @@
     let knownSeatedPlayers = [];
     let hasSyncedOnce = false;
 
+    // 🔥 面板切换函数
+    function toggleHostPanel() {
+        const hp = document.getElementById('host-panel');
+        const pp = document.getElementById('player-panel');
+        if (!hp.classList.contains('hidden')) hp.classList.toggle('open');
+        if (!pp.classList.contains('hidden')) pp.classList.toggle('open');
+        const cards = document.getElementById('my-immersive-cards');
+        if (cards) cards.classList.toggle('shifted');
+    }
+
     function appendEmoji(emoji) { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); }
     function sendQuickChat(msg) { if (myName) { send({ type: 'CHAT', name: myName, msg: msg }); document.getElementById('chat-input').value = ''; } else { alert("请先入座！"); } }
 
@@ -680,7 +756,7 @@
 
     function shootSystemWarning(msg) { const container = document.getElementById('danmaku-container'); const el = document.createElement('div'); el.className = 'danmaku-item system-warning'; el.innerText = `🚨 ${msg}`; container.appendChild(el); setTimeout(() => el.remove(), 26000); }
 
-   function playChatEffect(msg) {
+    function playChatEffect(msg) {
         let effectHtml = '';
         if (msg === 'HERO FOLD') effectHtml = '<div class="effect-hero-fold">🛡️ HERO FOLD</div>'; 
         else if (msg === '偷鸡') effectHtml = '<div class="effect-bluff">🐔 偷鸡成功?</div>'; 
@@ -689,7 +765,6 @@
         else if (msg === '我的很大，你忍一下') effectHtml = '<div class="effect-big">🍆 我的很大，你忍一下 💦</div>'; 
         else if (msg === 'Nice Hand') effectHtml = '<div class="effect-nice">👏 NICE HAND 👏</div>'; 
         else if (msg === 'HERO CALL') effectHtml = '<div class="effect-hero-call">🦸‍♂️ HERO CALL!</div>';
-        // 👇 新增的两个特效在这里 👇
         else if (msg === '我要验牌') effectHtml = '<div class="effect-big" style="color:#f39c12; text-shadow: 0 10px 25px rgba(0,0,0,1);">🧐 裁判！我要验牌！</div>';
         else if (msg === '牌没问题') effectHtml = '<div class="effect-catch" style="color:#2ecc71; text-shadow: 0 0 30px #2ecc71;">👌 牌没问题！</div>';
         
@@ -939,7 +1014,6 @@
             contentBox.scrollTop = contentBox.scrollHeight; localLogVersion = state.game.logVersion;
         }
 
-        // 🔥 修复点 3: 刷新页面时禁止弹幕爆发
         if (state.game.chatVersion !== undefined && state.game.chatVersion !== localChatVersion) {
             const chatList = document.getElementById('chat-list'); 
             let isInitialLoad = (localChatVersion === -1);
