@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CB POKER - 职业赛场</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
     <style>
         :root { --bg-dark: #242b35; --table-inner: #0d5c2e; --panel-bg: #11151a; --gold: #ffd700; --active-green: #2ecc71; --card-scale: 1.4; }
         body { margin: 0; padding: 0; background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; touch-action: manipulation; overscroll-behavior-y: none;}
@@ -14,7 +15,22 @@
         @keyframes rotatePhone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
 
         .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #333; width: 320px; max-width: 90vw; position: relative; box-sizing: border-box;}
-        .logo-title { color: var(--gold); font-size: 32px; font-weight: 900; letter-spacing: 2px; margin-bottom: 30px; margin-top: 0;}
+        .logo-title { 
+            font-family: 'Zhi Mang Xing', 'STXingkai', cursive; /* 龙飞凤舞的行草字体 */
+            font-size: 72px; /* 字体放大一倍以上，压迫感拉满 */
+            letter-spacing: 8px; 
+            margin-bottom: 20px; 
+            margin-top: 10px;
+            /* 暗金与朱砂红交织的渐变特效 */
+            background: linear-gradient(160deg, #fffce0 0%, #ffd700 30%, #ff8c00 70%, #d32f2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* 霸气的立体阴影与发光 */
+            filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.8)) drop-shadow(0px 0px 25px rgba(231,76,60,0.5));
+            transform: skewX(-5deg); /* 微微倾斜，增加破空而出的动感 */
+        }
+        
+
         .btn-main { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 15px; transition: 0.2s; box-sizing: border-box;}
         .btn-gold { background: var(--gold); color: black; } .btn-gold:hover { transform: scale(1.03); background: #e6c200; }
         .btn-dark { background: #2a3441; color: white; border: 1px solid #444; } .btn-dark:hover { background: #354252; }
