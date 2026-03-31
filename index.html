@@ -1318,20 +1318,53 @@
             }
         }
     }
-
+// --- 极致丝滑：沉浸式手牌拖拽引擎 ---
     const dragCards = document.getElementById('my-immersive-cards');
     let isDraggingCards = false, startX, startY, curX = 0, curY = 0, xOff = 0, yOff = 0;
+    let dragRAF; // 用于屏幕刷新率同步
     
-    function dragStart(e) { startX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - xOff; startY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - yOff; isDraggingCards = true; }
-    function dragEnd() { isDraggingCards = false; }
-    function drag(e) {
-        if (!isDraggingCards) return; e.preventDefault();
-        curX = (e.type === "touchmove" ? e.touches[0].clientX : e.clientX) - startX; curY = (e.type === "touchmove" ? e.touches[0].clientY : e.clientY) - startY; xOff = curX; yOff = curY;
-        dragCards.style.transform = `translate(calc(-50% + ${curX}px), ${curY}px) scale(var(--card-scale))`;
+    function dragStart(e) { 
+        startX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - xOff; 
+        startY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - yOff; 
+        isDraggingCards = true; 
+        // 🔥 核心修复 1：拖拽瞬间剥夺 CSS 动画控制权，消除粘滞感
+        dragCards.style.transition = 'none'; 
     }
     
-    if (dragCards) { dragCards.addEventListener("touchstart", dragStart, {passive: false}); dragCards.addEventListener("mousedown", dragStart); }
-    document.addEventListener("touchend", dragEnd); document.addEventListener("mouseup", dragEnd); document.addEventListener("touchmove", drag, {passive: false}); document.addEventListener("mousemove", drag);
-</script>
+    function dragEnd() { 
+        if (isDraggingCards) {
+            isDraggingCards = false; 
+            // 🔥 核心修复 2：松手后交还 CSS 控制权，保证其他交互平滑
+            dragCards.style.transition = ''; 
+            if (dragRAF) cancelAnimationFrame(dragRAF);
+        }
+    }
+    
+    function drag(e) {
+        if (!isDraggingCards) return; 
+        e.preventDefault(); // 防止手机端出现原生滚动或下拉刷新
+        
+        let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+        let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+        curX = clientX - startX; 
+        curY = clientY - startY; 
+        xOff = curX; yOff = curY;
+        
+        // 🔥 核心修复 3：使用屏幕硬件刷新率（60Hz/120Hz）来画帧，拒绝掉帧卡顿
+        if (dragRAF) cancelAnimationFrame(dragRAF);
+        dragRAF = requestAnimationFrame(() => {
+            dragCards.style.transform = `translate(calc(-50% + ${curX}px), ${curY}px) scale(var(--card-scale))`;
+        });
+    }
+    
+    if (dragCards) { 
+        dragCards.addEventListener("touchstart", dragStart, {passive: false}); 
+        dragCards.addEventListener("mousedown", dragStart); 
+    }
+    document.addEventListener("touchend", dragEnd); 
+    document.addEventListener("mouseup", dragEnd); 
+    document.addEventListener("touchmove", drag, {passive: false}); 
+    document.addEventListener("mousemove", drag);
+   </script>
 </body>
 </html>
