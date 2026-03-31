@@ -16,20 +16,17 @@
 
         .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid #333; width: 320px; max-width: 90vw; position: relative; box-sizing: border-box;}
         .logo-title { 
-            font-family: 'Zhi Mang Xing', 'STXingkai', cursive; /* 龙飞凤舞的行草字体 */
-            font-size: 72px; /* 字体放大一倍以上，压迫感拉满 */
+            font-family: 'Zhi Mang Xing', 'STXingkai', cursive;
+            font-size: 72px; 
             letter-spacing: 8px; 
             margin-bottom: 20px; 
             margin-top: 10px;
-            /* 暗金与朱砂红交织的渐变特效 */
             background: linear-gradient(160deg, #fffce0 0%, #ffd700 30%, #ff8c00 70%, #d32f2f 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            /* 霸气的立体阴影与发光 */
             filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.8)) drop-shadow(0px 0px 25px rgba(231,76,60,0.5));
-            transform: skewX(-5deg); /* 微微倾斜，增加破空而出的动感 */
+            transform: skewX(-5deg); 
         }
-        
 
         .btn-main { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 15px; transition: 0.2s; box-sizing: border-box;}
         .btn-gold { background: var(--gold); color: black; } .btn-gold:hover { transform: scale(1.03); background: #e6c200; }
@@ -83,7 +80,6 @@
         .lobby-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .lobby-item span { font-size: 20px; }
 
-        /* 🔥 核心修复：聊天框仅在点击输入框时展开，拒绝 hover 烦扰 */
         #chat-zone { position:absolute; bottom:20px; left:20px; width:300px; display:flex; flex-direction:column; z-index:150; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
         #chat-zone > * { pointer-events: auto; }
         
@@ -232,7 +228,6 @@
         .color-opt:hover { transform: scale(1.15); }
         .color-opt.selected { border: 2px solid white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
 
-        /* 🔥 核心修复：隐藏面板并增加触发拉环 */
         .host-panel { position: absolute; bottom: 20px; right: -200px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 12px 0 0 12px; font-size: 12px; color: #aaa; z-index: 120; width: 200px; box-sizing: border-box; border: 1px solid #333; border-right: none; backdrop-filter: blur(5px); transition: right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
         .host-panel.open { right: 0; }
         .panel-toggle-tab { position: absolute; left: -36px; top: 15px; background: rgba(0,0,0,0.85); border: 1px solid #333; border-right: none; padding: 10px 8px; border-radius: 8px 0 0 8px; cursor: pointer; color: var(--gold); font-size: 18px; box-shadow: -5px 0 10px rgba(0,0,0,0.5); pointer-events: auto; backdrop-filter: blur(5px);}
@@ -242,7 +237,7 @@
         .btn-red { background: #e74c3c; color: white; margin-top: 5px;}
         .host-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; transition: left 0.3s ease, transform 0.3s ease; pointer-events: auto; cursor: grab; touch-action: none; }
+        #my-immersive-cards { position: absolute; bottom: 80px; left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; pointer-events: auto; cursor: grab; touch-action: none; }
         #my-immersive-cards:active { cursor: grabbing; }
         #my-immersive-cards.shifted { left: 55%; transform: translateX(-50%) scale(var(--card-scale)); }
 
@@ -359,7 +354,7 @@
 
     <div id="view-home" class="view-screen">
         <div class="menu-card">
-            <h1 class="logo-title">云德社</h1>
+            <h1 class="logo-title">雲德社</h1>
             <button class="btn-main btn-gold" onclick="navTo('view-settings')">New Game</button>
             <div class="input-group">
                 <input type="text" id="join-code" class="input-code" placeholder="输入 5 位房号">
@@ -667,10 +662,12 @@
         <div class="ledger-box">
             <button onclick="toggleChangelog()" style="background:none; border:none; color:#349feb; cursor:pointer; font-size:12px; margin-bottom:10px; text-decoration:underline;">ℹ️ 版本更新日志</button>
             <div id="changelog-area" class="hidden" style="text-align:left; font-size:12px; color:#aaa; background:#111; padding:10px; border-radius:8px; margin-bottom:15px; max-height:150px; overflow-y:auto; border:1px solid #333;">
-                <strong style="color:var(--gold)">v67.0 - 空间极致优化版</strong><br>
-                - 📱 [空间释放] 房主与玩家控制台升级为侧边隐藏抽屉，点击齿轮/人像拉环才展开，告别屏幕遮挡。<br>
-                - 💬 [体验优化] 聊天框废除烦人的“悬停自动展开”逻辑，现在只有您明确点击输入框打算打字时，才会弹出表情与快捷语，体验清爽十倍。<br>
-                - 🚀 [修复] 彻底解决刷新页面历史聊天如火山爆发般乱闪的 Bug。
+                <strong style="color:var(--gold)">v68.0 - 极致融合大满配版</strong><br>
+                - 🐉 [视觉重铸] 引入“云德社”专属行草书法 Logo，辅以暗金朱砂渐变，压迫感十足。<br>
+                - 🚽 [精准高亮] StandUp 名单彻底优化：上厕所玩家专属绿字醒目展示，其余玩家智能变灰。<br>
+                - 🖱️ [极致丝滑] 采用 requestAnimationFrame 彻底重写手牌拖拽引擎，指哪打哪，0 延迟。<br>
+                - 📱 [移动端全解] 全局强制横屏引导 + 侧边抽屉收缩面板，防误触体验拉满。<br>
+                - 🚀 [修复] 首次加载静默锁彻底解决刷新爆弹幕的 Bug。
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -971,7 +968,25 @@
             document.getElementById("rule-mode").innerText = state.game.enableShortDeck ? "短牌(6+)" : "普通"; document.getElementById("rule-mode").style.color = state.game.enableShortDeck ? "#ff9800" : "#fff";
             
             const suNode = document.getElementById("rule-standup"); 
-if (state.game.enableStandUp) {
+            if (state.game.enableStandUp) {
+                if (isStandupPaused) {
+                    suNode.innerText = "Stop ⏸️";
+                    suNode.className = "status-off";
+                    suNode.style.color = "#aaa";
+                } else {
+                    suNode.innerText = "Active";
+                    suNode.className = "status-on";
+                    suNode.style.color = "";
+                }
+            } else {
+                suNode.innerText = "Inactive";
+                suNode.className = "status-off";
+                suNode.style.color = "";
+            }
+            
+            const tsNode = document.getElementById("rule-27"); tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive"; tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
+
+            if (state.game.enableStandUp) {
                 standupWidget.classList.remove("hidden"); 
                 
                 const suContainer = document.getElementById('standup-list-container');
@@ -999,16 +1014,6 @@ if (state.game.enableStandUp) {
                         }
                     }
                 });
-                document.getElementById('standup-list').innerHTML = listHtml;
-            } else { standupWidget.classList.add("hidden"); }
-                
-                const suContainer = document.getElementById('standup-list-container');
-                if (isStandupPaused) { suContainer.style.filter = "grayscale(1)"; suContainer.style.opacity = "0.6"; } 
-                else { suContainer.style.filter = "none"; suContainer.style.opacity = "1"; }
-                
-                let seatedPs = playersArray.filter(p => p.seatIndex !== -1 && !p.isSpectating && !p.isKicked); 
-                let listHtml = isStandupPaused ? `<div style="color:var(--gold); font-size:12px; font-weight:bold; margin-bottom:4px; text-align:center;">⏸️ 生存战暂停中</div>` : "";
-                seatedPs.forEach(p => { let pName = p.name.split('|')[1] || p.name; if (p.isStanding) { listHtml += `<span style="background:#e74c3c; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; border:1px solid #c0392b; width:fit-content;">${pName}</span>`; } else { listHtml += `<span style="background:#333; color:#aaa; padding:4px 8px; border-radius:4px; font-size:12px; text-decoration:line-through; border:1px solid #555; width:fit-content;">${pName}</span>`; } });
                 document.getElementById('standup-list').innerHTML = listHtml;
             } else { standupWidget.classList.add("hidden"); }
         } else { rulesBox.classList.add("hidden"); if(standupWidget) standupWidget.classList.add("hidden"); }
@@ -1344,23 +1349,21 @@ if (state.game.enableStandUp) {
             }
         }
     }
-// --- 极致丝滑：沉浸式手牌拖拽引擎 ---
+
     const dragCards = document.getElementById('my-immersive-cards');
     let isDraggingCards = false, startX, startY, curX = 0, curY = 0, xOff = 0, yOff = 0;
-    let dragRAF; // 用于屏幕刷新率同步
+    let dragRAF;
     
     function dragStart(e) { 
         startX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - xOff; 
         startY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - yOff; 
         isDraggingCards = true; 
-        // 🔥 核心修复 1：拖拽瞬间剥夺 CSS 动画控制权，消除粘滞感
         dragCards.style.transition = 'none'; 
     }
     
     function dragEnd() { 
         if (isDraggingCards) {
             isDraggingCards = false; 
-            // 🔥 核心修复 2：松手后交还 CSS 控制权，保证其他交互平滑
             dragCards.style.transition = ''; 
             if (dragRAF) cancelAnimationFrame(dragRAF);
         }
@@ -1368,7 +1371,7 @@ if (state.game.enableStandUp) {
     
     function drag(e) {
         if (!isDraggingCards) return; 
-        e.preventDefault(); // 防止手机端出现原生滚动或下拉刷新
+        e.preventDefault(); 
         
         let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
         let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
@@ -1376,7 +1379,6 @@ if (state.game.enableStandUp) {
         curY = clientY - startY; 
         xOff = curX; yOff = curY;
         
-        // 🔥 核心修复 3：使用屏幕硬件刷新率（60Hz/120Hz）来画帧，拒绝掉帧卡顿
         if (dragRAF) cancelAnimationFrame(dragRAF);
         dragRAF = requestAnimationFrame(() => {
             dragCards.style.transform = `translate(calc(-50% + ${curX}px), ${curY}px) scale(var(--card-scale))`;
@@ -1391,6 +1393,6 @@ if (state.game.enableStandUp) {
     document.addEventListener("mouseup", dragEnd); 
     document.addEventListener("touchmove", drag, {passive: false}); 
     document.addEventListener("mousemove", drag);
-   </script>
+</script>
 </body>
 </html>
