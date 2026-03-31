@@ -971,26 +971,36 @@
             document.getElementById("rule-mode").innerText = state.game.enableShortDeck ? "短牌(6+)" : "普通"; document.getElementById("rule-mode").style.color = state.game.enableShortDeck ? "#ff9800" : "#fff";
             
             const suNode = document.getElementById("rule-standup"); 
-            if (state.game.enableStandUp) {
-                if (isStandupPaused) {
-                    suNode.innerText = "Stop ⏸️";
-                    suNode.className = "status-off";
-                    suNode.style.color = "#aaa";
-                } else {
-                    suNode.innerText = "Active";
-                    suNode.className = "status-on";
-                    suNode.style.color = "";
-                }
-            } else {
-                suNode.innerText = "Inactive";
-                suNode.className = "status-off";
-                suNode.style.color = "";
-            }
-            
-            const tsNode = document.getElementById("rule-27"); tsNode.innerText = state.game.enableTwoSeven ? "Active" : "Inactive"; tsNode.className = state.game.enableTwoSeven ? "status-on" : "status-off";
-
-            if (state.game.enableStandUp) {
+if (state.game.enableStandUp) {
                 standupWidget.classList.remove("hidden"); 
+                
+                const suContainer = document.getElementById('standup-list-container');
+                // 🔥 移除强制黑白滤镜，改为调整透明度，给绿色让路
+                if (isStandupPaused) { suContainer.style.filter = "none"; suContainer.style.opacity = "0.85"; } 
+                else { suContainer.style.filter = "none"; suContainer.style.opacity = "1"; }
+                
+                let seatedPs = playersArray.filter(p => p.seatIndex !== -1 && !p.isSpectating && !p.isKicked); 
+                let listHtml = isStandupPaused ? `<div style="color:var(--gold); font-size:12px; font-weight:bold; margin-bottom:4px; text-align:center;">⏸️ 生存战暂停中</div>` : "";
+                
+                seatedPs.forEach(p => { 
+                    let pName = p.name.split('|')[1] || p.name; 
+                    if (p.isSittingOut) {
+                        // 🚽 去厕所的玩家：专属绿色醒目显示
+                        listHtml += `<span style="background:#1a2028; color:var(--active-green); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; border:1px solid var(--active-green); width:fit-content;">🚽 ${pName} (离座)</span>`;
+                    } else if (isStandupPaused) {
+                        // ⏸️ 暂停期间的其他玩家：全部变灰
+                        listHtml += `<span style="background:#444; color:#999; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; border:1px solid #666; width:fit-content;">${pName}</span>`;
+                    } else {
+                        // ⚔️ 正常厮杀状态：红名站立，灰名安全
+                        if (p.isStanding) { 
+                            listHtml += `<span style="background:#e74c3c; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold; border:1px solid #c0392b; width:fit-content;">${pName}</span>`; 
+                        } else { 
+                            listHtml += `<span style="background:#333; color:#aaa; padding:4px 8px; border-radius:4px; font-size:12px; text-decoration:line-through; border:1px solid #555; width:fit-content;">${pName}</span>`; 
+                        }
+                    }
+                });
+                document.getElementById('standup-list').innerHTML = listHtml;
+            } else { standupWidget.classList.add("hidden"); }
                 
                 const suContainer = document.getElementById('standup-list-container');
                 if (isStandupPaused) { suContainer.style.filter = "grayscale(1)"; suContainer.style.opacity = "0.6"; } 
