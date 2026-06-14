@@ -89,10 +89,14 @@
        #table-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;}
         
         .poker-table { 
-            width: 70vw; height: 60vh; max-width: 1100px; max-height: 500px; 
-            position: relative; /* 脱离 absolute 地狱，由 Flexbox 管理居中 */
+            /* 核心黑科技：利用 min(vw, vh) 将长宽比永久锁死在 2:1，任何设备上都不会变形！ */
+            width: min(75vw, 120vh); 
+            height: min(37.5vw, 60vh); 
+            max-width: 1000px; max-height: 500px; 
+            position: relative; 
             background: radial-gradient(circle, var(--bg-dark) 0%, var(--table-inner) 100%); 
-            border: 1.5vw solid var(--text-main); border-radius: 50vw; 
+            border: clamp(6px, 1vw, 12px) solid var(--text-main); 
+            border-radius: 9999px; /* 强制完美胶囊形 */
             box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); 
             display: flex; justify-content: center; align-items: center;
         }
@@ -353,31 +357,35 @@
         #my-immersive-cards { position: absolute; bottom: max(80px, env(safe-area-inset-bottom) + 80px); left: 75%; transform: translateX(-50%) scale(var(--card-scale)); display: flex; gap: 8px; z-index: 105; pointer-events: auto; cursor: grab; touch-action: none; }
         #my-immersive-cards.shifted { left: 50%; }
 
-        /* ============== [真正的 Mobile 响应式适配] ============== */
+        /* ============== [Mobile 响应式：锁死电脑端比例，等比缩小] ============== */
         @media screen and (max-width: 1024px) {
-            /* 牌桌紧缩，不越界 */
-            .poker-table { width: 85vw; height: 50vh; border-width: 1.5vw; border-radius: 100px; }
-            .player-card { width: 85px; min-height: 60px; transform: scale(1); }
+            /* 牌桌：严格锁死比例，利用 min() 函数保持 2:1，仅放大占比 */
+            .poker-table { width: min(90vw, 110vh); height: min(45vw, 55vh); border-width: 8px; }
+            
+            /* 座位：等比缩小，保持与电脑端完全一致的形状 */
+            .player-card { width: 85px; min-height: 60px; }
             .player-avatar span { font-size: 20px; }
             .player-name { font-size: 10px; }
             .player-chips { font-size: 11px; padding: 2px 0; }
             
-            /* 手机横屏操作台：强制 Flex 横排，单手可控，不挡屏幕 */
+            /* 🚨 核心修改：删除横向变形，保持电脑端竖排结构，仅按比例缩小并居中 */
             .action-console { 
-                flex-direction: row; align-items: center; width: 100vw; max-width: 100%; 
-                border-radius: 0; border-left: none; border-right: none; border-bottom: none; margin: 0;
-                padding: 10px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+                width: 90vw; max-width: 360px; /* 锁死最大宽度，杜绝拉伸 */
+                padding: 10px; gap: 8px; 
+                flex-direction: column; /* 强行恢复电脑端的竖向排版！ */
+                border-radius: 12px;
+                border: 2px solid var(--text-main);
+                margin: 0 auto; /* 保证水平居中 */
             }
-            .raise-control-area { flex: 1; padding: 8px; margin: 0; border-right: 1px solid rgba(232,227,211,0.3); border-bottom: none; }
-            .raise-header { font-size: 11px; }
-            #input-raise-amount { font-size: 14px; width: 50px; }
-            .qb-btn { font-size: 10px; padding: 4px 0; }
-            .main-action-row { flex: 1.5; padding-left: 10px; height: 60px; align-items: stretch; gap: 6px;}
-            .action-btn { min-height: 50px; font-size: 16px; }
+            .raise-control-area { padding: 8px 10px; gap: 6px; }
+            .raise-header { font-size: 12px; }
+            .main-action-row { height: 45px; gap: 8px; flex-direction: row; }
+            .action-btn { min-height: 45px; border-radius: 8px; }
             .btn-title { font-size: 14px; }
+            .btn-sub { font-size: 10px; }
             
-            #chat-zone { width: 220px; bottom: max(75px, env(safe-area-inset-bottom) + 70px); }
-            #chat-input { padding: 8px; font-size: 11px; }
+            #chat-zone { width: 240px; bottom: max(75px, env(safe-area-inset-bottom) + 70px); }
+            #chat-input { padding: 8px 12px; font-size: 12px; }
         }
     </style>
 </head>
