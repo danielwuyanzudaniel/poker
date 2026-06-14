@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CB POKER - 职业赛场</title>
     <style>
         :root { 
@@ -17,13 +17,14 @@
         }
         
         /* 字体：Times New Roman + 粗宋 */
-        body { 
+       body { 
             margin: 0; padding: 0; 
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             font-family: 'Times New Roman', SimSun, 'Songti SC', STSong, serif; 
             font-weight: bold; 
-            min-height: 100dvh; width: 100vw; overflow-x: hidden; overflow-y: auto; touch-action: auto;
+            min-height: 100dvh; width: 100vw; 
+            /* 已经彻底移除 overflow 限制，完全释放手机系统的原生缩放和滑动 */
         }
         
         .view-screen { position: absolute; top: 0; left: 0; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s; }
@@ -62,8 +63,8 @@
         .setting-input { width: 100px; padding: 8px 12px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--text-main); color: var(--text-main); font-size: 14px; font-weight: bold; outline: none; text-align: right; transition: border-color 0.2s; font-family: inherit;}
         .setting-input option { background-color: var(--panel-bg); color: var(--text-main); }
 
-        /* 移除原有的延迟动画，并加上 touch-action: none 完全接管牌桌内的触摸手势 */
-        #table-container { position: relative; width: 100%; height: 100dvh; touch-action: none; }
+       /* 恢复原生的容器属性，允许系统完美接管放大和滑动 */
+        #table-container { position: relative; width: 100%; height: 100dvh; }
         .poker-table { width: 80vw; height: 50dvh; max-width: 1000px; max-height: 550px; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle, var(--bg-dark) 0%, var(--table-inner) 100%); border: 20px solid var(--text-main); border-radius: 250px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 40px rgba(0,0,0,0.3); }
         .table-inner-line { position: absolute; top: 35px; bottom: 35px; left: 55px; right: 55px; border: 3px solid rgba(232, 227, 211, 0.3); border-radius: 200px; pointer-events: none; z-index: 1; display: flex; justify-content: center; }
         .table-logo { margin-top: 30px; color: rgba(232, 227, 211, 0.3); font-size: 38px; font-weight: 900; letter-spacing: 10px; }
@@ -389,12 +390,7 @@
             .setting-input { padding: 4px 8px; font-size: 12px; }
         }
 
-        @media screen and (orientation: portrait) {
-            @media (max-width: 1024px) {
-                #portrait-warning { display: flex; }
-                #view-home, #view-settings, #view-game, #sit-modal, #update-settings-modal, #player-mgmt-modal, #ledger-modal { display: none !important; }
-            }
-        }
+        /* 竖屏限制已解除，允许自由旋转横竖屏游玩 */
     </style>
 </head>
 <body>
@@ -544,7 +540,6 @@
         </div>
 
         <div class="top-left-btns" id="top-left-btns">
-            <button class="top-btn btn-fullscreen" onclick="toggleFullScreen()">🔲 全屏</button>
             <button class="top-btn btn-log hidden" id="btn-log-top" onclick="toggleLogDrawer()">📝 记录</button>
         </div>
 
@@ -759,11 +754,11 @@
         let doc = window.document;
         let docEl = doc.documentElement;
         let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-        let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+        let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msCancelFullScreen;
 
         if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
             requestFullScreen.call(docEl).catch(err => {
-                alert(`您的设备/浏览器当前不支持一键全屏，您可以尝试手动隐藏工具栏。`);
+                alert(`您的设备/浏览器当前不支持一键全屏`);
             });
         } else {
             cancelFullScreen.call(doc);
@@ -934,7 +929,10 @@
 
     document.getElementById('chat-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); const val = this.value.trim(); if (val && myName) { send({ type: 'CHAT', name: myName, msg: val }); this.value = ''; } } });
     
-    function navTo(targetViewId) { document.querySelectorAll('.view-screen').forEach(el => el.classList.add('hidden')); document.getElementById(targetViewId).classList.remove('hidden'); }
+    function navTo(targetViewId) { 
+        document.querySelectorAll('.view-screen').forEach(el => el.classList.add('hidden')); 
+        document.getElementById(targetViewId).classList.remove('hidden'); 
+    }
     function copyInviteLink() { navigator.clipboard.writeText(window.location.href).then(() => { const el = document.getElementById('display-room-url'); const originalText = el.innerText; el.innerText = "✓ 链接已复制!"; el.style.opacity = "1"; setTimeout(() => { el.innerText = originalText; el.style.opacity = "0.9"; }, 2000); }); }
     
     function openSitModal() { 
@@ -1425,7 +1423,7 @@
     }
 
     const dragCards = document.getElementById('my-immersive-cards');
-    let isDraggingCards = false, startX, startY, curX = 0, curY = 0, xOff = 0, yOff = 0;
+    let isDraggingCards = false, startX, startY, xOff = 0, yOff = 0;
     let dragRAF;
     
     function dragStart(e) { 
@@ -1434,13 +1432,13 @@
         startX = clientX - xOff;
         startY = clientY - yOff;
         isDraggingCards = true; 
-        dragCards.style.transition = 'none'; 
+        if(dragCards) dragCards.style.transition = 'none'; 
     }
     
     function dragEnd() { 
         if (isDraggingCards) {
             isDraggingCards = false; 
-            dragCards.style.transition = ''; 
+            if(dragCards) dragCards.style.transition = ''; 
             if (dragRAF) cancelAnimationFrame(dragRAF);
         }
     }
@@ -1448,16 +1446,13 @@
     function drag(e) {
         if (!isDraggingCards) return; 
         e.preventDefault(); 
-        
         let clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
         let clientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-        
         xOff = (clientX - startX);
         yOff = (clientY - startY);
-        
         if (dragRAF) cancelAnimationFrame(dragRAF);
         dragRAF = requestAnimationFrame(() => {
-            dragCards.style.transform = `translate(calc(-50% + ${xOff}px), ${yOff}px) scale(var(--card-scale))`;
+            if(dragCards) dragCards.style.transform = `translate(calc(-50% + ${xOff}px), ${yOff}px) scale(var(--card-scale))`;
         });
     }
     
@@ -1469,71 +1464,6 @@
     document.addEventListener("mouseup", dragEnd); 
     document.addEventListener("touchmove", drag, {passive: false}); 
     document.addEventListener("mousemove", drag);
-
-// ==========================================
-    // 🔥 手机端专属：牌桌双指自由缩放 & 平移引擎
-    // ==========================================
-    const tableContainer = document.getElementById('table-container');
-    let tScale = 1, tX = 0, tY = 0;
-    let initPinchDist = 0, initTScale = 1;
-    let isTPanning = false, startTX = 0, startTY = 0, initTX = 0, initTY = 0;
-
-    tableContainer.addEventListener('touchstart', (e) => {
-        // 安全拦截：如果点到了桌子上的任何按钮（比如坐下、加Bot），让系统正常响应点击
-        if (e.target.closest('button') || e.target.closest('.player-card')) return;
-        
-        if (e.touches.length === 2) {
-            // 双指进入：缩放模式
-            isTPanning = false;
-            initPinchDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX, 
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            initTScale = tScale;
-        } else if (e.touches.length === 1 && tScale > 1) {
-            // 单指进入：如果桌子已经被放大了，允许单指拖拽平移视角
-            isTPanning = true;
-            startTX = e.touches[0].clientX;
-            startTY = e.touches[0].clientY;
-            initTX = tX;
-            initTY = tY;
-        }
-    }, { passive: false });
-
-    tableContainer.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-            e.preventDefault(); // 拦截双指引起的网页原生全局缩放
-            
-            const currDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX, 
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            
-            // 计算缩放比例：限制最小为 1 倍(原尺寸)，最大为 3 倍
-            tScale = initTScale * (currDist / initPinchDist);
-            tScale = Math.max(1, Math.min(tScale, 3)); 
-            
-            // 贴心优化：一旦缩回 1 倍大小，画面自动吸附归位到正中央
-            if (tScale === 1) { tX = 0; tY = 0; } 
-            
-            tableContainer.style.transform = `translate(${tX}px, ${tY}px) scale(${tScale})`;
-        } else if (e.touches.length === 1 && isTPanning && tScale > 1) {
-            e.preventDefault(); // 拦截页面原生滚动
-            
-            tX = initTX + (e.touches[0].clientX - startTX);
-            tY = initTY + (e.touches[0].clientY - startTY);
-            
-            tableContainer.style.transform = `translate(${tX}px, ${tY}px) scale(${tScale})`;
-        }
-    }, { passive: false });
-
-    tableContainer.addEventListener('touchend', (e) => {
-        // 重置手势状态
-        if (e.touches.length < 2) initPinchDist = 0;
-        if (e.touches.length === 0) isTPanning = false;
-    });
-
-
 
 
 </script>
