@@ -63,22 +63,22 @@
             .view-screen, #danmaku-container, .chat-fx-container { display: none !important; }
         }
 
-        .menu-card { background: var(--panel-bg); padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 2px solid var(--text-main); width: 320px; max-width: 90vw; position: relative; box-sizing: border-box;}
-        /* 👈 招牌字体颜色*/
+        /* 🚨 核心修复：缩小弹窗的内边距，并强制加上 max-height 和滚动条，防止纵向溢出屏幕 */
+        .menu-card { background: var(--panel-bg); padding: 20px 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.4); border: 2px solid var(--text-main); width: 320px; max-width: 90vw; position: relative; box-sizing: border-box; max-height: 95vh; overflow-y: auto; }
+        
+        /* 👈 招牌字体颜色 (已修复上一版遗留的多余大括号) */
         .logo-title { 
-    font-family: 'FZCuSong-B09S', 'FZDaBiaoSong-B06S', 'Songti SC', STSong, SimSun, serif; 
-    font-weight: 900; /* 将字重调到最大值 900 */
-    -webkit-text-stroke: 1.5px #d4af37; /* 👈 核心魔法：用同样的复古黄给文字描边，强行加粗字体！你可以通过修改 1.5px 这个数值来控制粗细 */
-    font-size: 65px; 
-    letter-spacing: 8px; 
-    white-space: nowrap; 
-    margin-bottom: 20px; 
-    margin-top: 10px;
-    color: #d4af37; 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.6); 
-    /* 已经去掉了 transform 属性，现在字体完全端正，一点也不斜了 */
-}
-}
+            font-family: 'FZCuSong-B09S', 'FZDaBiaoSong-B06S', 'Songti SC', STSong, SimSun, serif; 
+            font-weight: 900; 
+            -webkit-text-stroke: 1.5px #d4af37; 
+            font-size: 65px; 
+            letter-spacing: 8px; 
+            white-space: nowrap; 
+            margin-bottom: 20px; 
+            margin-top: 10px;
+            color: #d4af37; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); 
+        }
 
         .btn-dark { background: var(--bg-dark); color: var(--text-main); } .btn-dark:hover { background: var(--panel-bg); }
         .input-group { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(232,227,211,0.3); }
@@ -86,11 +86,12 @@
         .input-code:focus { box-shadow: 0 0 10px rgba(232,227,211,0.5); }
         .btn-join { padding: 0 25px; border-radius: 8px; border: 2px solid var(--text-main); background: var(--text-main); color: var(--bg-dark); font-weight: bold; cursor: pointer; transition: 0.2s; font-family: inherit;}
 
-        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; color: var(--text-main); font-size: 14px; font-weight: bold; cursor: pointer; opacity: 0.8;}
+        /* 🚨 核心修复：极致压缩菜单项的上下间距和字体大小，完美适应手机横屏的稀缺高度 */
+        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: var(--text-main); font-size: 13px; font-weight: bold; cursor: pointer; opacity: 0.8;}
         .settings-header span:hover { opacity: 1; }
-        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; text-align: left; transition: opacity 0.3s;}
-        .setting-label { font-size: 14px; color: var(--text-main); flex: 1; }
-        .setting-input { width: 100px; padding: 8px 12px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--text-main); color: var(--text-main); font-size: 14px; font-weight: bold; outline: none; text-align: right; transition: border-color 0.2s; font-family: inherit;}
+        .setting-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; text-align: left; transition: opacity 0.3s;}
+        .setting-label { font-size: 12px; color: var(--text-main); flex: 1; }
+        .setting-input { width: 90px; padding: 6px 10px; border-radius: 6px; background: var(--bg-dark); border: 1px solid var(--text-main); color: var(--text-main); font-size: 12px; font-weight: bold; outline: none; text-align: right; transition: border-color 0.2s; font-family: inherit;}
         .setting-input option { background-color: var(--panel-bg); color: var(--text-main); }
 
        #table-container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;}
