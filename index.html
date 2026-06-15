@@ -816,6 +816,23 @@
 
 <script>
     const BACKEND_URL = "https://cb-poker-server.wuqidong333.workers.dev";
+
+    // ==========================================
+    // 🚨 终极防护：彻底封杀手机浏览器的原生双指缩放
+    // ==========================================
+    
+    // 1. 拦截所有双指及以上的滑动操作
+    document.addEventListener('touchmove', function (event) {
+        if (event.touches.length > 1) {
+            event.preventDefault(); // 杀掉多指滑动导致的缩放
+        }
+    }, { passive: false });
+
+    // 2. 专门拦截 iOS Safari 的原生捏合手势事件
+    document.addEventListener('gesturestart', function(event) {
+        event.preventDefault(); // 杀掉捏合动作
+    });
+    // ==========================================
     
     function toggleFullScreen() {
         let doc = window.document;
